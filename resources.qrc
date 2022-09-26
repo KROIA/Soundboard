@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/search.png</file>
+        <file>icons/refresh.png</file>
+        <file>icons/add.png</file>
+        <file>icons/floppy-disk.png</file>
+        <file>icons/delete.png</file>
+        <file>icons/close.png</file>
+        <file>icons/option-list.png</file>
+        <file>icons/option.png</file>
+        <file>icons/option-edit.png</file>
+        <file>icons/option-add.png</file>
+        <file>icons/option-close.png</file>
+        <file>icons/document.png</file>
+        <file>icons/document-edit.png</file>
+        <file>icons/document-add.png</file>
+        <file>icons/document-close.png</file>
+        <file>icons/database.png</file>
+        <file>icons/database-refresh.png</file>
+        <file>icons/peerToPeer.png</file>
+        <file>icons/peerToPeer-close.png</file>
+        <file>icons/developerTool.png</file>
+        <file>icons/users.png</file>
+        <file>icons/openLock.png</file>
+        <file>icons/audio.png</file>
+        <file>icons/audio-add.png</file>
+        <file>icons/audio-delete.png</file>
+    </qresource>
+</RCC>

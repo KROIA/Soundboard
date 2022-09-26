@@ -1,0 +1,12 @@
+debug/ribbon.o
+debug/ribbonButtonGroup.o
+debug/ribbontabcontent.o
+debug/main.o
+debug/soundboard.o
+debug/soundboardRibbon.o
+debug/qrc_resource.o
+debug/moc_ribbon.o
+debug/moc_ribbonButtonGroup.o
+debug/moc_ribbontabcontent.o
+debug/moc_soundboard.o
+debug/moc_soundboardRibbon.o
