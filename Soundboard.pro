@@ -2,7 +2,7 @@ QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++11 console
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -19,12 +19,19 @@ INCLUDEPATH += $$inc \
 
 SOURCES += \
     $$src/core/main.cpp \
+    $$src/core/sound.cpp \
     $$src/ui/soundboard.cpp \
-    src/ui/soundboardRibbon.cpp
+    $$src/ui/soundboardRibbon.cpp \
+    src/core/debug.cpp \
+    src/core/soundsource.cpp
+
 
 HEADERS += \
+    $$inc/core/sound.h \
     $$inc/ui/soundboard.h \
-    inc/ui/soundboardRibbon.h
+    $$inc/ui/soundboardRibbon.h \
+    inc/core/debug.h \
+    inc/core/soundsource.h
 
 FORMS += \
     ui/soundboard.ui

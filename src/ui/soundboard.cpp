@@ -1,5 +1,6 @@
 #include "soundboard.h"
 #include "ui_soundboard.h"
+#include "debug.h"
 
 Soundboard::Soundboard(QWidget *parent)
     : QMainWindow(parent)
@@ -8,14 +9,14 @@ Soundboard::Soundboard(QWidget *parent)
     ui->setupUi(this);
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
 
-    // Bastel
-    player = new QMediaPlayer;
-    audioOutput = new QAudioOutput;
-    player->setAudioOutput(audioOutput);
-    // ...
-    player->setSource(QUrl::fromLocalFile("E:/Dokumente/QT/Projects/Soundboard/sounds/lang.mp3"));
-    audioOutput->setVolume(50);
+    //SoundSource source("C:\\Users\\alexk\\Documents\\Privat\\Softwareentwicklung\\QT\\Projekte\\Soundboard\\sounds\\lang.mp3");
+    SoundSource source;
+    source.setRootPath("C:\\Users\\alexk\\Documents\\Privat\\Softwareentwicklung\\QT\\Projekte\\Soundboard\\sounds");
+    source.setRelativePath("lang.mp3");
 
+    sound.setSource(source);
+    sound.setVolume(1);
+    sound.setPlaybackSpeed(1);
 }
 
 Soundboard::~Soundboard()
@@ -26,6 +27,12 @@ Soundboard::~Soundboard()
 
 void Soundboard::on_pushButton_clicked()
 {
-    player->play();
+    sound.play();
+}
+
+
+void Soundboard::on_pushButton_2_clicked()
+{
+    sound.pause();
 }
 

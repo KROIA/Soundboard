@@ -4,9 +4,8 @@
 #include <QMainWindow>
 #include "soundboardRibbon.h"
 
-// Bastel
-#include <QMediaPlayer>
-#include <QAudioOutput>
+#include "sound.h"
+#include "debug.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Soundboard; }
@@ -23,12 +22,12 @@ class Soundboard : public QMainWindow
     private slots:
         void on_pushButton_clicked();
 
+        void on_pushButton_2_clicked();
+
     private:
         Ui::Soundboard *ui;
         SoundboardRibbon *m_ribbon;
 
-        // Bastel
-        QMediaPlayer *player;
-        QAudioOutput *audioOutput;
+        Sound sound;
 };
 #endif // SOUNDBOARD_H
