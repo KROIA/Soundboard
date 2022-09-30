@@ -14,9 +14,25 @@ Soundboard::Soundboard(QWidget *parent)
     source.setRootPath("C:\\Users\\alexk\\Documents\\Privat\\Softwareentwicklung\\QT\\Projekte\\Soundboard\\sounds");
     source.setRelativePath("lang.mp3");
 
-    sound.setSource(source);
-    sound.setVolume(1);
-    sound.setPlaybackSpeed(1);
+
+
+    m_sound = new UI_Sound(this);
+    m_sound->setSource(source);
+    m_sound->setVolume(1);
+    m_sound->setPlaybackSpeed(1);
+
+    QFile output("testOut.xml");
+    output.open(QFile::OpenModeFlag::WriteOnly);
+    QXmlStreamWriter stream(&output);
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
+
+    m_sound->save(&stream);
+
+    stream.writeEndDocument();
+    output.close();
+
+    ui->scrollAreaWidgetContents->layout()->addWidget(m_sound);
 }
 
 Soundboard::~Soundboard()
@@ -27,12 +43,12 @@ Soundboard::~Soundboard()
 
 void Soundboard::on_pushButton_clicked()
 {
-    sound.play();
+    m_sound->play();
 }
 
 
 void Soundboard::on_pushButton_2_clicked()
 {
-    sound.pause();
+    m_sound->pause();
 }
 

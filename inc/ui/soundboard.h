@@ -4,8 +4,9 @@
 #include <QMainWindow>
 #include "soundboardRibbon.h"
 
-#include "sound.h"
 #include "debug.h"
+
+#include "ui_sound.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Soundboard; }
@@ -28,6 +29,6 @@ class Soundboard : public QMainWindow
         Ui::Soundboard *ui;
         SoundboardRibbon *m_ribbon;
 
-        Sound sound;
+        UI_Sound *m_sound;
 };
 #endif // SOUNDBOARD_H

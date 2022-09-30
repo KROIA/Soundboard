@@ -59,3 +59,17 @@ std::string SoundSource::getAbsolutePath() const
         return m_relativePath;
     return m_rootPath+"\\"+m_relativePath;
 }
+void SoundSource::save(QXmlStreamWriter *writer)
+{
+    if(!writer) return;
+    writer->writeStartElement("SoundSource");
+    writer->writeTextElement("rootPath",m_rootPath.c_str());
+    writer->writeTextElement("relativePath",m_relativePath.c_str());
+   // writer->writeAttribute("rootPath",m_rootPath.c_str());
+   // writer->writeAttribute("relativePath",m_relativePath.c_str());
+    writer->writeEndElement();
+}
+void SoundSource::load(QXmlStreamReader *reader)
+{
+    if(!reader) return;
+}

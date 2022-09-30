@@ -29,9 +29,28 @@ float Sound::getPlaybackSpeed() const
 {
     return (float)m_player.playbackRate();
 }
-unsigned int Sound::getLoops() const
+int Sound::getLoops() const
 {
     return m_player.loops();
+}
+const std::string &Sound::getName() const
+{
+    return m_name;
+}
+void Sound::save(QXmlStreamWriter *writer)
+{
+    if(!writer) return;
+    writer->writeStartElement("Sound");
+    writer->writeAttribute("name",m_name.c_str());
+    writer->writeAttribute("loops",QString::number(getLoops()));
+    writer->writeAttribute("volume",QString::number(getVolume()));
+    writer->writeAttribute("speed",QString::number(getPlaybackSpeed()));
+    m_source.save(writer);
+    writer->writeEndElement();
+}
+void Sound::load(QXmlStreamReader *reader)
+{
+    if(!reader) return;
 }
 
 void Sound::play()
@@ -78,6 +97,10 @@ void Sound::setPlaybackSpeed(float speed)
 void Sound::setLoops(int count)
 {
     m_player.setLoops(count);
+}
+void Sound::setName(const std::string &name)
+{
+    m_name = name;
 }
 
 void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <xmlSaveable.h>
 
 /*! \class SoundSource
     \brief Class to handle audiofiles
@@ -8,7 +9,7 @@
     This class contains the path to
     the audio files on the device.
 */
-class SoundSource
+class SoundSource   :   public XmlSaveable
 {
     public:
         SoundSource();
@@ -76,6 +77,9 @@ class SoundSource
          * @return absolute path containing the filename to the .mp3 file
          */
         std::string getAbsolutePath() const;
+
+        void save(QXmlStreamWriter *writer) override;
+        void load(QXmlStreamReader *reader) override;
 
     protected:
 

@@ -1,42 +1,29 @@
-// Ersetzt das:
-// #ifndef SOUND_H
-// #define SOUND_H
-// ...
-// #endif
-#pragma once
+#ifndef UI_SOUND_H
+#define UI_SOUND_H
 
-#include <QObject>
-#include <QMediaPlayer>
-#include <QAudioOutput>
-#include "soundsource.h"
+#include <QWidget>
+
+#include <string>
+#include <vector>
+
+#include "sound.h"
 #include "debug.h"
+
 #include "xmlSaveable.h"
 
-// Enable debug informations for this class
-#define DBG_SOUND
+using std::string;
+using std::vector;
+namespace Ui {
+class UI_Sound;
+}
 
-
-/*! \class Sound
-    \brief Class to play sound
-
-    This class will play the sound which
-    was defined in the given SoundSource
-*/
-class Sound :   public QObject, public XmlSaveable
+class UI_Sound : public QWidget, public XmlSaveable
 {
         Q_OBJECT
+
     public:
-        Sound();
-
-        /**
-         * Constructor
-         * @see setSource(...)
-         * @param source The source object which contains the path to
-         *               the .mp3 file
-         */
-        Sound(const SoundSource &source);
-        ~Sound();
-
+        explicit UI_Sound(QWidget *parent = nullptr);
+        ~UI_Sound();
 
         /**
          * getSource()
@@ -60,14 +47,13 @@ class Sound :   public QObject, public XmlSaveable
          * getLoops()
          * @return Returns the amount of loops the sound will play
          */
-        int getLoops() const;
+        unsigned int getLoops() const;
 
         /**
          * getName()
          * @return Returns the name of the sound
          */
         const std::string &getName() const;
-
 
         /**
          * save(...)
@@ -101,8 +87,6 @@ class Sound :   public QObject, public XmlSaveable
          * @brief Will be called if the playback is stopped
          */
         void onPlaybackStopped();
-
-
 
     public slots:
         /**
@@ -157,13 +141,11 @@ class Sound :   public QObject, public XmlSaveable
         */
         void setName(const std::string &name);
 
-    private slots:
-        void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
-    protected:
-
     private:
-        std::string m_name;
-        SoundSource  m_source;
-        QMediaPlayer m_player;
-        QAudioOutput m_output;
+        Ui::UI_Sound *ui;
+        Sound m_sound;
+
+
 };
+
+#endif // UI_SOUND_H

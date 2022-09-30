@@ -1,4 +1,4 @@
-QT       += core gui multimedia
+QT       += core gui multimedia xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,19 +22,24 @@ SOURCES += \
     $$src/core/sound.cpp \
     $$src/ui/soundboard.cpp \
     $$src/ui/soundboardRibbon.cpp \
-    src/core/debug.cpp \
-    src/core/soundsource.cpp
+    $$src/core/debug.cpp \
+    $$src/core/soundsource.cpp \
+    $$src/ui/ui_sound.cpp \
+    src/core/xmlSaveable.cpp
 
 
 HEADERS += \
     $$inc/core/sound.h \
     $$inc/ui/soundboard.h \
     $$inc/ui/soundboardRibbon.h \
-    inc/core/debug.h \
-    inc/core/soundsource.h
+    $$inc/core/debug.h \
+    $$inc/core/soundsource.h \
+    $$inc/ui/ui_sound.h \
+    inc/core/xmlSaveable.h
 
 FORMS += \
-    ui/soundboard.ui
+    ui/soundboard.ui \
+    ui/ui_sound.ui
 
 RC_FILE = icon.qrc
 
