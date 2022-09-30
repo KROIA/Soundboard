@@ -16,6 +16,8 @@ struct SoundsButtons
     QToolButton *addNew;
 };
 
+
+
 class SoundboardRibbon : public QWidget
 {
         Q_OBJECT

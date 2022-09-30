@@ -1,12 +1,16 @@
-#ifndef SOUNDBOARD_H
-#define SOUNDBOARD_H
+#pragma once
 
 #include <QMainWindow>
+#include <QMessageBox>
 #include "soundboardRibbon.h"
 
-// Bastel
-#include <QMediaPlayer>
-#include <QAudioOutput>
+#include "debug.h"
+#include "usersettings.h"
+#include "projectInfo.h"
+
+#include "ui_sound.h"
+#include "ui_settings.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Soundboard; }
@@ -21,14 +25,18 @@ class Soundboard : public QMainWindow
         ~Soundboard();
 
     private slots:
-        void on_pushButton_clicked();
+
+        void on_actionVersion_triggered();
+        void on_actionInfo_triggered();
+        void on_actionEinstellungen_triggered();
+
 
     private:
         Ui::Soundboard *ui;
         SoundboardRibbon *m_ribbon;
 
-        // Bastel
-        QMediaPlayer *player;
-        QAudioOutput *audioOutput;
+        UI_Settings *m_settingsWindow;
+        UserSettings m_userSettings;
+
+        UI_Sound *m_sound;
 };
-#endif // SOUNDBOARD_H
