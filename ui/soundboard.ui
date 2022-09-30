@@ -56,8 +56,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>741</width>
-            <height>208</height>
+            <width>745</width>
+            <height>216</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2"/>
@@ -75,17 +75,41 @@
      <x>0</x>
      <y>0</y>
      <width>785</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuInfo">
     <property name="title">
      <string>Info</string>
     </property>
+    <addaction name="actionVersion"/>
+    <addaction name="actionInfo"/>
+   </widget>
+   <widget class="QMenu" name="menuExtras">
+    <property name="title">
+     <string>Extras</string>
+    </property>
+    <addaction name="actionEinstellungen"/>
    </widget>
    <addaction name="menuInfo"/>
+   <addaction name="menuExtras"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionVersion">
+   <property name="text">
+    <string>Version</string>
+   </property>
+  </action>
+  <action name="actionEinstellungen">
+   <property name="text">
+    <string>Einstellungen</string>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>Info</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

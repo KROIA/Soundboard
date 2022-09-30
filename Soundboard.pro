@@ -15,7 +15,9 @@ src = src/
 
 INCLUDEPATH += $$inc \
                $$inc/ui \
-               $$inc/core
+               $$inc/core \
+               $$inc/core/settings \
+               $$inc/ui/settings \
 
 SOURCES += \
     $$src/core/main.cpp \
@@ -25,7 +27,13 @@ SOURCES += \
     $$src/core/debug.cpp \
     $$src/core/soundsource.cpp \
     $$src/ui/ui_sound.cpp \
-    src/core/xmlSaveable.cpp
+    $$src/core/settings/registryParameter.cpp \
+    $$src/core/settings/xmlSaveable.cpp \
+    $$src/core/settings/registrySettings.cpp \
+    $$src/ui/settings/ui_settings.cpp \
+    $$src/ui/settings/ui_settingspage.cpp \
+    $$src/ui/settings/ui_setting.cpp
+
 
 
 HEADERS += \
@@ -35,10 +43,20 @@ HEADERS += \
     $$inc/core/debug.h \
     $$inc/core/soundsource.h \
     $$inc/ui/ui_sound.h \
-    inc/core/xmlSaveable.h
+    $$inc/core/settings/registryParameter.h \
+    $$inc/core/settings/usersettings.h \
+    $$inc/core/settings/xmlSaveable.h \
+    $$inc/core/settings/registrySettings.h \
+    $$inc/ui/settings/ui_settings.h \
+    $$inc/ui/settings/ui_settingspage.h \
+    $$inc/ui/settings/ui_setting.h \
+    inc/core/projectInfo.h
 
 FORMS += \
     ui/soundboard.ui \
+    ui/settings/ui_setting.ui \
+    ui/settings/ui_settings.ui \
+    ui/settings/ui_settingspage.ui \
     ui/ui_sound.ui
 
 RC_FILE = icon.qrc
