@@ -5,6 +5,7 @@ Soundboard::Soundboard(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Soundboard)
 {
+
     ui->setupUi(this);
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
 
