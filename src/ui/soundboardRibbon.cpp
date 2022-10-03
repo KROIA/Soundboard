@@ -134,3 +134,4 @@ void SoundboardRibbon::buildSoundButtons()
                                                     "audio-add", true, tab, group);
 
 }
+

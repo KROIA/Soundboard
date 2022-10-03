@@ -25,5 +25,10 @@
         <file>icons/audio.png</file>
         <file>icons/audio-add.png</file>
         <file>icons/audio-delete.png</file>
+        <file>icons/play.png</file>
+        <file>icons/pause.png</file>
+        <file>icons/stop.png</file>
+        <file>icons/repeat.png</file>
+        <file>icons/settings.png</file>
     </qresource>
 </RCC>
