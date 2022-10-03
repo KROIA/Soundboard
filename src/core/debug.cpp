@@ -1,7 +1,4 @@
 #include "debug.h"
-#include <stdio.h>
-#include <wchar.h>
-#include <windows.h>
 
 namespace Debug
 {
@@ -27,6 +24,7 @@ namespace Color
 }
 void setup()
 {
+
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hOut == INVALID_HANDLE_VALUE)
     {
@@ -44,6 +42,7 @@ void setup()
     {
         return;
     }
+
 }
 QString colorizeFunc(QString name)
 {

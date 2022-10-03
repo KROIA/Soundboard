@@ -1,5 +1,6 @@
 #include "soundboard.h"
 #include "ui_soundboard.h"
+#include <QFileDialog>
 
 Soundboard::Soundboard(QWidget *parent)
     : QMainWindow(parent)
@@ -44,7 +45,24 @@ Soundboard::Soundboard(QWidget *parent)
 
     stream.writeEndDocument();
     output.close();
+/*
 
+    QFile file("testOut.xml");
+    if(!file.open(QFile::ReadOnly | QFile::Text)){
+        qDebug() << "Cannot read file" << file.errorString();
+        exit(0);
+    }
+    QXmlStreamReader reader(&file);
+    if(reader.readNextStartElement()) {
+        qDebug() << reader.name();
+
+        while(reader.readNextStartElement()) {
+            qDebug() << reader.attributes().toVector()[0].value();
+            if(reader.name() ==QString("rootPath"))
+               qDebug() << reader.name() << "  Value= "<<reader.readElementText();
+        }
+
+    }*/
     ui->scrollAreaWidgetContents->layout()->addWidget(m_sound);
 }
 

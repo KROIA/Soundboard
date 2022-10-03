@@ -51,6 +51,45 @@ void Sound::save(QXmlStreamWriter *writer)
 void Sound::load(QXmlStreamReader *reader)
 {
     if(!reader) return;
+    if(reader->name() == QString("Sound"))
+    {
+        QXmlStreamAttributes attributes = reader->attributes();
+        for(const QXmlStreamAttribute &attribute : attributes)
+        {
+            if(attribute.name() == QString("name"))
+                m_name = attribute.value().toString().toStdString();
+            else if(attribute.name() == QString("loops"))
+            {
+                bool ok = false;
+                int value = attribute.value().toInt(&ok);
+                if(ok)
+                    m_player.setLoops(value);
+            }
+            else if(attribute.name() == QString("volume"))
+            {
+                bool ok = false;
+                float value = attribute.value().toFloat(&ok);
+                if(ok)
+                    m_output.setVolume(value);
+            }
+            else if(attribute.name() == QString("speed"))
+            {
+                bool ok = false;
+                float value = attribute.value().toFloat(&ok);
+                if(ok)
+                    m_player.setPlaybackRate(value);
+            }
+        }
+
+        if(reader->name() ==QString("rootPath"))
+        {
+
+            //if()
+        }
+    }
+
+
+    m_source.load(reader);
 }
 
 void Sound::play()

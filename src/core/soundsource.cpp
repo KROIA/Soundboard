@@ -72,4 +72,5 @@ void SoundSource::save(QXmlStreamWriter *writer)
 void SoundSource::load(QXmlStreamReader *reader)
 {
     if(!reader) return;
+    qDebug() << reader->readNext();
 }
