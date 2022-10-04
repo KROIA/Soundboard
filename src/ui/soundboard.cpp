@@ -2,6 +2,8 @@
 #include "ui_soundboard.h"
 #include <QFileDialog>
 
+using std::string;
+
 Soundboard::Soundboard(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Soundboard)

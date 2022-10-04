@@ -50,7 +50,7 @@ HEADERS += \
     $$inc/ui/settings/ui_settings.h \
     $$inc/ui/settings/ui_settingspage.h \
     $$inc/ui/settings/ui_setting.h \
-    inc/core/projectInfo.h
+    $$inc/core/projectInfo.h
 
 FORMS += \
     ui/soundboard.ui \
