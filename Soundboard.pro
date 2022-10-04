@@ -1,4 +1,4 @@
-QT       += core gui multimedia xml
+QT       += core gui widgets multimedia xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

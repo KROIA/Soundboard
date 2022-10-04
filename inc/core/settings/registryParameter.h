@@ -4,75 +4,67 @@
 #include <QSettings>
 #include <string>
 
-using std::string;
-
-
-class RegistryParameter :   public QObject
+class RegistryParameter : public QObject
 {
         Q_OBJECT
     public:
-        enum Type
-        {
-            stringType,
-            intType,
-            floatType
-        };
+        enum Type { stringType, intType, floatType };
         RegistryParameter();
         RegistryParameter(const RegistryParameter &other);
         ~RegistryParameter();
 
-       /* static void setRegistryRootPath(const string &path);
-        static const string &getRegistryRootPath();*/
+        /* static void setRegistryRootPath(const std::string &path);
+        static const std::string &getRegistryRootPath();*/
 
-        void setRegistryPath(const string &path);
-        const string &getRegistryPath() const;
+        void setRegistryPath(const std::string &path);
+        const std::string &getRegistryPath() const;
         void saveToRegistry();
         void readFromRegistry();
 
         void setType(Type type);
-        void setName(const string &name);
-        void setReadableName(const string &name);
-        void setDescription(const string &description);
-        void setValueStr(const string &value);
+        void setName(const std::string &name);
+        void setReadableName(const std::string &name);
+        void setDescription(const std::string &description);
+        void setValueStr(const std::string &value);
         void setValueInt(int value);
         void setValueFloat(float value);
        // void undoValueChange();
 
         Type getType() const;
-        const string &getName() const;
-        const string &getReadableName() const;
-        const string &getDescription() const;
-        const string &getValueStr() const;
+        const std::string &getName() const;
+        const std::string &getReadableName() const;
+        const std::string &getDescription() const;
+        const std::string &getValueStr() const;
         int getValueInt() const;
         float getValueFloat() const;
 
         void deleteKey();
 
-        static void save(string path,string name,string value);
-        static void save(string path,string name,int value);
-        static void save(string path,string name,float value);
-        //static string getAbsolutePath(string path);
-        static bool valueExists(string path,string name);
-        static void removeValue(string path,string name);
-        static string getValue(string path,string name);
+        static void save(std::string path, std::string name, std::string value);
+        static void save(std::string path, std::string name, int value);
+        static void save(std::string path, std::string name, float value);
+        //static std::string getAbsolutePath(std::string path);
+        static bool valueExists(std::string path, std::string name);
+        static void removeValue(std::string path, std::string name);
+        static std::string getValue(std::string path, std::string name);
 
-       // static const string m_relativeRegistryPath_settings;
+        // static const std::string m_relativeRegistryPath_settings;
     signals:
         void typeChanged(Type type);
-        void pathChanged(const string &path);
-        void nameChanged(const string &name);
-        void descriptionChanged(const string &description);
-        void valueChanged(const string &value);
+        void pathChanged(const std::string &path);
+        void nameChanged(const std::string &name);
+        void descriptionChanged(const std::string &description);
+        void valueChanged(const std::string &value);
 
     protected:
-       // static string m_globalRegistryRootPath;
+        // static std::string m_globalRegistryRootPath;
 
         Type m_type;
-        string m_path;
-        string m_name;
-        string m_readableName;
-        string m_description;
-        string m_valueStr;
-        //string m_lastValueStr;
+        std::string m_path;
+        std::string m_name;
+        std::string m_readableName;
+        std::string m_description;
+        std::string m_valueStr;
+        //std::string m_lastValueStr;
 };
 
