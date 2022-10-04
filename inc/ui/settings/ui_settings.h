@@ -39,7 +39,7 @@ class UI_Settings : public QDialog
             UI_SettingsPage *ui;
         };
 
-        vector<SettingsPair> m_settings;
+        std::vector<SettingsPair> m_settings;
 };
 
 #endif // UI_SETTINGS_H

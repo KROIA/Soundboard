@@ -1,8 +1,6 @@
 #include "registrySettings.h"
 
-
-RegistrySettings::RegistrySettings(const string &registryRootPath,
-                                   const string &groupName)
+RegistrySettings::RegistrySettings(const std::string &registryRootPath, const std::string &groupName)
     : QObject()
 {
     m_registryRootPath = registryRootPath;
@@ -12,11 +10,11 @@ RegistrySettings::~RegistrySettings()
 {
     clear();
 }
-const string &RegistrySettings::getRegistryRootPath() const
+const std::string &RegistrySettings::getRegistryRootPath() const
 {
     return m_registryRootPath;
 }
-const string &RegistrySettings::getGroupName() const
+const std::string &RegistrySettings::getGroupName() const
 {
     return m_groupName;
 }/*
@@ -39,7 +37,7 @@ void RegistrySettings::read()
         pair.second->readFromRegistry();
     }
 }
-RegistryParameter *RegistrySettings::getParameter(const string &name)
+RegistryParameter *RegistrySettings::getParameter(const std::string &name)
 {
     if(!exists(name)) return nullptr;
     return m_params[name];
@@ -54,31 +52,31 @@ std::vector<RegistryParameter*> RegistrySettings::getParameters()
     return list;
 }
 
-bool RegistrySettings::setParameter(const string &name, const string &value)
+bool RegistrySettings::setParameter(const std::string &name, const std::string &value)
 {
     if(!exists(name)) return false;
     m_params[name]->setValueStr(value);
     return true;
 }
 
-bool RegistrySettings::setParameter(const string &name, int value)
+bool RegistrySettings::setParameter(const std::string &name, int value)
 {
     if(!exists(name)) return false;
     m_params[name]->setValueInt(value);
     return true;
 }
 
-bool RegistrySettings::setParameter(const string &name, float value)
+bool RegistrySettings::setParameter(const std::string &name, float value)
 {
     if(!exists(name)) return false;
     m_params[name]->setValueFloat(value);
     return true;
 }
 bool RegistrySettings::addParameter(RegistryParameter *param,
-                                    const string &name,
-                                    const string &readableName,
-                                    const string &description,
-                                    const string &value)
+                                    const std::string &name,
+                                    const std::string &readableName,
+                                    const std::string &description,
+                                    const std::string &value)
 {
     if(!param)
     {
@@ -96,9 +94,9 @@ bool RegistrySettings::addParameter(RegistryParameter *param,
     return addParameter(param);
 }
 bool RegistrySettings::addParameter(RegistryParameter *param,
-                                    const string &name,
-                                    const string &readableName,
-                                    const string &description,
+                                    const std::string &name,
+                                    const std::string &readableName,
+                                    const std::string &description,
                                     int value)
 {
     if(!param)
@@ -117,9 +115,9 @@ bool RegistrySettings::addParameter(RegistryParameter *param,
     return addParameter(param);
 }
 bool RegistrySettings::addParameter(RegistryParameter *param,
-                                    const string &name,
-                                    const string &readableName,
-                                    const string &description,
+                                    const std::string &name,
+                                    const std::string &readableName,
+                                    const std::string &description,
                                     float value)
 {
     if(!param)
@@ -153,7 +151,7 @@ bool RegistrySettings::addParameter(RegistryParameter *param)
 #endif
         return false;
     }
-    m_params.insert(std::pair<string,RegistryParameter*>(param->getName(),param));
+    m_params.insert(std::pair<std::string, RegistryParameter *>(param->getName(), param));
 
     connect(param,&RegistryParameter::typeChanged,this,&RegistrySettings::onParameterTypeChanged);
     connect(param,&RegistryParameter::pathChanged,this,&RegistrySettings::onParameterPathChanged);
@@ -175,7 +173,7 @@ bool RegistrySettings::removeParameter(RegistryParameter *param)
     }
     return removeParameter(param->getName());
 }
-bool RegistrySettings::removeParameter(const string &paramName)
+bool RegistrySettings::removeParameter(const std::string &paramName)
 {
     if(!exists(paramName))
     {
@@ -207,7 +205,7 @@ void RegistrySettings::clear()
     }
     m_params.clear();
 }
-bool RegistrySettings::exists(const string &name) const
+bool RegistrySettings::exists(const std::string &name) const
 {
     return !(m_params.find(name) == m_params.end());
 }
@@ -216,15 +214,12 @@ void RegistrySettings::onParameterTypeChanged(RegistryParameter::Type type)
 {
 
 }
-void RegistrySettings::onParameterPathChanged(const string &path)
-{
+void RegistrySettings::onParameterPathChanged(const std::string &path) {}
 
-}
-
-void RegistrySettings::onParameterNameChanged(const string &name)
+void RegistrySettings::onParameterNameChanged(const std::string &name)
 {
     RegistryParameter *sender = qobject_cast<RegistryParameter*>(QObject::sender());
-    string oldName;
+    std::string oldName;
     bool actionValid = true;
     for (auto& pair: m_params) {
         if(sender == pair.second)
@@ -240,19 +235,13 @@ void RegistrySettings::onParameterNameChanged(const string &name)
     if(actionValid)
     {
         m_params.erase(oldName);
-        m_params.insert(std::pair<string,RegistryParameter*>(sender->getName(),sender));
+        m_params.insert(std::pair<std::string, RegistryParameter *>(sender->getName(), sender));
     }
 }
 
-void RegistrySettings::onParameterDescriptionChanged(const string &description)
-{
+void RegistrySettings::onParameterDescriptionChanged(const std::string &description) {}
 
-}
-
-void RegistrySettings::onParameterValueChanged(const string &value)
-{
-
-}
+void RegistrySettings::onParameterValueChanged(const std::string &value) {}
 
 void RegistrySettings::onParameterDestroyed(QObject *param)
 {

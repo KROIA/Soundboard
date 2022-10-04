@@ -11,8 +11,6 @@
 
 #include "xmlSaveable.h"
 
-using std::string;
-using std::vector;
 namespace Ui {
 class UI_Sound;
 }

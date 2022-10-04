@@ -8,8 +8,6 @@
 
 #define UI_SETTINGS_PAGE_DEBUG
 
-using std::vector;
-
 namespace Ui {
 class UI_SettingsPage;
 }
@@ -31,7 +29,7 @@ class UI_SettingsPage : public QWidget
     private:
         Ui::UI_SettingsPage *ui;
         RegistrySettings *m_settings;
-        vector<UI_Setting*> m_ui_settings;
+        std::vector<UI_Setting *> m_ui_settings;
 };
 
 #endif // UI_SETTINGSPAGE_H

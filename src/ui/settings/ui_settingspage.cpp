@@ -19,9 +19,9 @@ UI_SettingsPage::UI_SettingsPage(QWidget *parent,
 
     ui->gropName_label->setText(m_settings->getGroupName().c_str());
 
-    vector<RegistryParameter*> params = m_settings->getParameters();
-  //  QVBoxLayout *layout = new QVBoxLayout(this);
-   // ui->scrollArea->setLayout(layout);
+    std::vector<RegistryParameter *> params = m_settings->getParameters();
+    //  QVBoxLayout *layout = new QVBoxLayout(this);
+    // ui->scrollArea->setLayout(layout);
 
     for(size_t i=0; i<params.size(); ++i)
     {

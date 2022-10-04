@@ -17,8 +17,8 @@ class UserSettings : public RegistrySettings
                          "C:\\");
         }
 
-        const string &getAudioRootPath() const{ return m_audioRootPath.getValueStr();}
-        void setAudioRootPath(const string &path) {m_audioRootPath.setValueStr(path);}
+        const std::string &getAudioRootPath() const { return m_audioRootPath.getValueStr(); }
+        void setAudioRootPath(const std::string &path) { m_audioRootPath.setValueStr(path); }
 
     private:
         RegistryParameter m_audioRootPath;

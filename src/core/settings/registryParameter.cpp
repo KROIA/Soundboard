@@ -1,10 +1,7 @@
 #include "registryParameter.h"
 
-
-
-
-//const string RegistryParameter::m_relativeRegistryPath_settings = "settings";
-//string RegistryParameter::m_globalRegistryRootPath = "HKEY_CURRENT_USER\\Software\\Qt\\Qt Apps\\SoundBoard";
+//const std::string RegistryParameter::m_relativeRegistryPath_settings = "settings";
+//std::string RegistryParameter::m_globalRegistryRootPath = "HKEY_CURRENT_USER\\Software\\Qt\\Qt Apps\\SoundBoard";
 RegistryParameter::RegistryParameter()
     : QObject()
 {
@@ -25,21 +22,21 @@ RegistryParameter::~RegistryParameter()
    // emit deleting();
 }
 
-/*void RegistryParameter::setRegistryRootPath(const string &path)
+/*void RegistryParameter::setRegistryRootPath(const std::string &path)
 {
     m_globalRegistryRootPath = path;
 }
-const string &RegistryParameter::getRegistryRootPath()
+const std::string &RegistryParameter::getRegistryRootPath()
 {
     return m_globalRegistryRootPath;
 }*/
 
-void RegistryParameter::setRegistryPath(const string &path)
+void RegistryParameter::setRegistryPath(const std::string &path)
 {
     m_path = path;
     emit pathChanged(m_path);
 }
-const string &RegistryParameter::getRegistryPath() const
+const std::string &RegistryParameter::getRegistryPath() const
 {
     return m_path;
 }
@@ -50,7 +47,7 @@ void RegistryParameter::saveToRegistry()
 }
 void RegistryParameter::readFromRegistry()
 {
-    string value = getValue(m_path,m_name);
+    std::string value = getValue(m_path, m_name);
     if(value != "")
     {
         m_valueStr = value;
@@ -62,21 +59,21 @@ void RegistryParameter::setType(Type type)
     m_type = type;
     emit typeChanged(m_type);
 }
-void RegistryParameter::setReadableName(const string &name)
+void RegistryParameter::setReadableName(const std::string &name)
 {
     m_readableName = name;
 }
-void RegistryParameter::setName(const string &name)
+void RegistryParameter::setName(const std::string &name)
 {
     m_name = name;
     emit nameChanged(m_name);
 }
-void RegistryParameter::setDescription(const string &description)
+void RegistryParameter::setDescription(const std::string &description)
 {
     m_description = description;
     emit descriptionChanged(m_description);
 }
-void RegistryParameter::setValueStr(const string &value)
+void RegistryParameter::setValueStr(const std::string &value)
 {
  //   m_lastValueStr = m_valueStr;
     m_valueStr = value;
@@ -84,13 +81,13 @@ void RegistryParameter::setValueStr(const string &value)
 }
 void RegistryParameter::setValueInt(int value)
 {
-  //  m_lastValueStr = m_valueStr;
+    //  m_lastValueStr = m_valueStr;
     m_valueStr = std::to_string(value);
     emit valueChanged(m_valueStr);
 }
 void RegistryParameter::setValueFloat(float value)
 {
-  //  m_lastValueStr = m_valueStr;
+    //  m_lastValueStr = m_valueStr;
     m_valueStr = std::to_string(value);
     emit valueChanged(m_valueStr);
 }
@@ -103,19 +100,19 @@ RegistryParameter::Type RegistryParameter::getType() const
 {
     return m_type;
 }
-const string &RegistryParameter::getName() const
+const std::string &RegistryParameter::getName() const
 {
     return m_name;
 }
-const string &RegistryParameter::getReadableName() const
+const std::string &RegistryParameter::getReadableName() const
 {
     return m_readableName;
 }
-const string &RegistryParameter::getDescription() const
+const std::string &RegistryParameter::getDescription() const
 {
     return m_description;
 }
-const string &RegistryParameter::getValueStr() const
+const std::string &RegistryParameter::getValueStr() const
 {
     return m_valueStr;
 }
@@ -133,41 +130,39 @@ void RegistryParameter::deleteKey()
     removeValue(m_path,m_name);
 }
 
-
-
-void RegistryParameter::save(string path,string name,string value)
+void RegistryParameter::save(std::string path, std::string name, std::string value)
 {
     QSettings _setting(path.c_str(),QSettings::NativeFormat);
     _setting.setValue(name.c_str(),value.c_str());
 }
-void RegistryParameter::save(string path,string name,int value)
+void RegistryParameter::save(std::string path, std::string name, int value)
 {
-    save(path,name,std::to_string(value));
+    save(path, name, std::to_string(value));
 }
-void RegistryParameter::save(string path,string name,float value)
+void RegistryParameter::save(std::string path, std::string name, float value)
 {
-    save(path,name,std::to_string(value));
+    save(path, name, std::to_string(value));
 }
 
-/*string RegistryParameter::getAbsolutePath(string path)
+/*std::string RegistryParameter::getAbsolutePath(std::string path)
 {
     return path;
 }*/
 
-bool RegistryParameter::valueExists(string path,string name)
+bool RegistryParameter::valueExists(std::string path, std::string name)
 {
     QSettings _setting(path.c_str(),QSettings::NativeFormat);
     bool exists = _setting.contains(name.c_str());
     return exists;
 }
-void RegistryParameter::removeValue(string path,string name)
+void RegistryParameter::removeValue(std::string path, std::string name)
 {
     QSettings _setting(path.c_str(),QSettings::NativeFormat);
     _setting.remove(name.c_str());
 }
-string RegistryParameter::getValue(string path,string name)
+std::string RegistryParameter::getValue(std::string path, std::string name)
 {
-    string value;
+    std::string value;
     QSettings _setting(path.c_str(),QSettings::NativeFormat);
     value =_setting.value(name.c_str()).toString().toStdString();
     return value;

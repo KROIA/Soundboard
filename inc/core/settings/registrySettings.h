@@ -12,59 +12,56 @@ class RegistrySettings  : public QObject
 {
         Q_OBJECT
     public:
-        RegistrySettings(const string &registryRootPath,
-                         const string &groupName);
+        RegistrySettings(const std::string &registryRootPath, const std::string &groupName);
         ~RegistrySettings();
 
-        const string &getRegistryRootPath() const;
-        const string &getGroupName() const;
+        const std::string &getRegistryRootPath() const;
+        const std::string &getGroupName() const;
 
         //void undoValueChange();
         void save();
         void read();
 
-        RegistryParameter *getParameter(const string &name);
+        RegistryParameter *getParameter(const std::string &name);
         std::vector<RegistryParameter*> getParameters();
 
-        bool setParameter(const string &name, const string &value);
-        bool setParameter(const string &name, int value);
-        bool setParameter(const string &name, float value);
-
+        bool setParameter(const std::string &name, const std::string &value);
+        bool setParameter(const std::string &name, int value);
+        bool setParameter(const std::string &name, float value);
 
     protected:
         bool addParameter(RegistryParameter *param,
-                          const string &name,
-                          const string &readableName,
-                          const string &description,
-                          const string &value);
+                          const std::string &name,
+                          const std::string &readableName,
+                          const std::string &description,
+                          const std::string &value);
         bool addParameter(RegistryParameter *param,
-                          const string &name,
-                          const string &readableName,
-                          const string &description,
+                          const std::string &name,
+                          const std::string &readableName,
+                          const std::string &description,
                           int value);
         bool addParameter(RegistryParameter *param,
-                          const string &name,
-                          const string &readableName,
-                          const string &description,
+                          const std::string &name,
+                          const std::string &readableName,
+                          const std::string &description,
                           float value);
         bool addParameter(RegistryParameter *param);
         bool removeParameter(RegistryParameter *param);
-        bool removeParameter(const string &paramName);
+        bool removeParameter(const std::string &paramName);
         void clear();
-        bool exists(const string &name) const;
-
+        bool exists(const std::string &name) const;
 
     private slots:
         void onParameterTypeChanged(RegistryParameter::Type type);
-        void onParameterPathChanged(const string &path);
-        void onParameterNameChanged(const string &name);
-        void onParameterDescriptionChanged(const string &description);
-        void onParameterValueChanged(const string &value);
+        void onParameterPathChanged(const std::string &path);
+        void onParameterNameChanged(const std::string &name);
+        void onParameterDescriptionChanged(const std::string &description);
+        void onParameterValueChanged(const std::string &value);
         void onParameterDestroyed(QObject *param);
 
 
     private:
-        std::map<string,RegistryParameter*> m_params;
-        string m_registryRootPath;
-        string m_groupName;
+        std::map<std::string, RegistryParameter *> m_params;
+        std::string m_registryRootPath;
+        std::string m_groupName;
 };

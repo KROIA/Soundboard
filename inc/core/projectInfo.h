@@ -3,19 +3,16 @@
 #include <string>
 #include <vector>
 
-using std::string;
-using std::vector;
-
 struct Author
 {
-    string firstName;
-    string lastName;
-    string email;
-    string phone;
+    std::string firstName;
+    std::string lastName;
+    std::string email;
+    std::string phone;
 
-    string toString() const
+    std::string toString() const
     {
-        string str = firstName + " " + lastName+"\n";
+        std::string str = firstName + " " + lastName + "\n";
         if(email.size() > 0)
             str += "E-Mail: "+email+"\n";
         if(phone.size() > 0)
@@ -25,11 +22,11 @@ struct Author
 };
 struct VersionsInfo
 {
-    string version;
-    string compilationDate;
-    string compilationTime;
+    std::string version;
+    std::string compilationDate;
+    std::string compilationTime;
 
-    string toString() const
+    std::string toString() const
     {
         return "Version : V" + version + "\n" +
                "Compiled:  " + compilationDate + " " +compilationTime + "\n";
@@ -38,16 +35,15 @@ struct VersionsInfo
 
 struct ProjectInfo
 {
-    string projectName;
-    string projectYear;
+    std::string projectName;
+    std::string projectYear;
     VersionsInfo versionsInfo;
-    vector<Author> authors;
+    std::vector<Author> authors;
 
-    string toString() const
+    std::string toString() const
     {
-        string str = "Project: " + projectName + "\n" +
-                     "Year   : " + projectYear + "\n" +
-                     versionsInfo.toString();
+        std::string str = "Project: " + projectName + "\n" + "Year   : " + projectYear + "\n"
+                          + versionsInfo.toString();
         if(authors.size() > 0)
         {
             str+="Authors:\n";

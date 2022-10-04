@@ -27,7 +27,7 @@ void UI_Settings::addSettings(RegistrySettings *settings)
 
     ui->tabWidget->addTab(page,settings->getGroupName().c_str());
 
-    m_settings.push_back(SettingsPair{.settings=settings, .ui=page});
+    m_settings.push_back(SettingsPair{settings, page});
 }
 void UI_Settings::removeSettings(RegistrySettings *settings)
 {
