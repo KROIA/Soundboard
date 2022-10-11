@@ -41,13 +41,13 @@ namespace Debug
     std::cout << message;
 
 #define WARNING(message) \
-    std::cout << Debug::Color::bYellow.c_str() << "Warning "<<Debug::Color::white.c_str() << ":"  << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << message;
+    std::cout << Debug::Color::bYellow.c_str() << "Warning "<<Debug::Color::white.c_str() << ":"  << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
 
 #define CRITICAL(message) \
-    std::cout << Debug::Color::bRed.c_str() << "Critical"<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << message;
+    std::cout << Debug::Color::bRed.c_str() << "Critical"<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
 
 #define FATAL(message) \
-    std::cout << Debug::Color::bRed.c_str() << "Fatal   "<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() << message;
+    std::cout << Debug::Color::bRed.c_str() << "Fatal   "<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
 #else
 #define DEBUGLN(message)
 #define DEBUG(message)

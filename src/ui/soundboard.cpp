@@ -1,6 +1,7 @@
 #include "soundboard.h"
 #include "ui_soundboard.h"
 #include <QFileDialog>
+#include "database.h"
 
 using std::string;
 
@@ -37,16 +38,44 @@ Soundboard::Soundboard(QWidget *parent)
     m_sound->setPlaybackSpeed(1);
     m_sound->setName("Keine grosse Sache");
 
+    QJsonObject writer;
+
+    Sound sound;
+    sound.setLoops(5);
+    sound.setSource(source);
+    sound.setVolume(1);
+    sound.setPlaybackSpeed(1);
+    sound.setName("Keine grosse Sache");
+    sound.setID("random");
+
+    //sound.save(writer);
+
+    Database database;
+    database.load("test.json");
+    database.add(&sound);
+    database.add(&sound);
+
+    database.save("test.json");
+
+    qDebug() << "ObjectCount" << database.getObjectCount();
+
+    Sound *imported = database.getSound("random");
+    if(imported)
+    {
+        qDebug() << imported->getName().c_str();
+    }
+    database.add(imported);
+               /*
     QFile output("testOut.xml");
     output.open(QFile::OpenModeFlag::WriteOnly);
     QXmlStreamWriter stream(&output);
     stream.setAutoFormatting(true);
     stream.writeStartDocument();
 
-    m_sound->save(&stream);
+    //m_sound->save(&stream);
 
     stream.writeEndDocument();
-    output.close();
+    output.close();*/
 /*
 
     QFile file("testOut.xml");

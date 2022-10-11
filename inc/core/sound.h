@@ -4,13 +4,14 @@
 // ...
 // #endif
 #pragma once
-
+#include <string>
+#include <filesystem>
 #include <QObject>
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include "soundsource.h"
 #include "debug.h"
-#include "xmlSaveable.h"
+#include "ISerializable.h"
 
 // Enable debug informations for this class
 #define DBG_SOUND
@@ -22,9 +23,10 @@
     This class will play the sound which
     was defined in the given SoundSource
 */
-class Sound :   public QObject, public XmlSaveable
+class Sound :   public QObject, public ISerializable
 {
         Q_OBJECT
+
     public:
         Sound();
 
@@ -36,6 +38,33 @@ class Sound :   public QObject, public XmlSaveable
          */
         Sound(const SoundSource &source);
         ~Sound();
+
+        /**
+         * @brief instantiate a new sound
+         * @param path to the sound file
+         * @param id to identify the sound
+         * @return instantiated sound
+         */
+       // static Sound *instantiate(const std::filesystem::path &path,
+        //                          const std::string &id);
+
+        /**
+         * @brief getAudioOutput
+         * @return the audio output on which every sound is attached to
+         */
+        static const QAudioOutput &getAudioOutput();
+
+        /**
+         * @brief setID
+         * @param id which will be used to identify the sound internaly
+         */
+        void setID(const std::string &id) override;
+
+        /**
+         * @brief getID
+         * @return the sound id
+         */
+        const std::string &getID() const override;
 
 
         /**
@@ -69,19 +98,23 @@ class Sound :   public QObject, public XmlSaveable
         const std::string &getName() const;
 
 
+        std::string className() const override;
+
+
+        ISerializable* clone(const QJsonObject &reader) const override;
         /**
          * save(...)
          * @brief Implementation of XmlSaveable
-         * @param writer QXmlStreamWriter which will save the file
+         * @param writer QJsonObject which will save the file
          */
-        void save(QXmlStreamWriter *writer) override;
+        QJsonObject save() const override;
 
         /**
-         * load(...)
+         * read(...)
          * @brief Implementation of XmlSaveable
-         * @param reader QXmlStreamReader which will read from the file
+         * @param reader QJsonObject which will read from the file
          */
-        void load(QXmlStreamReader *reader) override;
+        bool read(const QJsonObject &reader) override;
 
     signals:
         /**
@@ -157,13 +190,16 @@ class Sound :   public QObject, public XmlSaveable
         */
         void setName(const std::string &name);
 
+
     private slots:
         void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     protected:
 
     private:
-        std::string m_name;
+        std::string  m_name;
+        std::string  m_id;
         SoundSource  m_source;
         QMediaPlayer m_player;
-        QAudioOutput m_output;
+
+        static QAudioOutput m_output;
 };

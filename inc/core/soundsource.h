@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string>
-#include <xmlSaveable.h>
+#include <filesystem>
+#include <algorithm>
 #include "debug.h"
 
 /*! \class SoundSource
@@ -10,7 +11,7 @@
     This class contains the path to
     the audio files on the device.
 */
-class SoundSource   :   public XmlSaveable
+class SoundSource
 {
     public:
         SoundSource();
@@ -84,14 +85,14 @@ class SoundSource   :   public XmlSaveable
          * @brief Implementation of XmlSaveable
          * @param writer QXmlStreamWriter which will save the file
          */
-        void save(QXmlStreamWriter *writer) override;
+     //   void save(QXmlStreamWriter *writer) override;
 
         /**
          * load(...)
          * @brief Implementation of XmlSaveable
          * @param reader QXmlStreamReader which will read from the file
          */
-        void load(QXmlStreamReader *reader) override;
+     //   void load(QXmlStreamReader *reader) override;
 
     protected:
 

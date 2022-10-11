@@ -1,4 +1,4 @@
-QT       += core gui widgets multimedia xml
+QT       += core gui widgets multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,31 +10,15 @@ CONFIG += c++11 console
 
 include(Extern/QT-Ribbon-Widget/QT-Ribbon-Widget.pri)
 
-inc = inc/
-src = src/
+inc = inc
+src = src
 
 INCLUDEPATH += $$inc \
                $$inc/ui \
                $$inc/core \
                $$inc/core/settings \
+               $$inc/core/serialization \
                $$inc/ui/settings \
-
-SOURCES += \
-    $$src/core/main.cpp \
-    $$src/core/sound.cpp \
-    $$src/ui/soundboard.cpp \
-    $$src/ui/soundboardRibbon.cpp \
-    $$src/core/debug.cpp \
-    $$src/core/soundsource.cpp \
-    $$src/ui/ui_sound.cpp \
-    $$src/core/settings/registryParameter.cpp \
-    $$src/core/settings/xmlSaveable.cpp \
-    $$src/core/settings/registrySettings.cpp \
-    $$src/ui/settings/ui_settings.cpp \
-    $$src/ui/settings/ui_settingspage.cpp \
-    $$src/ui/settings/ui_setting.cpp
-
-
 
 HEADERS += \
     $$inc/core/sound.h \
@@ -45,12 +29,32 @@ HEADERS += \
     $$inc/ui/ui_sound.h \
     $$inc/core/settings/registryParameter.h \
     $$inc/core/settings/usersettings.h \
-    $$inc/core/settings/xmlSaveable.h \
     $$inc/core/settings/registrySettings.h \
     $$inc/ui/settings/ui_settings.h \
     $$inc/ui/settings/ui_settingspage.h \
     $$inc/ui/settings/ui_setting.h \
-    $$inc/core/projectInfo.h
+    $$inc/core/serialization/ISerializable.h \
+    inc/core/serialization/database.h
+
+SOURCES += \
+    $$src/core/main.cpp \
+    $$src/core/sound.cpp \
+    $$src/ui/soundboard.cpp \
+    $$src/ui/soundboardRibbon.cpp \
+    $$src/core/debug.cpp \
+    $$src/core/soundsource.cpp \
+    $$src/ui/ui_sound.cpp \
+    $$src/core/settings/registryParameter.cpp \
+    $$src/core/settings/registrySettings.cpp \
+    $$src/ui/settings/ui_settings.cpp \
+    $$src/ui/settings/ui_settingspage.cpp \
+    $$src/ui/settings/ui_setting.cpp \
+    $$src/core/serialization/ISerializable.cpp \
+    src/core/serialization/database.cpp
+
+
+
+
 
 FORMS += \
     ui/soundboard.ui \

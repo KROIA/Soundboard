@@ -9,13 +9,13 @@
 #include "sound.h"
 #include "debug.h"
 
-#include "xmlSaveable.h"
+//#include "xmlSaveable.h"
 
 namespace Ui {
 class UI_Sound;
 }
 
-class UI_Sound : public QWidget, public XmlSaveable
+class UI_Sound : public QWidget//, public XmlSaveable
 {
         Q_OBJECT
 
@@ -58,14 +58,14 @@ class UI_Sound : public QWidget, public XmlSaveable
          * @brief Implementation of XmlSaveable
          * @param writer QXmlStreamWriter which will save the file
          */
-        void save(QXmlStreamWriter *writer) override;
+        //void save(QXmlStreamWriter *writer) override;
 
         /**
          * load(...)
          * @brief Implementation of XmlSaveable
          * @param reader QXmlStreamReader which will read from the file
          */
-        void load(QXmlStreamReader *reader) override;
+        //void load(QXmlStreamReader *reader) override;
 
     signals:
         /**

@@ -1,11 +1,16 @@
 #include "sound.h"
 
+QAudioOutput Sound::m_output;
 Sound::Sound()
+    : QObject()
+    , ISerializable()
 {
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_player.setAudioOutput(&m_output);
 }
 Sound::Sound(const SoundSource &source)
+    : QObject()
+    , ISerializable()
 {
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_source = source;
@@ -15,7 +20,26 @@ Sound::~Sound()
 {
 
 }
+/*
+Sound *Sound::instantiate(const std::filesystem::path &path,
+                          const std::string &id)
+{
+    return nullptr;
+}
+*/
+const QAudioOutput &Sound::getAudioOutput()
+{
+    return m_output;
+}
 
+void Sound::setID(const std::string &id)
+{
+    m_id = id;
+}
+const std::string &Sound::getID() const
+{
+    return m_id;
+}
 
 const SoundSource &Sound::getSource() const
 {
@@ -37,59 +61,50 @@ const std::string &Sound::getName() const
 {
     return m_name;
 }
-void Sound::save(QXmlStreamWriter *writer)
+
+std::string Sound::className() const
 {
-    if(!writer) return;
-    writer->writeStartElement("Sound");
-    writer->writeAttribute("name",m_name.c_str());
-    writer->writeAttribute("loops",QString::number(getLoops()));
-    writer->writeAttribute("volume",QString::number(getVolume()));
-    writer->writeAttribute("speed",QString::number(getPlaybackSpeed()));
-    m_source.save(writer);
-    writer->writeEndElement();
+    return "Sound";
 }
-void Sound::load(QXmlStreamReader *reader)
+ISerializable* Sound::clone(const QJsonObject &reader) const
 {
-    if(!reader) return;
-    if(reader->name() == QString("Sound"))
+    Sound *obj = new Sound();
+    obj->read(reader);
+    return obj;
+}
+QJsonObject Sound::save() const
+{
+    return QJsonObject
     {
-        QXmlStreamAttributes attributes = reader->attributes();
-        for(const QXmlStreamAttribute &attribute : attributes)
-        {
-            if(attribute.name() == QString("name"))
-                m_name = attribute.value().toString().toStdString();
-            else if(attribute.name() == QString("loops"))
-            {
-                bool ok = false;
-                int value = attribute.value().toInt(&ok);
-                if(ok)
-                    m_player.setLoops(value);
-            }
-            else if(attribute.name() == QString("volume"))
-            {
-                bool ok = false;
-                float value = attribute.value().toFloat(&ok);
-                if(ok)
-                    m_output.setVolume(value);
-            }
-            else if(attribute.name() == QString("speed"))
-            {
-                bool ok = false;
-                float value = attribute.value().toFloat(&ok);
-                if(ok)
-                    m_player.setPlaybackRate(value);
-            }
-        }
+        {"id", m_id.c_str()},
+        {"name", m_name.c_str()},
+        {"loops", getLoops()},
+        {"volume", getVolume()},
+        {"speed", getPlaybackSpeed()},
+    };
+}
+bool Sound::read(const QJsonObject &reader)
+{
+    //QJsonObject data = reader.take("Sound").toObject();
 
-        if(reader->name() ==QString("rootPath"))
-        {
+    bool success = true;
+    int loops = 0;
+    float volume = 0.5;
+    float speed = 1;
+    success &= extract(reader,m_id,"id");
+    success &= extract(reader,m_name,"name");
+    success &= extract(reader,loops,"loops");
+    success &= extract(reader,volume,"volume");
+    success &= extract(reader,speed,"speed");
 
-            //if()
-        }
-    }
+    if(!success)
+        return false;
 
+    setLoops(loops);
+    setVolume(volume);
+    setPlaybackSpeed(speed);
 
-    m_source.load(reader);
+    return true;
 }
 
 void Sound::play()
