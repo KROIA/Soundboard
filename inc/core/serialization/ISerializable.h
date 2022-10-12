@@ -1,6 +1,7 @@
 #pragma once
 #include <QJsonObject>
 #include <string>
+#include "databaseDeclaration.h"
 
 
 /**
@@ -23,7 +24,6 @@ class ISerializable
          */
         ISerializable(const ISerializable &other);
         virtual ~ISerializable(){};
-
 
         /**
          * \brief className
@@ -54,23 +54,10 @@ class ISerializable
         virtual ISerializable* clone() const = 0;
 
         /**
-         * \brief setID
-         * \param id which must be unique for the same database. Take a random string.
-         *        Do not change the id after it was added to the database
-         */
-        void setID(const std::string &id);
-
-        /**
          * \brief getID
          * \return the unique id string of this object
          */
         const std::string &getID() const;
-
-        /**
-         * \brief generateRandomID
-         * \return a random generated id string
-         */
-        static std::string generateRandomID(size_t length = 10);
 
         /**
          * \brief save
@@ -85,9 +72,17 @@ class ISerializable
          */
         virtual bool read(const QJsonObject &reader);
 
+        /**
+         * \brief postLoad
+         * \details This function will be called after the database has loaded all objects<br>
+         *          If you connect to other objects, this will be the place for that.
+         */
+        virtual void postLoad();
+
 
         const static std::string key_objectType;
-        const static std::string key_id;
+
+        friend DatabaseObject;
     protected:
 
         /**
@@ -106,7 +101,8 @@ class ISerializable
         static QJsonObject  combine(const QJsonObject &a, const QJsonObject &b);
 
     private:
-        std::string  m_id;
+        DatabaseID *m_id;
+        Database *m_database;
 
 };
 

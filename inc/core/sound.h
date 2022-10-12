@@ -48,19 +48,6 @@ class Sound :   public QObject, public ISerializable
          */
         static const QAudioOutput &getAudioOutput();
 
-     //   /**
-     //    * \brief setID
-     //    * \param id which will be used to identify the sound internaly
-     //    */
-     //   void setID(const std::string &id) override;
-
-     //   /**
-     //    * \brief getID
-     //    * \return the sound id
-     //    */
-     //   const std::string &getID() const override;
-
-
         /**
          * \brief getSource()
          * \return Returns the source object to the .mp3 file
@@ -98,19 +85,9 @@ class Sound :   public QObject, public ISerializable
 
         IMPLEMENT_ISERIALIZABLE_CLONE(Sound)
 
-        /**
-         * \brief save(...)
-         * \brief Implementation of XmlSaveable
-         * \param writer QJsonObject which will save the file
-         */
-        QJsonObject save() const override;
-
-        /**
-         * \brief read(...)
-         * \brief Implementation of XmlSaveable
-         * \param reader QJsonObject which will read from the file
-         */
-        bool read(const QJsonObject &reader) override;
+        QJsonObject save() const override; //!< \see ISerializable::save()
+        bool read(const QJsonObject &reader) override; //!< \see ISerializable::read()
+        void postLoad() override; //!< \see ISerializable::postLoad()
 
     signals:
         /**

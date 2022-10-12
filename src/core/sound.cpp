@@ -21,7 +21,6 @@ Sound::Sound(const SoundSource &source)
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_source = source;
     m_player.setAudioOutput(&m_output);
-
 }
 Sound::~Sound()
 {
@@ -31,7 +30,8 @@ const Sound &Sound::operator=(const Sound &other)
 {
     ISerializable::operator=(other);
     m_name = other.m_name;
-    m_source = other.m_source;
+    if(other.m_source.isValid())
+        setSource(other.m_source);
     setPlaybackSpeed(other.getPlaybackSpeed());
     setLoops(other.getLoops());
     setVolume(other.getVolume());
@@ -86,6 +86,7 @@ QJsonObject Sound::save() const
         {"loops", getLoops()},
         {"volume", getVolume()},
         {"speed", getPlaybackSpeed()},
+        {"source", m_source.getAbsolutePath().c_str()}
     });
 }
 bool Sound::read(const QJsonObject &reader)
@@ -97,19 +98,31 @@ bool Sound::read(const QJsonObject &reader)
     int loops = 0;
     float volume = 0.5;
     float speed = 1;
+    std::string source;
     success &= extract(reader,m_name,"name");
     success &= extract(reader,loops,"loops");
     success &= extract(reader,volume,"volume");
     success &= extract(reader,speed,"speed");
+    success &= extract(reader,source,"source");
+
 
     if(!success)
+    {
+        WARNING("Kann Sound "<<m_name<<" nicht korrekt laden.");
         return false;
+    }
 
     setLoops(loops);
     setVolume(volume);
     setPlaybackSpeed(speed);
+    m_source.setAbsolutePath(source);
+    setSource(m_source);
 
     return true;
+}
+void Sound::postLoad()
+{
+
 }
 
 void Sound::play()
@@ -140,7 +153,7 @@ void Sound::setSource(const SoundSource &source)
     m_source = source;
     if(!m_source.isValid())
     {
-        WARNING(m_source.getAbsolutePath().c_str()<<" is not valid");
+        WARNING(m_source.getAbsolutePath().c_str()<<" is not valid\n");
         return;
     }
     m_player.setSource(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));

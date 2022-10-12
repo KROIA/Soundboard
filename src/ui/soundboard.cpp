@@ -1,7 +1,10 @@
 #include "soundboard.h"
 #include "ui_soundboard.h"
 #include <QFileDialog>
-#include "database.h"
+#include "soundboardDatabase.h"
+
+
+DATABASE_USE_OBJECT(Sound)
 
 using std::string;
 
@@ -32,13 +35,11 @@ Soundboard::Soundboard(QWidget *parent)
 
 
 
-    m_sound = new UI_Sound(this);
+    /*m_sound = new UI_Sound(this);
     m_sound->setSource(source);
     m_sound->setVolume(1);
     m_sound->setPlaybackSpeed(1);
-    m_sound->setName("Keine grosse Sache");
-
-    QJsonObject writer;
+    m_sound->setName("Keine grosse Sache");*/
 
     Sound sound;
     sound.setLoops(5);
@@ -51,28 +52,24 @@ Soundboard::Soundboard(QWidget *parent)
     //sound.save(writer);
 
 
-    Database database;
+    SoundboardDatabase database;
     database.load("test.json");
-    database.add(&sound);
-    database.add(&sound);
 
-    database.save("test.json");
-
-    qDebug() << "ObjectCount" << database.getObjectCount();
-
-    Sound *imported = database.getSound("random");
-    if(imported)
+    std::vector<Sound*> sounds = database.getSounds();
+    for(size_t i=0; i<sounds.size(); ++i)
     {
-        qDebug() << imported->getName().c_str();
-    }
-    database.add(imported);
 
-    qDebug() << ISerializable::generateRandomID().c_str();
-    qDebug() << ISerializable::generateRandomID().c_str();
-    qDebug() << ISerializable::generateRandomID().c_str();
-    qDebug() << ISerializable::generateRandomID().c_str();
-    qDebug() << ISerializable::generateRandomID().c_str();
-    qDebug() << ISerializable::generateRandomID().c_str();
+        UI_Sound *sound = new UI_Sound(this);
+        sound->setSound(*sounds[i]);
+        ui->scrollAreaWidgetContents->layout()->addWidget(sound);
+    }
+
+    //database.addSound(sound);
+
+    database.save();
+
+
+
                /*
     QFile output("testOut.xml");
     output.open(QFile::OpenModeFlag::WriteOnly);
@@ -102,7 +99,7 @@ Soundboard::Soundboard(QWidget *parent)
         }
 
     }*/
-    ui->scrollAreaWidgetContents->layout()->addWidget(m_sound);
+    //ui->scrollAreaWidgetContents->layout()->addWidget(m_sound);
 }
 
 Soundboard::~Soundboard()

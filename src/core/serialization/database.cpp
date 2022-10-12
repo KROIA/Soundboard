@@ -5,16 +5,21 @@
 
 Database::Database()
 {
-    defineSaveableObject<Sound>();
+
 }
 Database::~Database()
 {
-
+    clear();
 }
 
 bool Database::load(const std::string &jsonFile)
 {
     QFile file(jsonFile.c_str());
+    if(!file.exists())
+    {
+        WARNING("Database konnte nicht geladen werden. Datei: \""<<jsonFile.c_str()<<"\" nicht gefunden\n");
+        return false;
+    }
     if( file.open(QIODevice::ReadOnly ) )
     {
         QByteArray bytes = file.readAll();
@@ -36,15 +41,18 @@ bool Database::load(const std::string &jsonFile)
             return true;
         }
     }
+    WARNING("Database konnte nicht geladen werden. Datei: \""<<jsonFile.c_str()<<"\"\n");
     return false;
 }
-bool Database::save(const std::string &jsonFile)
+bool Database::save(const std::string &jsonFile) const
 {
     QJsonArray writer;
 
     for (auto& it: m_objects)
     {
-        writer.push_back(it.second->save());
+        QJsonObject obj = it.second->getObject()->save();
+        obj[DatabaseID::key_id.c_str()] = it.second->getID().getID().c_str();
+        writer.push_back(obj);
     }
 
     QJsonDocument document;
@@ -63,63 +71,116 @@ bool Database::save(const std::string &jsonFile)
     WARNING("Database konnte nicht gespeichert werden. Datei: \""<<jsonFile.c_str()<<"\"\n");
     return false;
 }
-bool Database::add(ISerializable* obj)
+bool Database::addObject(ISerializable* obj)
 {
     auto findit = m_saveableObjectTypes.find(obj->className());
     if(findit == m_saveableObjectTypes.end())
     {
-        WARNING("Kann Objekt (Name = \""<<obj->className()<<"\", ID = \""<<obj->getID() <<"\") nicht in aufnehmen,\n"
+        WARNING("Kann Objekt (Name = \""<<obj->className()<<"\") nicht in aufnehmen,\n"
                 "dieser Type wurde nicht in die speicherbaren Objekte liste aufgenommen"<<"\n");
         return false;
     }
 
-    if(exists(obj))
+    if(objectExists(obj))
     {
-        WARNING("Objekt (Name = \""<<obj->className()<<"\", ID = \""<<obj->getID() <<"\") bereits vorhanden"<<"\n");
+        WARNING("Objekt (Name = \""<<obj->className()<<"\", ID = \""<<getID(obj).getID() <<"\") bereits vorhanden"<<"\n");
         return false;
     }
-    addToMapInternal<ISerializable>(m_objects, obj);
+    DatabaseID id(DatabaseID::generateRandomID());
+    while(objectExists(id.getID()))
+        id.setID(DatabaseID::generateRandomID());
 
-    addToMapInternal<Sound>(m_sounds, obj);
-
+    addObjectInternal(obj,id);
     return true;
 }
-bool Database::remove(ISerializable* obj)
+void Database::addObjectInternal(ISerializable* obj, const DatabaseID &id)
 {
-    size_t index = getIndex(obj);
-    if(index == npos) return false;
+    DatabaseObject *dbObj = new DatabaseObject(obj, id, this);
+    m_objects.insert(std::pair<std::string, DatabaseObject*>(dbObj->getID().getID(),dbObj));
+}
+bool Database::removeObject(ISerializable* obj)
+{    
+    DatabaseObject *dbObj = nullptr;
 
-    removeFromMapInternal<ISerializable>(m_objects, obj);
-
-    removeFromMapInternal<Sound>(m_sounds, obj);
+    for (auto& it: m_objects)
+    {
+        if(it.second->getObject() == obj)
+        {
+            dbObj = it.second;
+            break;
+        }
+    }
+    if(dbObj)
+    {
+        m_objects.erase(dbObj->getID().getID());
+        delete dbObj;
+    }
     return true;
 }
-bool Database::exists(ISerializable* obj)
+bool Database::removeObject(const std::string &id)
 {
-    return getIndex(obj) == npos ? false : true;
+    auto findit = m_objects.find(id);
+    if(findit == m_objects.end())
+        return false;
+    DatabaseObject *dbObj = findit->second;
+    m_objects.erase(dbObj->getID().getID());
+    delete dbObj;
+    return true;
 }
-size_t Database::getIndex(ISerializable *obj)
+bool Database::objectExists(ISerializable* obj) const
 {
-    auto findit = m_objects.find(obj->getID());
+    for (auto& it: m_objects)
+    {
+        if(it.second->getObject() == obj)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+bool Database::objectExists(const std::string &id) const
+{
+    auto findit = m_objects.find(id);
     if(findit == m_objects.end())
     {
-        return npos;
+        return false;
     }
-    return std::distance(m_objects.begin(), findit);
+    return true;
 }
+
 size_t Database::getObjectCount() const
 {
     return m_objects.size();
 }
-Sound *Database::getSound(const std::string &id)
+const DatabaseID &Database::getID(ISerializable *obj) const
 {
-    auto findit = m_sounds.find(id);
-    if(findit == m_sounds.end())
+    for (auto& it: m_objects)
+    {
+        if(it.second->getObject() == obj)
+            return it.second->getID();
+    }
+    const static DatabaseID dummy;
+    return dummy;
+}
+ISerializable *Database::getObject(const std::string &id) const
+{
+    auto findit = m_objects.find(id);
+    if(findit == m_objects.end())
     {
         return nullptr;
     }
-    return m_sounds[id];
+    return findit->second->getObject();
 }
+std::vector<ISerializable*> Database::getObjects() const
+{
+    std::vector<ISerializable*> list;
+    for (auto& it: m_objects) {
+        if(it.second)
+            list.push_back(it.second->getObject());
+    }
+    return list;
+}
+
 void Database::instantiateDatabase(const QJsonArray &objs)
 {
     clear();
@@ -145,10 +206,11 @@ void Database::instantiateObject(const QJsonObject &obj)
         ISerializable *instance = findit->second->clone(obj);
         if(instance)
         {
-            add(instance);
-            /*m_objects.push_back(instance);
+            DatabaseID id(obj[DatabaseID::key_id.c_str()].toString().toStdString());
 
-            addToMapInternal<Sound>(m_sounds, instance);*/
+            addObject(instance);
+            if(objectExists(id.getID()))
+                addObjectInternal(instance,id);
         }
     }
 }
@@ -158,79 +220,4 @@ void Database::clear()
         delete it.second;
     }
     m_objects.clear();
-
-    m_sounds.clear();
-}
-
-template<typename T>
-bool Database::defineSaveableObject()
-{
-    T *t = new T();
-    std::string typeName = t->className();
-
-    if (m_saveableObjectTypes.find(typeName) == m_saveableObjectTypes.end())
-    {
-        m_saveableObjectTypes[typeName] = t;
-        return true;
-    }
-    else
-    {
-        ISerializable *inList = m_saveableObjectTypes[typeName];
-
-        std::string typeName1 = typeid(t).name();
-        std::string typeName2 = typeid(inList).name();
-
-        if(typeName1 == typeName2)
-        {
-            FATAL("Objekt Type: \""<<typeName<<"\" ist bereits definiert"<<"\n")
-        }
-        else
-        {
-            FATAL("Der ObjektName: \""<<typeName<<"\" für "<<typeName1<<
-                  " ist bereits definiert für ein anderes Objekt: \""<<typeName2<<
-                  "\" definiert worden."<<"\n")
-        }
-        delete t;
-    }
-    return false;
-}
-
-template<typename T>
-bool Database::addToMapInternal(std::unordered_map<std::string, T*> &map,
-                                ISerializable *obj)
-{
-    if(!obj) return false;
-    T *casted = dynamic_cast<T*>(obj);
-    if(!casted) return false;
-
-    if(obj->getID().size() == 0)
-    {
-        FATAL("Objekt: \""<<obj->className()<<"\" hat keine ID"<<"\n");
-        return false;
-    }
-    auto findit = map.find(obj->getID());
-    if(findit == map.end())
-    {
-        map[obj->getID()] = casted;
-        return true;
-    }
-    WARNING("Ein Objekt (Type = \""<<map[obj->getID()]->className()<<"\") mit gleicher ID: \""
-            <<obj->getID()<<"\" bereits in der Liste.\n"
-            "Kann daher Objekt (Name = \""<<obj->className()<<"\") nicht hinzufuegen."<<"\n");
-
-    return false;
-}
-
-template<typename T>
-bool Database::removeFromMapInternal(std::unordered_map<std::string, T*> &map,
-                                     ISerializable *obj)
-{
-    if(!obj) return false;
-    auto findit = map.find(obj->getID());
-    if(findit == map.end())
-    {
-        return false;
-    }
-    map.erase(findit);
-    return true;
 }

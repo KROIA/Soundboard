@@ -26,7 +26,15 @@ UI_Sound::~UI_Sound()
 }
 
 
-
+void UI_Sound::setSound(const Sound &sound)
+{
+    m_sound = sound;
+    ui->name_label->setText(m_sound.getName().c_str());
+}
+const Sound &UI_Sound::getSound() const
+{
+    return m_sound;
+}
 
 const SoundSource &UI_Sound::getSource() const
 {

@@ -60,7 +60,7 @@ class SoundSource
          * @return true  if: The <absolutePath> is an existing .mp3 file
          *         false if: The <absolutePath> does not exist or is not a file
          */
-        bool isValid();
+        bool isValid() const;
 
         /**
          * getRootPath()

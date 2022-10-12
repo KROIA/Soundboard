@@ -23,6 +23,9 @@ class UI_Sound : public QWidget//, public XmlSaveable
         explicit UI_Sound(QWidget *parent = nullptr);
         ~UI_Sound();
 
+        void setSound(const Sound &sound);
+        const Sound &getSound() const;
+
         /**
          * getSource()
          * @return Returns the source object to the .mp3 file

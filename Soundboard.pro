@@ -34,7 +34,11 @@ HEADERS += \
     $$inc/ui/settings/ui_settingspage.h \
     $$inc/ui/settings/ui_setting.h \
     $$inc/core/serialization/ISerializable.h \
-    $$inc/core/serialization/database.h
+    $$inc/core/serialization/database.h \
+    inc/core/serialization/databaseDeclaration.h \
+    inc/core/serialization/databaseID.h \
+    inc/core/serialization/databaseObject.h \
+    inc/core/soundboardDatabase.h
 
 SOURCES += \
     $$src/core/main.cpp \
@@ -50,7 +54,10 @@ SOURCES += \
     $$src/ui/settings/ui_settingspage.cpp \
     $$src/ui/settings/ui_setting.cpp \
     $$src/core/serialization/ISerializable.cpp \
-    $$src/core/serialization/database.cpp
+    $$src/core/serialization/database.cpp \
+    src/core/serialization/databaseID.cpp \
+    src/core/serialization/databaseObject.cpp \
+    src/core/soundboardDatabase.cpp
 
 
 

@@ -41,7 +41,7 @@ void SoundSource::setRelativePath(const std::string &path)
     m_relativePath = path;
 }
 
-bool SoundSource::isValid()
+bool SoundSource::isValid() const
 {
     return QFile::exists(getAbsolutePath().c_str());
 }
