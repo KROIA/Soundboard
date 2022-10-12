@@ -41,6 +41,10 @@ std::vector<Sound*> SoundboardDatabase::getSounds() const
 {
     return m_database.getObjects<Sound>();
 }
+size_t SoundboardDatabase::getSoundsCount() const
+{
+    return m_database.getObjectCount<Sound>();
+}
 Sound* SoundboardDatabase::addSound(const Sound &sound)
 {
     Sound* copy = sound.clone();

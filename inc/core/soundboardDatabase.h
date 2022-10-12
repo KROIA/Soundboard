@@ -15,6 +15,7 @@ public:
 
     Sound* getSound(const std::string &id) const;
     std::vector<Sound*> getSounds() const;
+    size_t getSoundsCount() const;
     Sound* addSound(const Sound &sound);
 
 private:

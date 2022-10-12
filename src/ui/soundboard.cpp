@@ -4,7 +4,7 @@
 #include "soundboardDatabase.h"
 
 
-DATABASE_USE_OBJECT(Sound)
+//DATABASE_USE_OBJECT(Sound)
 
 using std::string;
 
@@ -18,93 +18,57 @@ Soundboard::Soundboard(QWidget *parent)
 
     m_settingsWindow = new UI_Settings(this);
     m_settingsWindow->hide();
-
-    //m_userSettings.setAudioRootPath("C:\\Users\\alexk\\Documents\\Privat\\Softwareentwicklung\\QT\\Projekte\\Soundboard\\sounds");
     m_userSettings.read();
-
     m_settingsWindow->addSettings(&m_userSettings);
 
 
 
-    //SoundSource source("C:\\Users\\alexk\\Documents\\Privat\\Softwareentwicklung\\QT\\Projekte\\Soundboard\\sounds\\lang.mp3");
-    SoundSource source;
-    source.setRootPath(m_userSettings.getAudioRootPath());
-    source.setRelativePath("lang.mp3");
-
-
-
-
-
-    /*m_sound = new UI_Sound(this);
-    m_sound->setSource(source);
-    m_sound->setVolume(1);
-    m_sound->setPlaybackSpeed(1);
-    m_sound->setName("Keine grosse Sache");*/
-
-    Sound sound;
-    sound.setLoops(5);
-    sound.setSource(source);
-    sound.setVolume(1);
-    sound.setPlaybackSpeed(1);
-    sound.setName("Keine grosse Sache");
-    //sound.setID("random");
-
-    //sound.save(writer);
-
-
+    // create a database which will load the saved sound profiles
     SoundboardDatabase database;
+
+    // load from file
     database.load("test.json");
 
+
+    // if no sound is in the database (file not available or empty),
+    // then one sound will be added
+    if(database.getSoundsCount() == 0)
+    {
+        SoundSource source;
+        source.setRootPath(m_userSettings.getAudioRootPath());
+        source.setRelativePath("lang.mp3");
+
+        Sound sound;
+        sound.setLoops(0);
+        sound.setSource(source);
+        sound.setVolume(1);
+        sound.setPlaybackSpeed(1);
+        sound.setName("Keine grosse Sache");
+        database.addSound(sound);
+    }
+
+    // Get all saved sounds
     std::vector<Sound*> sounds = database.getSounds();
     for(size_t i=0; i<sounds.size(); ++i)
     {
-
+        // Create a ui view for each sound
         UI_Sound *sound = new UI_Sound(this);
+
+        // Set the sound to the UI-Element
         sound->setSound(*sounds[i]);
+
+        // Add the UI-Element to the layout
         ui->scrollAreaWidgetContents->layout()->addWidget(sound);
     }
 
-    database.addSound(sound);
-
+    // Save the database
     database.save();
-
-
-
-               /*
-    QFile output("testOut.xml");
-    output.open(QFile::OpenModeFlag::WriteOnly);
-    QXmlStreamWriter stream(&output);
-    stream.setAutoFormatting(true);
-    stream.writeStartDocument();
-
-    //m_sound->save(&stream);
-
-    stream.writeEndDocument();
-    output.close();*/
-/*
-
-    QFile file("testOut.xml");
-    if(!file.open(QFile::ReadOnly | QFile::Text)){
-        qDebug() << "Cannot read file" << file.errorString();
-        exit(0);
-    }
-    QXmlStreamReader reader(&file);
-    if(reader.readNextStartElement()) {
-        qDebug() << reader.name();
-
-        while(reader.readNextStartElement()) {
-            qDebug() << reader.attributes().toVector()[0].value();
-            if(reader.name() ==QString("rootPath"))
-               qDebug() << reader.name() << "  Value= "<<reader.readElementText();
-        }
-
-    }*/
-    //ui->scrollAreaWidgetContents->layout()->addWidget(m_sound);
 }
 
 Soundboard::~Soundboard()
 {
     m_userSettings.save();
+
     delete ui;
 }
 
