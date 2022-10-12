@@ -1,7 +1,12 @@
 #pragma once
 
 #include <string>
-
+/**
+ * \author Alex Krieg
+ * \date   12.10.2022
+ *
+ * \brief The DatabaseID class is used to hold the unique id string for a ISerializable object.
+ */
 class DatabaseID
 {
 public:

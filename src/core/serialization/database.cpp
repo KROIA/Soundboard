@@ -83,7 +83,7 @@ bool Database::addObject(ISerializable* obj)
 
     if(objectExists(obj))
     {
-        WARNING("Objekt (Name = \""<<obj->className()<<"\", ID = \""<<getID(obj).getID() <<"\") bereits vorhanden"<<"\n");
+        WARNING("Objekt (Name = \""<<obj->className()<<"\", ID = \""<<obj->getID() <<"\") bereits vorhanden"<<"\n");
         return false;
     }
     DatabaseID id(DatabaseID::generateRandomID());
@@ -152,7 +152,7 @@ size_t Database::getObjectCount() const
 {
     return m_objects.size();
 }
-const DatabaseID &Database::getID(ISerializable *obj) const
+/*const DatabaseID &Database::getID(ISerializable *obj) const
 {
     for (auto& it: m_objects)
     {
@@ -161,7 +161,7 @@ const DatabaseID &Database::getID(ISerializable *obj) const
     }
     const static DatabaseID dummy;
     return dummy;
-}
+}*/
 ISerializable *Database::getObject(const std::string &id) const
 {
     auto findit = m_objects.find(id);
@@ -190,6 +190,10 @@ void Database::instantiateDatabase(const QJsonArray &objs)
         QJsonObject obj = objs[i].toObject();
         instantiateObject(obj);
     }
+    for (auto& it: m_objects)
+    {
+        it.second->getObject()->postLoad();
+    }
 }
 void Database::instantiateObject(const QJsonObject &obj)
 {
@@ -208,9 +212,14 @@ void Database::instantiateObject(const QJsonObject &obj)
         {
             DatabaseID id(obj[DatabaseID::key_id.c_str()].toString().toStdString());
 
-            addObject(instance);
-            if(objectExists(id.getID()))
+            //addObject(instance);
+            if(!objectExists(id.getID()))
                 addObjectInternal(instance,id);
+            else
+            {
+                ISerializable *other = m_objects[id.getID()]->getObject();
+                WARNING("Kann Objekt Type: \""<<objType<<"\" ID: \""<< id.getID() <<"\" nicht laden. Objekt Type: \""<<other->className()<<"\" hat die gleiche ID\n");
+            }
         }
     }
 }

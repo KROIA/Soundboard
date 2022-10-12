@@ -79,11 +79,8 @@ class Sound :   public QObject, public ISerializable
         const std::string &getName() const;
 
 
-        std::string className() const override;
 
-
-
-        IMPLEMENT_ISERIALIZABLE_CLONE(Sound)
+        IMPLEMENT_ISERIALIZABLE_CONST_FUNC(Sound)
 
         QJsonObject save() const override; //!< \see ISerializable::save()
         bool read(const QJsonObject &reader) override; //!< \see ISerializable::read()

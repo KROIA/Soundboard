@@ -1,12 +1,14 @@
 #include "ISerializable.h"
 #include "databaseID.h"
+#include "database.h"
 
 const std::string ISerializable::key_objectType = "objectType";
 
 
 ISerializable::ISerializable()
 {
-
+    m_id = nullptr;
+    m_database = nullptr;
 }
 ISerializable::ISerializable(const ISerializable &other)
 {
@@ -36,6 +38,38 @@ void ISerializable::postLoad()
 {
 
 }
+
+bool ISerializable::databaseObjectExists(ISerializable* obj) const
+{
+    if(!m_database) return false;
+    return m_database->objectExists(obj);
+}
+bool ISerializable::databaseObjectExists(const std::string &id) const
+{
+    if(!m_database) return false;
+    return m_database->objectExists(id);
+}
+size_t ISerializable::databaseGetObjectCount() const
+{
+    if(!m_database) return 0;
+    return m_database->getObjectCount();
+}
+ISerializable *ISerializable::databaseGetObject(const std::string &id) const
+{
+    if(!m_database) return nullptr;
+    return m_database->getObject(id);
+}
+std::vector<ISerializable*> ISerializable::databaseGetObjects() const
+{
+    if(!m_database) return std::vector<ISerializable*>();
+    return m_database->getObjects();
+}
+
+
+
+
+
+
 bool ISerializable::extract(const QJsonObject &obj, std::string &value, const std::string &key)
 {
     QJsonValue val = obj[key.c_str()];
@@ -84,4 +118,12 @@ QJsonObject  ISerializable::combine(const QJsonObject &a, const QJsonObject &b)
         obj3.insert(it.key(), it.value());
     }
     return obj3;
+}
+
+std::string ISerializable::extractClassName(const QJsonObject &data)
+{
+    std::string type = data[key_objectType.c_str()].toString().toStdString();
+    if(type.size() == 0)
+        type = "none";
+    return type;
 }

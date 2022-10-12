@@ -64,7 +64,7 @@ Soundboard::Soundboard(QWidget *parent)
         ui->scrollAreaWidgetContents->layout()->addWidget(sound);
     }
 
-    //database.addSound(sound);
+    database.addSound(sound);
 
     database.save();
 

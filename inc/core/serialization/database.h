@@ -5,7 +5,19 @@
 #include "databaseObject.h"
 #include "debug.h"
 
-
+/**
+ * \author Alex Krieg
+ * \date   12.10.2022
+ *
+ * \brief The Database class
+ * \details The database is used to serialize and deserialize objects.
+ *          Objects must inherit the ISerializable interface for that.<br>
+ *
+ *          Each ISerializable object will be packed in an SatabaseObject.
+ *          The DatabaseObject will not be accessible outside the database and is used
+ *          to hold the unique ID string for each object.
+ *
+ */
 class Database
 {
     public:
@@ -22,10 +34,10 @@ class Database
         bool removeObject(const std::string &id);
         bool objectExists(ISerializable* obj) const;
         bool objectExists(const std::string &id) const;
-        //size_t getObjectIndex(ISerializable *obj) const;
         size_t getObjectCount() const;
-        const DatabaseID &getID(ISerializable *obj) const;
-
+        template<typename T>
+        size_t getObjectCount() const;
+        //const DatabaseID &getID(ISerializable *obj) const;
         ISerializable *getObject(const std::string &id) const;
         std::vector<ISerializable*> getObjects() const;
         template<typename T>
@@ -47,9 +59,22 @@ class Database
 };
 
 
+/**
+ * \macro Create a template variant for the class objectType
+ *        Call this macro once for each ISerializable object type in the main
+ *        outside of a function
+ */
 #define DATABASE_USE_OBJECT(objectType) \
 template std::vector<objectType*> Database::getObjects() const; \
-template objectType* Database::getObject(const std::string &id) const;
+template objectType* Database::getObject(const std::string &id) const; \
+ISERIALIZABLE_DATABASE_USE_OBJECT(objectType)
+
+
+#define ISERIALIZABLE_DATABASE_USE_OBJECT(objectType) \
+template size_t ISerializable::databaseGetObjectCount<objectType>() const; \
+template objectType* ISerializable::databaseGetObject(const std::string &id) const; \
+template std::vector<objectType*> ISerializable::databaseGetObjects() const;
+
 
 
 template<typename T>
@@ -100,4 +125,37 @@ std::vector<T*> Database::getObjects() const
             list.push_back(obj);
     }
     return list;
+}
+template<typename T>
+size_t Database::getObjectCount() const
+{
+    size_t count = 0;
+    for (auto& it: m_objects) {
+        T *obj = dynamic_cast<T*>(it.second->getObject());
+        if(obj)
+            ++count;
+    }
+    return count;
+}
+
+
+// The implementation of the template func's are here
+// because the database must be known to define the functions
+template<typename T>
+size_t ISerializable::databaseGetObjectCount() const
+{
+    if(!m_database) return 0;
+    return m_database->getObjectCount<T>();
+}
+template<typename T>
+T* ISerializable::databaseGetObject(const std::string &id) const
+{
+    if(!m_database) return nullptr;
+    return m_database->getObject<T>(id);
+}
+template<typename T>
+std::vector<T*> ISerializable::databaseGetObjects() const
+{
+    if(!m_database) return std::vector<T*>();
+    return m_database->getObjects<T>();
 }

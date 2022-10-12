@@ -73,10 +73,6 @@ const std::string &Sound::getName() const
     return m_name;
 }
 
-std::string Sound::className() const
-{
-    return "Sound";
-}
 QJsonObject Sound::save() const
 {
     return combine(ISerializable::save(),
@@ -91,7 +87,6 @@ QJsonObject Sound::save() const
 }
 bool Sound::read(const QJsonObject &reader)
 {
-    //QJsonObject data = reader.take("Sound").toObject();
     ISerializable::read(reader);
 
     bool success = true;
