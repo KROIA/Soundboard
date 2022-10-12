@@ -29,71 +29,65 @@ class Sound :   public QObject, public ISerializable
 
     public:
         Sound();
+        Sound(const Sound &other);
 
         /**
-         * Constructor
-         * @see setSource(...)
-         * @param source The source object which contains the path to
+         * \brief Constructor
+         * \see setSource(...)
+         * \param source The source object which contains the path to
          *               the .mp3 file
          */
         Sound(const SoundSource &source);
         ~Sound();
 
-        /**
-         * @brief instantiate a new sound
-         * @param path to the sound file
-         * @param id to identify the sound
-         * @return instantiated sound
-         */
-       // static Sound *instantiate(const std::filesystem::path &path,
-        //                          const std::string &id);
+        const Sound &operator=(const Sound &other);
 
         /**
-         * @brief getAudioOutput
-         * @return the audio output on which every sound is attached to
+         * \brief getAudioOutput
+         * \return the audio output on which every sound is attached to
          */
         static const QAudioOutput &getAudioOutput();
 
-        /**
-         * @brief setID
-         * @param id which will be used to identify the sound internaly
-         */
-        void setID(const std::string &id) override;
+     //   /**
+     //    * \brief setID
+     //    * \param id which will be used to identify the sound internaly
+     //    */
+     //   void setID(const std::string &id) override;
+
+     //   /**
+     //    * \brief getID
+     //    * \return the sound id
+     //    */
+     //   const std::string &getID() const override;
+
 
         /**
-         * @brief getID
-         * @return the sound id
-         */
-        const std::string &getID() const override;
-
-
-        /**
-         * getSource()
-         * @return Returns the source object to the .mp3 file
+         * \brief getSource()
+         * \return Returns the source object to the .mp3 file
          */
         const SoundSource &getSource() const;
 
         /**
-         * getVolume()
-         * @return Returns the volume of the sound
+         * \brief getVolume()
+         * \return Returns the volume of the sound
          */
         float getVolume() const;
 
         /**
-         * getPlaybackSpeed()
-         * @return Returns the playback speed of the sound
+         * \brief getPlaybackSpeed()
+         * \return Returns the playback speed of the sound
          */
         float getPlaybackSpeed() const;
 
         /**
-         * getLoops()
-         * @return Returns the amount of loops the sound will play
+         * \brief getLoops()
+         * \return Returns the amount of loops the sound will play
          */
         int getLoops() const;
 
         /**
-         * getName()
-         * @return Returns the name of the sound
+         * \brief getName()
+         * \return Returns the name of the sound
          */
         const std::string &getName() const;
 
@@ -101,37 +95,39 @@ class Sound :   public QObject, public ISerializable
         std::string className() const override;
 
 
-        ISerializable* clone(const QJsonObject &reader) const override;
+
+        IMPLEMENT_ISERIALIZABLE_CLONE(Sound)
+
         /**
-         * save(...)
-         * @brief Implementation of XmlSaveable
-         * @param writer QJsonObject which will save the file
+         * \brief save(...)
+         * \brief Implementation of XmlSaveable
+         * \param writer QJsonObject which will save the file
          */
         QJsonObject save() const override;
 
         /**
-         * read(...)
-         * @brief Implementation of XmlSaveable
-         * @param reader QJsonObject which will read from the file
+         * \brief read(...)
+         * \brief Implementation of XmlSaveable
+         * \param reader QJsonObject which will read from the file
          */
         bool read(const QJsonObject &reader) override;
 
     signals:
         /**
          * onPlaybackFinished()
-         * @brief Will be called if the playback is finished
+         * \brief Will be called if the playback is finished
          */
         void onPlaybackFinished();
 
         /**
          * onPlaybackPaused()
-         * @brief Will be called if the playback is paused
+         * \brief Will be called if the playback is paused
          */
         void onPlaybackPaused();
 
         /**
          * onPlaybackStopped()
-         * @brief Will be called if the playback is stopped
+         * \brief Will be called if the playback is stopped
          */
         void onPlaybackStopped();
 
@@ -140,53 +136,53 @@ class Sound :   public QObject, public ISerializable
     public slots:
         /**
          * play()
-         * @brief Will start the playback
+         * \brief Will start the playback
          */
         void play();
 
         /**
          * pause()
-         * @brief Will pause the current playback
+         * \brief Will pause the current playback
          */
         void pause();
 
         /**
          * stop()
-         * @brief Will stop the current playback
+         * \brief Will stop the current playback
          */
         void stop();
 
         /**
          * setSource(...)
-         * @param source The source object which contains the path to
+         * \param source The source object which contains the path to
          *               the .mp3 file
          */
         void setSource(const SoundSource &source);
 
         /**
          * setVolume(...)
-         * @param volume The volume of the playback.
+         * \param volume The volume of the playback.
          *               Range [0 - 1]
          */
         void setVolume(float volume);
 
         /**
          * setPlaybackSpeed(...)
-         * @param speed The speed of the playback.
+         * \param speed The speed of the playback.
          *              Default = 1, x<1 = faster
          */
         void setPlaybackSpeed(float speed);
 
         /**
          * setLoops(...)
-         * @param count The amount for how often the playback will be repeated.
+         * \param count The amount for how often the playback will be repeated.
          *              QMediaPlayer::Infinite for infinite playback
          */
         void setLoops(int count);
 
         /**
          * setName(...)
-         * @param name The name of the Sound, can be any Text
+         * \param name The name of the Sound, can be any Text
         */
         void setName(const std::string &name);
 
@@ -197,7 +193,7 @@ class Sound :   public QObject, public ISerializable
 
     private:
         std::string  m_name;
-        std::string  m_id;
+
         SoundSource  m_source;
         QMediaPlayer m_player;
 

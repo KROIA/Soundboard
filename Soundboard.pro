@@ -34,7 +34,7 @@ HEADERS += \
     $$inc/ui/settings/ui_settingspage.h \
     $$inc/ui/settings/ui_setting.h \
     $$inc/core/serialization/ISerializable.h \
-    inc/core/serialization/database.h
+    $$inc/core/serialization/database.h
 
 SOURCES += \
     $$src/core/main.cpp \
@@ -50,7 +50,7 @@ SOURCES += \
     $$src/ui/settings/ui_settingspage.cpp \
     $$src/ui/settings/ui_setting.cpp \
     $$src/core/serialization/ISerializable.cpp \
-    src/core/serialization/database.cpp
+    $$src/core/serialization/database.cpp
 
 
 

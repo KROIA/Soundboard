@@ -42,11 +42,9 @@ bool Database::save(const std::string &jsonFile)
 {
     QJsonArray writer;
 
-    for(size_t i=0; i<m_objects.size(); ++i)
+    for (auto& it: m_objects)
     {
-        QJsonObject obj = m_objects[i]->save();
-        obj["ObjectType"] = m_objects[i]->className().c_str();
-        writer.push_back(obj);
+        writer.push_back(it.second->save());
     }
 
     QJsonDocument document;
@@ -80,7 +78,7 @@ bool Database::add(ISerializable* obj)
         WARNING("Objekt (Name = \""<<obj->className()<<"\", ID = \""<<obj->getID() <<"\") bereits vorhanden"<<"\n");
         return false;
     }
-    m_objects.push_back(obj);
+    addToMapInternal<ISerializable>(m_objects, obj);
 
     addToMapInternal<Sound>(m_sounds, obj);
 
@@ -91,7 +89,7 @@ bool Database::remove(ISerializable* obj)
     size_t index = getIndex(obj);
     if(index == npos) return false;
 
-    m_objects.erase(m_objects.begin() + index);
+    removeFromMapInternal<ISerializable>(m_objects, obj);
 
     removeFromMapInternal<Sound>(m_sounds, obj);
     return true;
@@ -102,12 +100,12 @@ bool Database::exists(ISerializable* obj)
 }
 size_t Database::getIndex(ISerializable *obj)
 {
-    for(size_t i=0; i<m_objects.size(); ++i)
+    auto findit = m_objects.find(obj->getID());
+    if(findit == m_objects.end())
     {
-        if(m_objects[i] == obj)
-            return i;
+        return npos;
     }
-    return npos;
+    return std::distance(m_objects.begin(), findit);
 }
 size_t Database::getObjectCount() const
 {
@@ -134,7 +132,7 @@ void Database::instantiateDatabase(const QJsonArray &objs)
 }
 void Database::instantiateObject(const QJsonObject &obj)
 {
-    std::string objType = obj["ObjectType"].toString("none").toStdString();
+    std::string objType = obj[ISerializable::key_objectType.c_str()].toString("none").toStdString();
 
     auto findit = m_saveableObjectTypes.find(objType);
     if(findit == m_saveableObjectTypes.end())
@@ -147,17 +145,17 @@ void Database::instantiateObject(const QJsonObject &obj)
         ISerializable *instance = findit->second->clone(obj);
         if(instance)
         {
-            m_objects.push_back(instance);
+            add(instance);
+            /*m_objects.push_back(instance);
 
-            addToMapInternal<Sound>(m_sounds, instance);
+            addToMapInternal<Sound>(m_sounds, instance);*/
         }
     }
 }
 void Database::clear()
 {
-    for(size_t i=0; i<m_objects.size(); ++i)
-    {
-        delete m_objects[i];
+    for (auto& it: m_objects) {
+        delete it.second;
     }
     m_objects.clear();
 

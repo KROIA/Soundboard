@@ -41,7 +41,7 @@ class Database
 
         std::unordered_map<std::string, ISerializable*> m_saveableObjectTypes;
 
-        std::vector<ISerializable*> m_objects;
+        std::unordered_map<std::string,ISerializable*> m_objects;
 
 
         std::unordered_map<std::string, Sound*> m_sounds;

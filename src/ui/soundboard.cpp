@@ -46,9 +46,10 @@ Soundboard::Soundboard(QWidget *parent)
     sound.setVolume(1);
     sound.setPlaybackSpeed(1);
     sound.setName("Keine grosse Sache");
-    sound.setID("random");
+    //sound.setID("random");
 
     //sound.save(writer);
+
 
     Database database;
     database.load("test.json");
@@ -65,6 +66,13 @@ Soundboard::Soundboard(QWidget *parent)
         qDebug() << imported->getName().c_str();
     }
     database.add(imported);
+
+    qDebug() << ISerializable::generateRandomID().c_str();
+    qDebug() << ISerializable::generateRandomID().c_str();
+    qDebug() << ISerializable::generateRandomID().c_str();
+    qDebug() << ISerializable::generateRandomID().c_str();
+    qDebug() << ISerializable::generateRandomID().c_str();
+    qDebug() << ISerializable::generateRandomID().c_str();
                /*
     QFile output("testOut.xml");
     output.open(QFile::OpenModeFlag::WriteOnly);

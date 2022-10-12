@@ -8,6 +8,12 @@ Sound::Sound()
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_player.setAudioOutput(&m_output);
 }
+Sound::Sound(const Sound &other)
+    : QObject()
+    , ISerializable(other)
+{
+    this->operator=(other);
+}
 Sound::Sound(const SoundSource &source)
     : QObject()
     , ISerializable()
@@ -15,23 +21,28 @@ Sound::Sound(const SoundSource &source)
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_source = source;
     m_player.setAudioOutput(&m_output);
+
 }
 Sound::~Sound()
 {
 
 }
-/*
-Sound *Sound::instantiate(const std::filesystem::path &path,
-                          const std::string &id)
+const Sound &Sound::operator=(const Sound &other)
 {
-    return nullptr;
+    ISerializable::operator=(other);
+    m_name = other.m_name;
+    m_source = other.m_source;
+    setPlaybackSpeed(other.getPlaybackSpeed());
+    setLoops(other.getLoops());
+    setVolume(other.getVolume());
+    return *this;
 }
-*/
+
 const QAudioOutput &Sound::getAudioOutput()
 {
     return m_output;
 }
-
+/*
 void Sound::setID(const std::string &id)
 {
     m_id = id;
@@ -39,7 +50,7 @@ void Sound::setID(const std::string &id)
 const std::string &Sound::getID() const
 {
     return m_id;
-}
+}*/
 
 const SoundSource &Sound::getSource() const
 {
@@ -66,32 +77,26 @@ std::string Sound::className() const
 {
     return "Sound";
 }
-ISerializable* Sound::clone(const QJsonObject &reader) const
-{
-    Sound *obj = new Sound();
-    obj->read(reader);
-    return obj;
-}
 QJsonObject Sound::save() const
 {
-    return QJsonObject
+    return combine(ISerializable::save(),
+    QJsonObject
     {
-        {"id", m_id.c_str()},
         {"name", m_name.c_str()},
         {"loops", getLoops()},
         {"volume", getVolume()},
         {"speed", getPlaybackSpeed()},
-    };
+    });
 }
 bool Sound::read(const QJsonObject &reader)
 {
     //QJsonObject data = reader.take("Sound").toObject();
+    ISerializable::read(reader);
 
     bool success = true;
     int loops = 0;
     float volume = 0.5;
     float speed = 1;
-    success &= extract(reader,m_id,"id");
     success &= extract(reader,m_name,"name");
     success &= extract(reader,loops,"loops");
     success &= extract(reader,volume,"volume");
