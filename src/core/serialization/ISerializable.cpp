@@ -9,11 +9,20 @@ ISerializable::ISerializable()
 {
     m_id = nullptr;
     m_database = nullptr;
+    m_parent = nullptr;
 }
-ISerializable::ISerializable(const ISerializable &other)
+ISerializable::ISerializable(const ISerializable &)
 {
-
+    m_id = nullptr;
+    m_database = nullptr;
+    m_parent = nullptr;
 }
+ISerializable::~ISerializable()
+{
+    if(m_parent)
+        m_parent->objectGotDeleted();
+}
+
 
 const std::string &ISerializable::getID() const
 {
@@ -30,7 +39,7 @@ QJsonObject ISerializable::save() const
         {key_objectType.c_str(), className().c_str()},
     };
 }
-bool ISerializable::read(const QJsonObject &reader)
+bool ISerializable::read(const QJsonObject &)
 {
     return true;
 }
