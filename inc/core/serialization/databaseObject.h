@@ -42,7 +42,9 @@ public:
      */
     const DatabaseID &getID() const;
 
+    void objectGotDeleted();
 private:
+
     ISerializable *m_obj;
     DatabaseID m_id;
 
