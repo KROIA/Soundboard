@@ -62,10 +62,10 @@ QString colorizeFunc(QString name)
     QString functionName = funcAndParamas.first();
     QStringList params = funcAndParamas.last().split(",");
 
-    output.append(Color::bCyan.c_str());
+    output.append(Color::bGreen.c_str());
     output.append(returnType);
     //output.append("\033[0m\033[32m");
-    output.append(Color::bRed.c_str());
+    output.append(Color::bGreen.c_str());
     output.append(className);
     //output.append("\033[0m::");
     output.append((Color::white+"::").c_str());
@@ -82,7 +82,7 @@ QString colorizeFunc(QString name)
             output.append((Color::white+",").c_str());
         }
         //output.append("\033[036m");
-        output.append(Color::bCyan.c_str());
+        output.append(Color::bGreen.c_str());
         output.append((*param));
     }
     //output.append("\033[0m)");

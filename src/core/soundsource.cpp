@@ -41,7 +41,7 @@ void SoundSource::setRelativePath(const std::string &path)
     m_relativePath = path;
 }
 
-bool SoundSource::isValid()
+bool SoundSource::isValid() const
 {
     return QFile::exists(getAbsolutePath().c_str());
 }
@@ -59,7 +59,7 @@ std::string SoundSource::getAbsolutePath() const
         return m_relativePath;
     return m_rootPath+"\\"+m_relativePath;
 }
-void SoundSource::save(QXmlStreamWriter *writer)
+/*void SoundSource::save(QXmlStreamWriter *writer)
 {
     if(!writer) return;
     writer->writeStartElement("SoundSource");
@@ -74,3 +74,4 @@ void SoundSource::load(QXmlStreamReader *reader)
     if(!reader) return;
     qDebug() << reader->readNext();
 }
+*/

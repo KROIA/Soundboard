@@ -26,7 +26,15 @@ UI_Sound::~UI_Sound()
 }
 
 
-
+void UI_Sound::setSound(const Sound &sound)
+{
+    m_sound = sound;
+    ui->name_label->setText(m_sound.getName().c_str());
+}
+const Sound &UI_Sound::getSound() const
+{
+    return m_sound;
+}
 
 const SoundSource &UI_Sound::getSource() const
 {
@@ -47,18 +55,18 @@ unsigned int UI_Sound::getLoops() const
 const std::string &UI_Sound::getName() const
 {
     return m_sound.getName();
-}
+}/*
 void UI_Sound::save(QXmlStreamWriter *writer)
 {
     if(!writer) return;
     writer->writeStartElement("UI_Sound");
-    m_sound.save(writer);
+   // m_sound.save(writer);
     writer->writeEndElement();
 }
 void UI_Sound::load(QXmlStreamReader *reader)
 {
     if(!reader) return;
-}
+}*/
 
 void UI_Sound::play()
 {

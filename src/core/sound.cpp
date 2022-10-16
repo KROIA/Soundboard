@@ -1,11 +1,22 @@
 #include "sound.h"
 
+QAudioOutput Sound::m_output;
 Sound::Sound()
+    : QObject()
+    , ISerializable()
 {
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_player.setAudioOutput(&m_output);
 }
+Sound::Sound(const Sound &other)
+    : QObject()
+    , ISerializable(other)
+{
+    this->operator=(other);
+}
 Sound::Sound(const SoundSource &source)
+    : QObject()
+    , ISerializable()
 {
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_source = source;
@@ -15,7 +26,31 @@ Sound::~Sound()
 {
 
 }
+const Sound &Sound::operator=(const Sound &other)
+{
+    ISerializable::operator=(other);
+    m_name = other.m_name;
+    if(other.m_source.isValid())
+        setSource(other.m_source);
+    setPlaybackSpeed(other.getPlaybackSpeed());
+    setLoops(other.getLoops());
+    setVolume(other.getVolume());
+    return *this;
+}
 
+const QAudioOutput &Sound::getAudioOutput()
+{
+    return m_output;
+}
+/*
+void Sound::setID(const std::string &id)
+{
+    m_id = id;
+}
+const std::string &Sound::getID() const
+{
+    return m_id;
+}*/
 
 const SoundSource &Sound::getSource() const
 {
@@ -37,59 +72,52 @@ const std::string &Sound::getName() const
 {
     return m_name;
 }
-void Sound::save(QXmlStreamWriter *writer)
+
+QJsonObject Sound::save() const
 {
-    if(!writer) return;
-    writer->writeStartElement("Sound");
-    writer->writeAttribute("name",m_name.c_str());
-    writer->writeAttribute("loops",QString::number(getLoops()));
-    writer->writeAttribute("volume",QString::number(getVolume()));
-    writer->writeAttribute("speed",QString::number(getPlaybackSpeed()));
-    m_source.save(writer);
-    writer->writeEndElement();
-}
-void Sound::load(QXmlStreamReader *reader)
-{
-    if(!reader) return;
-    if(reader->name() == QString("Sound"))
+    return combine(ISerializable::save(),
+    QJsonObject
     {
-        QXmlStreamAttributes attributes = reader->attributes();
-        for(const QXmlStreamAttribute &attribute : attributes)
-        {
-            if(attribute.name() == QString("name"))
-                m_name = attribute.value().toString().toStdString();
-            else if(attribute.name() == QString("loops"))
-            {
-                bool ok = false;
-                int value = attribute.value().toInt(&ok);
-                if(ok)
-                    m_player.setLoops(value);
-            }
-            else if(attribute.name() == QString("volume"))
-            {
-                bool ok = false;
-                float value = attribute.value().toFloat(&ok);
-                if(ok)
-                    m_output.setVolume(value);
-            }
-            else if(attribute.name() == QString("speed"))
-            {
-                bool ok = false;
-                float value = attribute.value().toFloat(&ok);
-                if(ok)
-                    m_player.setPlaybackRate(value);
-            }
-        }
+        {"name", m_name.c_str()},
+        {"loops", getLoops()},
+        {"volume", getVolume()},
+        {"speed", getPlaybackSpeed()},
+        {"source", m_source.getAbsolutePath().c_str()}
+    });
+}
+bool Sound::read(const QJsonObject &reader)
+{
+    ISerializable::read(reader);
 
-        if(reader->name() ==QString("rootPath"))
-        {
+    bool success = true;
+    int loops = 0;
+    float volume = 0.5;
+    float speed = 1;
+    std::string source;
+    success &= extract(reader,m_name,"name");
+    success &= extract(reader,loops,"loops");
+    success &= extract(reader,volume,"volume");
+    success &= extract(reader,speed,"speed");
+    success &= extract(reader,source,"source");
 
-            //if()
-        }
+
+    if(!success)
+    {
+        WARNING("Kann Sound "<<m_name<<" nicht korrekt laden.");
+        return false;
     }
 
+    setLoops(loops);
+    setVolume(volume);
+    setPlaybackSpeed(speed);
+    m_source.setAbsolutePath(source);
+    setSource(m_source);
 
-    m_source.load(reader);
+    return true;
+}
+void Sound::postLoad()
+{
+
 }
 
 void Sound::play()
@@ -120,7 +148,7 @@ void Sound::setSource(const SoundSource &source)
     m_source = source;
     if(!m_source.isValid())
     {
-        WARNING(m_source.getAbsolutePath().c_str()<<" is not valid");
+        WARNING(m_source.getAbsolutePath().c_str()<<" is not valid\n");
         return;
     }
     m_player.setSource(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));

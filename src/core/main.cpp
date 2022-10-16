@@ -22,11 +22,18 @@ const ProjectInfo projectInfo{"SoundBoard",
                                    "",
                                },
                                Author{
+                                   "Pele",
+                                   "",
+                                   "",
+                                   "",
+                               },
+                               Author{
                                    "Alex",
                                    "Krieg",
                                    "alex.krieg@ost.ch",
                                    "",
-                               }}};
+                               }
+                               }};
 
 int main(int argc, char *argv[]) {
   Debug::setup();
