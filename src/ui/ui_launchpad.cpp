@@ -7,6 +7,8 @@ UI_Launchpad::UI_Launchpad(QWidget *parent) :
 {
     ui->setupUi(this);
     setButtonSize(50);
+    ui->bottomAddButton->setIcon(QIcon(":/icons/document-add.png"));
+    ui->topAddButton->setIcon(QIcon(":/icons/document-add.png"));
 }
 
 UI_Launchpad::~UI_Launchpad()
