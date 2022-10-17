@@ -15,13 +15,16 @@ Soundboard::Soundboard(QWidget *parent)
 
     ui->setupUi(this);
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
+    SoundsButtons buttons = m_ribbon->getSoundsButtons();
+    connect(buttons.addNew,&QToolButton::pressed,this,&Soundboard::on_buttonPress);
 
     m_settingsWindow = new UI_Settings(this);
     m_settingsWindow->hide();
     m_userSettings.read();
     m_settingsWindow->addSettings(&m_userSettings);
-
-
+    m_launchpad = new UI_Launchpad(this);
+    ui->scrollAreaWidgetContents->layout()->addWidget(m_launchpad);
+/*
 
     // create a database which will load the saved sound profiles
     SoundboardDatabase database;
@@ -63,6 +66,7 @@ Soundboard::Soundboard(QWidget *parent)
 
     // Save the database
     database.save();
+    */
 }
 
 Soundboard::~Soundboard()
@@ -107,4 +111,7 @@ void Soundboard::on_actionEinstellungen_triggered()
     m_settingsWindow->show();
 }
 
-
+void Soundboard::on_buttonPress()
+{
+    m_launchpad->setButtonSize(100);
+}

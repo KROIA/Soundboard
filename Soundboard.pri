@@ -28,6 +28,7 @@ HEADERS += \
     $$inc/core/debug.h \
     $$inc/core/soundsource.h \
     $$inc/ui/ui_sound.h \
+    $$inc/ui/ui_launchpad.h \
     $$inc/core/settings/registryParameter.h \
     $$inc/core/settings/usersettings.h \
     $$inc/core/settings/registrySettings.h \
@@ -48,6 +49,7 @@ SOURCES += \
     $$src/core/debug.cpp \
     $$src/core/soundsource.cpp \
     $$src/ui/ui_sound.cpp \
+    $$src/ui/ui_launchpad.cpp \
     $$src/core/settings/registryParameter.cpp \
     $$src/core/settings/registrySettings.cpp \
     $$src/ui/settings/ui_settings.cpp \
@@ -68,7 +70,8 @@ FORMS += \
     $$ui/settings/ui_setting.ui \
     $$ui/settings/ui_settings.ui \
     $$ui/settings/ui_settingspage.ui \
-    $$ui/ui_sound.ui
+    $$ui/ui_sound.ui \
+    $$ui/ui_launchpad.ui
 
 
 RESOURCES += \
