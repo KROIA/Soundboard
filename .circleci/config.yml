@@ -9,14 +9,28 @@ jobs:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
-      - image: cimg/base:stable
+      - image: stateoftheartio/qt6
+    # - image: cimg/base:stable
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "apk add qt5-qtbase-dev make g++ gtest-dev doxygen"
+          name: "Build"
+          command: |
+            sudo apt-get update
+            sudo apt install qt5-qmake -y
+            sudo apt-get install qt5-default qtmultimedia5-dev build-essential -y
+            git clone https://github.com/KROIA/Soundboard
+            cd Soundboard
+            git submodule update --init --recursive
+            qmake -spec linux-g++ CONFIG+=debug -o ../build/Makefile
+            cd ../build 
+            make clean 
+            make qmake_all 
+            make all -j
+          
+          #command: "apk add qt5-qtbase-dev make g++ gtest-dev doxygen"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
