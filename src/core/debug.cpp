@@ -25,7 +25,7 @@ namespace Color
 void setup()
 {
 
-    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    /*HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hOut == INVALID_HANDLE_VALUE)
     {
         return;
@@ -41,7 +41,7 @@ void setup()
     if (!SetConsoleMode(hOut, dwMode))
     {
         return;
-    }
+    }*/
 
 }
 QString colorizeFunc(QString name)
