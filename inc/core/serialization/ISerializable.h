@@ -1,6 +1,7 @@
 #pragma once
 #include <QJsonObject>
 #include <string>
+#include <vector>
 #include "databaseDeclaration.h"
 
 
