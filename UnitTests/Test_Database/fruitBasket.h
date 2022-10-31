@@ -99,11 +99,11 @@ class FruitBasket : public ISerializable
         }
         void print() const
         {
-            DEBUGLN("Basket from "<<m_owner<<" with: "<<m_fruits.size()<<" fruits:");
+            DEBUGLN("Basket from "<<m_owner.c_str()<<" with: "<<m_fruits.size()<<" fruits:");
             for(size_t i=0; i<m_fruits.size(); ++i)
             {
-                DEBUGLN("Fruit ["+std::to_string(i)+"]");
-                DEBUG(m_fruits[i]->toString());
+                DEBUGLN("Fruit ["<<std::to_string(i).c_str()<<"]");
+                DEBUG(m_fruits[i]->toString().c_str());
             }
             DEBUGLN("--------------------");
         }
