@@ -103,7 +103,7 @@ bool Sound::read(const QJsonObject &reader)
 
     if(!success)
     {
-        WARNING("Kann Sound "<<m_name<<" nicht korrekt laden.");
+        WARNING("Kann Sound "<<m_name.c_str()<<" nicht korrekt laden.");
         return false;
     }
 

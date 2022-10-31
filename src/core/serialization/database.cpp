@@ -29,7 +29,7 @@ bool Database::load(const std::string &jsonFile)
         QJsonDocument document = QJsonDocument::fromJson( bytes, &jsonError );
         if( jsonError.error != QJsonParseError::NoError )
         {
-            WARNING("Database konnte nicht geladen werden. Datei: \""<<jsonFile.c_str()<<"\"\nJsonError: "<<jsonError.errorString().toStdString()<<"\n");
+            WARNING("Database konnte nicht geladen werden. Datei: \""<<jsonFile.c_str()<<"\"\nJsonError: "<<jsonError.errorString().toStdString().c_str()<<"\n");
             return false;
         }
         if(document.isArray())
@@ -76,14 +76,14 @@ bool Database::addObject(ISerializable* obj)
     auto findit = m_saveableObjectTypes.find(obj->className());
     if(findit == m_saveableObjectTypes.end())
     {
-        WARNING("Kann Objekt (Name = \""<<obj->className()<<"\") nicht in aufnehmen,\n"
-                "dieser Type wurde nicht in die speicherbaren Objekte liste aufgenommen"<<"\n");
+        WARNING("Kann Objekt (Name = \""<<obj->className().c_str()<<"\") nicht in aufnehmen,\n"
+                "dieser Type wurde nicht in die speicherbaren Objekte liste aufgenommen\n");
         return false;
     }
 
     if(objectExists(obj))
     {
-        WARNING("Objekt (Name = \""<<obj->className()<<"\", ID = \""<<obj->getID() <<"\") bereits vorhanden"<<"\n");
+        WARNING("Objekt (Name = \""<<obj->className().c_str()<<"\", ID = \""<<obj->getID().c_str() <<"\") bereits vorhanden"<<"\n");
         return false;
     }
     DatabaseID id(DatabaseID::generateRandomID());
@@ -202,7 +202,7 @@ void Database::instantiateObject(const QJsonObject &obj)
     auto findit = m_saveableObjectTypes.find(objType);
     if(findit == m_saveableObjectTypes.end())
     {
-        WARNING("Kann Objekt Type: \""<<objType<<"\" keinem definierten speicherbaren Objekt zuordnen"<<"\n");
+        WARNING("Kann Objekt Type: \""<<objType.c_str()<<"\" keinem definierten speicherbaren Objekt zuordnen\n");
         return;
     }
     else
@@ -218,7 +218,7 @@ void Database::instantiateObject(const QJsonObject &obj)
             else
             {
                 ISerializable *other = m_objects[id.getID()]->getObject();
-                WARNING("Kann Objekt Type: \""<<objType<<"\" ID: \""<< id.getID() <<"\" nicht laden. Objekt Type: \""<<other->className()<<"\" hat die gleiche ID\n");
+                WARNING("Kann Objekt Type: \""<<objType.c_str()<<"\" ID: \""<< id.getID().c_str() <<"\" nicht laden. Objekt Type: \""<<other->className().c_str()<<"\" hat die gleiche ID\n");
             }
         }
     }
