@@ -5,7 +5,7 @@
 const ProjectInfo projectInfo{"SoundBoard",
                               "2022",
                               {
-                                  "00.00.00",
+                                  "00.00.01",
                                   __DATE__,
                                   __TIME__,
                               },
@@ -22,12 +22,6 @@ const ProjectInfo projectInfo{"SoundBoard",
                                    "",
                                },
                                Author{
-                                   "Pele",
-                                   "",
-                                   "",
-                                   "",
-                               },
-                               Author{
                                    "Alex",
                                    "Krieg",
                                    "alex.krieg@ost.ch",
@@ -36,7 +30,6 @@ const ProjectInfo projectInfo{"SoundBoard",
                                }};
 
 int main(int argc, char *argv[]) {
-  Debug::setup();
   QApplication a(argc, argv);
   Soundboard w;
   w.show();
