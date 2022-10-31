@@ -6,11 +6,14 @@ Sound::Sound()
     , ISerializable()
 {
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
-  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-  m_player.setAudioOutput(&m_output);
-  #else
-
-  #endif
+    m_buttonPos.x = 0;
+    m_buttonPos.y = 0;
+    #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+    m_player.setAudioOutput(&m_output);
+    #else
+    m_loops = 0;
+    m_loopsCounter = 0;
+    #endif
 }
 Sound::Sound(const Sound &other)
     : QObject()
@@ -23,12 +26,15 @@ Sound::Sound(const SoundSource &source)
     , ISerializable()
 {
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
+    m_buttonPos.x = 0;
+    m_buttonPos.y = 0;
     m_source = source;
-  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+    #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     m_player.setAudioOutput(&m_output);
-  #else
-
-  #endif
+    #else
+    m_loops = 0;
+    m_loopsCounter = 0;
+    #endif
 }
 Sound::~Sound()
 {
@@ -50,15 +56,6 @@ const QAudioOutput &Sound::getAudioOutput()
 {
     return m_output;
 }
-/*
-void Sound::setID(const std::string &id)
-{
-    m_id = id;
-}
-const std::string &Sound::getID() const
-{
-    return m_id;
-}*/
 
 const SoundSource &Sound::getSource() const
 {
@@ -74,11 +71,11 @@ float Sound::getPlaybackSpeed() const
 }
 int Sound::getLoops() const
 {
-  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    return m_player.loops();
-  #else
-  return 0;
-  #endif
+    #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+        return m_player.loops();
+    #else
+        return m_loops;
+    #endif
 }
 const std::string &Sound::getName() const
 {
@@ -94,7 +91,9 @@ QJsonObject Sound::save() const
         {"loops", getLoops()},
         {"volume", getVolume()},
         {"speed", getPlaybackSpeed()},
-        {"source", m_source.getAbsolutePath().c_str()}
+        {"source", m_source.getAbsolutePath().c_str()},
+        {"x",m_buttonPos.x},
+        {"y",m_buttonPos.y}
     });
 }
 bool Sound::read(const QJsonObject &reader)
@@ -111,6 +110,8 @@ bool Sound::read(const QJsonObject &reader)
     success &= extract(reader,volume,"volume");
     success &= extract(reader,speed,"speed");
     success &= extract(reader,source,"source");
+    success &= extract(reader,m_buttonPos.x,"x");
+    success &= extract(reader,m_buttonPos.y,"y");
 
 
     if(!success)
@@ -142,6 +143,9 @@ void Sound::play()
 #ifdef DBG_SOUND
     DEBUGLN("Starting sound: \""<<m_source.getAbsolutePath().c_str()<<"\"");
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    ++m_loopsCounter;
+#endif
     m_player.play();
 }
 void Sound::pause()
@@ -152,6 +156,9 @@ void Sound::pause()
 void Sound::stop()
 {
     m_player.stop();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    m_loopsCounter = 0;
+#endif
     emit onPlaybackStopped();
 }
 
@@ -179,15 +186,31 @@ void Sound::setPlaybackSpeed(float speed)
 }
 void Sound::setLoops(int count)
 {
-  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-  m_player.setLoops(count);
-  #else
-
-  #endif
+    #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+    m_player.setLoops(count);
+    #else
+    m_loops = count;
+    #endif
 }
 void Sound::setName(const std::string &name)
 {
     m_name = name;
+    emit onNameChanged(m_name);
+}
+void Sound::setButtonCoord(int x, int y)
+{
+    m_buttonPos.x = x;
+    m_buttonPos.y = y;
+}
+
+void Sound::setButtonCoord(const Coord &pos)
+{
+    m_buttonPos = pos;
+}
+
+const Coord &Sound::getButtonCoord() const
+{
+    return m_buttonPos;
 }
 
 void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
@@ -223,7 +246,25 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 #ifdef DBG_SOUND
             DEBUGLN("Sound: \""<<m_source.getAbsolutePath().c_str()<<"\" finished playback");
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            if(m_loops == Loops::Infinite)
+            {
+                play();
+                return;
+            }
+            if(m_loopsCounter >= m_loops)
+            {
+                m_loopsCounter = 0;
+                emit onPlaybackFinished();
+            }
+            else
+            {
+                play();
+            }
+#else
             emit onPlaybackFinished();
+
+#endif
             break;
         }
         case QMediaPlayer::MediaStatus::InvalidMedia:

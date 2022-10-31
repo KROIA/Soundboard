@@ -38,6 +38,8 @@
 #include <QToolButton>
 #include <vector>
 #include "ribbon.h"
+#include "InformativeToolButton.h"
+
 #define CONCAT(id1, id2) id1##id2
 
 
@@ -87,7 +89,7 @@ struct SoundsButtons
     //QToolButton *load;
     //QToolButton *save;
 
-    QToolButton *addNew; // You can also use from QToolButton derived buttons here
+    InformativeToolButton *edit; // You can also use from QToolButton derived buttons here
 };
 
 // End of button structs
