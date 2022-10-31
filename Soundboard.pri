@@ -14,6 +14,7 @@ inc = $$PWD/inc
 src = $$PWD/src
 ui  = $$PWD/ui
 
+
 INCLUDEPATH += $$inc \
                $$inc/ui \
                $$inc/core \
