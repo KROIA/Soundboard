@@ -6,7 +6,11 @@ Sound::Sound()
     , ISerializable()
 {
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
-    m_player.setAudioOutput(&m_output);
+  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+  m_player.setAudioOutput(&m_output);
+  #else
+
+  #endif
 }
 Sound::Sound(const Sound &other)
     : QObject()
@@ -20,7 +24,11 @@ Sound::Sound(const SoundSource &source)
 {
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_source = source;
+  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     m_player.setAudioOutput(&m_output);
+  #else
+
+  #endif
 }
 Sound::~Sound()
 {
@@ -66,7 +74,11 @@ float Sound::getPlaybackSpeed() const
 }
 int Sound::getLoops() const
 {
+  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     return m_player.loops();
+  #else
+  return 0;
+  #endif
 }
 const std::string &Sound::getName() const
 {
@@ -151,7 +163,11 @@ void Sound::setSource(const SoundSource &source)
         WARNING(m_source.getAbsolutePath().c_str()<<" is not valid\n");
         return;
     }
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     m_player.setSource(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));
+#else
+    m_player.setMedia(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));
+#endif
 }
 void Sound::setVolume(float volume)
 {
@@ -163,7 +179,11 @@ void Sound::setPlaybackSpeed(float speed)
 }
 void Sound::setLoops(int count)
 {
-    m_player.setLoops(count);
+  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+  m_player.setLoops(count);
+  #else
+
+  #endif
 }
 void Sound::setName(const std::string &name)
 {

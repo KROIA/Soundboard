@@ -61,8 +61,15 @@ bool Database::save(const std::string &jsonFile) const
     QFile file(jsonFile.c_str());
     if( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     {
+
         QTextStream iStream( &file );
+  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
         iStream.setEncoding(QStringConverter::Encoding::Utf8);
+  #else
+        iStream.setCodec("UTF-8");
+  #endif
+
+
         iStream << bytes;
         file.close();
         DEBUGLN(Debug::Color::green.c_str() << "Database gespeichert als: \""<<jsonFile.c_str()<<"\"");

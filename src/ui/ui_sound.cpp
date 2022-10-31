@@ -102,14 +102,20 @@ void UI_Sound::setLoops(int count)
 void UI_Sound::toggleRepeat(bool toggleOn)
 {
     DEBUGLN(toggleOn);
+  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     if(toggleOn)
         m_sound.setLoops(QMediaPlayer::Infinite);
     else
         m_sound.setLoops(1);
+  #endif
 }
 bool UI_Sound::isRepeating() const
 {
+  #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     return m_sound.getLoops() == QMediaPlayer::Loops::Infinite;
+  #else
+  return false;
+  #endif
 }
 void UI_Sound::setName(const std::string &name)
 {
