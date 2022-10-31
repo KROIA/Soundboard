@@ -147,7 +147,7 @@ bool RegistrySettings::addParameter(RegistryParameter *param)
     if(exists(param->getName()))
     {
 #ifdef REGISTRY_SETTINGS_DEBUG
-        CRITICAL("param with name \""+param->getName()+"\" already exists");
+      CRITICAL("param with name \""<<param->getName().c_str()<<"\" already exists");
 #endif
         return false;
     }
@@ -178,7 +178,7 @@ bool RegistrySettings::removeParameter(const std::string &paramName)
     if(!exists(paramName))
     {
 #ifdef REGISTRY_SETTINGS_DEBUG
-        WARNING("param with name \""+paramName+"\" does not exists");
+      WARNING("param with name \""<<paramName.c_str()<<"\" does not exists");
 #endif
         return false;
     }

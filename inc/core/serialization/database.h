@@ -98,13 +98,13 @@ bool Database::defineSaveableObject()
 
         if(typeName1 == typeName2)
         {
-            FATAL("Objekt Type: \""<<typeName<<"\" ist bereits definiert"<<"\n")
+            FATAL("Objekt Type: \""<<typeName.c_str()<<"\" ist bereits definiert"<<"\n")
         }
         else
         {
-            FATAL("Der ObjektName: \""<<typeName<<"\" für "<<typeName1<<
-                  " ist bereits definiert für ein anderes Objekt: \""<<typeName2<<
-                  "\" definiert worden."<<"\n")
+            FATAL("Der ObjektName: \""<<typeName.c_str()<<"\" für "<<typeName1.c_str()<<
+                  " ist bereits definiert für ein anderes Objekt: \""<<typeName2.c_str()<<
+                  "\" definiert worden.\n")
         }
         delete t;
     }

@@ -4,8 +4,8 @@
 #include <QtGlobal>
 #include <stdio.h>
 #include <iostream>
-#include <wchar.h>
-#include <windows.h>
+//#include <wchar.h>
+//#include <windows.h>
 #include <string>
 
 namespace Debug
@@ -34,20 +34,21 @@ namespace Debug
     }
 }
 #ifdef QT_DEBUG
+#define CONSOLE_STREAM qDebug()
 #define DEBUGLN(message) \
-    std::cout << message << "\n";
+  CONSOLE_STREAM << message << "\n";
 
 #define DEBUG(message) \
-    std::cout << message;
+    CONSOLE_STREAM << message;
 
 #define WARNING(message) \
-    std::cout << Debug::Color::bYellow.c_str() << "Warning "<<Debug::Color::white.c_str() << ":"  << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
+    CONSOLE_STREAM << Debug::Color::bYellow.c_str() << "Warning "<<Debug::Color::white.c_str() << ":"  << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
 
 #define CRITICAL(message) \
-    std::cout << Debug::Color::bRed.c_str() << "Critical"<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
+    CONSOLE_STREAM << Debug::Color::bRed.c_str() << "Critical"<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
 
 #define FATAL(message) \
-    std::cout << Debug::Color::bRed.c_str() << "Fatal   "<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
+    CONSOLE_STREAM << Debug::Color::bRed.c_str() << "Fatal   "<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
 #else
 #define DEBUGLN(message)
 #define DEBUG(message)
