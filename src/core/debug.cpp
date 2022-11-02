@@ -22,28 +22,6 @@ namespace Color
     const std::string bCyan   = "\033[1;36m";
     const std::string bWhite  = "\033[1;37m";
 }
-void setup()
-{
-
-    /*HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hOut == INVALID_HANDLE_VALUE)
-    {
-        return;
-    }
-
-    DWORD dwMode = 0;
-    if (!GetConsoleMode(hOut, &dwMode))
-    {
-        return;
-    }
-
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    if (!SetConsoleMode(hOut, dwMode))
-    {
-        return;
-    }*/
-
-}
 QString colorizeFunc(QString name)
 {
     QString output;

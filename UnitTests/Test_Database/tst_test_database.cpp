@@ -218,7 +218,11 @@ void Test_Database::test_removeObject()
     QVERIFY(db.defineSaveableObject<PineApple>());
     QVERIFY(db.addObject(copy));
     QVERIFY(db.save(m_jsonFile3));
-
+    QVERIFY(db.getObjectCount() == 1);
+    PineApple *pineApple = db.getObjects<PineApple>()[0];
+    QVERIFY(pineApple != nullptr);
+    delete pineApple;
+    QVERIFY(db.getObjectCount() == 0);
 }
 void Test_Database::test_save()
 {

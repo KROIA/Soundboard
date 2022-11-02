@@ -25,11 +25,13 @@ class ISerializable
 
         /**
          * \brief ISerializable
-         * \details Creats a object and copies the parameters of other
+         * \details Creats a object. It does not copy the parameters of this class.
+         *          If you create a new object using the copy constructor, you have to add the new object
+         *          to de database manually.
          * \param other object which will be copied from
          */
         ISerializable(const ISerializable &other);
-        virtual ~ISerializable(){};
+        virtual ~ISerializable();
 
         /**
          * \brief className
@@ -289,9 +291,9 @@ class ISerializable
         static std::string extractClassName(const QJsonObject &data);
 
     private:
-        DatabaseID *m_id;     //!< ptr to the parent DatabaseObjects->m_id. nullptr, if not assigned to a database
-        Database *m_database; //!< ptr to the parent Database. nullptr, if not assigned to a database
-
+        DatabaseID *m_id;        //!< ptr to the parent DatabaseObjects->m_id. nullptr, if not assigned to a database
+        DatabaseObject *m_parent;//!< ptr to the parent DatabaseObject. nullptr, if not assigned to a database
+        Database *m_database;    //!< ptr to the parent Database. nullptr, if not assigned to a database
 };
 
 /**
