@@ -1,7 +1,8 @@
 #include "soundboard.h"
 #include "ui_soundboard.h"
 #include <QFileDialog>
-#include "soundboardDatabase.h"
+
+#include "LaunchpadButton.h"
 
 
 //DATABASE_USE_OBJECT(Sound)
@@ -15,6 +16,8 @@ Soundboard::Soundboard(QWidget *parent)
 
     ui->setupUi(this);
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
+    SoundsButtons sb = m_ribbon->getSoundsButtons();
+    connect(sb.edit, &QPushButton::clicked, this, &Soundboard::onRibbonEditSoundsPressed);
 
     m_settingsWindow = new UI_Settings(this);
     m_settingsWindow->hide();
@@ -24,15 +27,15 @@ Soundboard::Soundboard(QWidget *parent)
 
 
     // create a database which will load the saved sound profiles
-    SoundboardDatabase database;
+    m_soundDatabase = new SoundboardDatabase();
 
     // load from file
-    database.load("test.json");
+    m_soundDatabase->load("test.json");
 
 
     // if no sound is in the database (file not available or empty),
     // then one sound will be added
-    if(database.getSoundsCount() == 0)
+    if(m_soundDatabase->getSoundsCount() == 0)
     {
         SoundSource source;
         source.setRootPath(m_userSettings.getAudioRootPath());
@@ -44,12 +47,21 @@ Soundboard::Soundboard(QWidget *parent)
         sound.setVolume(1);
         sound.setPlaybackSpeed(1);
         sound.setName("Keine grosse Sache");
-        database.addSound(sound);
+        m_soundDatabase->addSound(sound);
     }
 
     // Get all saved sounds
-    std::vector<Sound*> sounds = database.getSounds();
-    for(size_t i=0; i<sounds.size(); ++i)
+    std::vector<Sound*> sounds = m_soundDatabase->getSounds();
+
+    LaunchpadButton *button = new LaunchpadButton();
+
+    ui->scrollAreaWidgetContents->layout()->addWidget(button);
+    if(sounds.size() > 0)
+    {
+        button->setSound(sounds[0]);
+        button->setArrayPos(Coord{0,0});
+    }
+    /*for(size_t i=0; i<sounds.size(); ++i)
     {
         // Create a ui view for each sound
         UI_Sound *sound = new UI_Sound(this);
@@ -59,16 +71,17 @@ Soundboard::Soundboard(QWidget *parent)
 
         // Add the UI-Element to the layout
         ui->scrollAreaWidgetContents->layout()->addWidget(sound);
-    }
+    }*/
 
     // Save the database
-    database.save();
+    m_soundDatabase->save();
 }
 
 Soundboard::~Soundboard()
 {
     m_userSettings.save();
-
+    m_soundDatabase->save();
+    delete m_soundDatabase;
     delete ui;
 }
 
@@ -107,4 +120,10 @@ void Soundboard::on_actionEinstellungen_triggered()
     m_settingsWindow->show();
 }
 
+void Soundboard::onRibbonEditSoundsPressed()
+{
+    SoundsButtons sb = m_ribbon->getSoundsButtons();
+    sb.edit->setOverlayEnable(!sb.edit->overlayEnabled());
+    LaunchpadButton::setEditMode(sb.edit->overlayEnabled());
+}
 

@@ -45,8 +45,8 @@ RIBBON_SETUP_FUNC_IMPL(SoundsButtons)
    // RIBBON_BUTTONS(SoundsButtons).save = buttonFactory<QToolButton>("Speichern","Speichert die Software Option Datenbank",
    //                                                 resourcePath("floppy-disk"), true, tab, group);
 
-    RIBBON_BUTTONS(SoundsButtons).addNew = buttonFactory<QToolButton>("Neu","Neuer Sound definieren",
-                                                                      resourcePath("audio-add"), true, tab, group);
+    RIBBON_BUTTONS(SoundsButtons).edit = buttonFactory<InformativeToolButton>("Bearbeiten","Sounds bearbeiten",
+                                                                      resourcePath("settings"), true, tab, group);
 }
 
 // NEW_BUTTONS [4]:

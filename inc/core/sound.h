@@ -5,16 +5,20 @@
 // #endif
 #pragma once
 #include <string>
-//#include <filesystem>
 #include <QObject>
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include "soundsource.h"
-#include "debug.h"
 #include "ISerializable.h"
 
 // Enable debug informations for this class
 #define DBG_SOUND
+
+struct Coord
+{
+    int x;
+    int y;
+};
 
 
 /*! \class Sound
@@ -28,6 +32,12 @@ class Sound :   public QObject, public ISerializable
         Q_OBJECT
 
     public:
+        enum Loops
+        {
+            Infinite = -1,
+            Once = 1
+        };
+
         Sound();
         Sound(const Sound &other);
 
@@ -86,6 +96,12 @@ class Sound :   public QObject, public ISerializable
         bool read(const QJsonObject &reader) override; //!< \see ISerializable::read()
         void postLoad() override; //!< \see ISerializable::postLoad()
 
+        /**
+         * @brief getButtonCoord
+         * @return position in the launchpad button array
+         */
+        const Coord &getButtonCoord() const;
+
     signals:
         /**
          * onPlaybackFinished()
@@ -104,6 +120,12 @@ class Sound :   public QObject, public ISerializable
          * \brief Will be called if the playback is stopped
          */
         void onPlaybackStopped();
+
+        /**
+         * \brief onNameChanged will be emitted after the name of the wound was changed
+         */
+        void onNameChanged(const std::string &name);
+
 
 
 
@@ -160,6 +182,19 @@ class Sound :   public QObject, public ISerializable
         */
         void setName(const std::string &name);
 
+        /**
+         * @brief Position in the launchpad button array
+         * @param x position in the array
+         * @param y position in the array
+         */
+        void setButtonCoord(int x, int y);
+
+        /**
+         * @brief Position in the launchpad button array
+         * @param pos position in the array
+         */
+        void setButtonCoord(const Coord &pos);
+
 
     private slots:
         void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
@@ -167,9 +202,14 @@ class Sound :   public QObject, public ISerializable
 
     private:
         std::string  m_name;
+        Coord m_buttonPos;
 
         SoundSource  m_source;
         QMediaPlayer m_player;
+        #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        int m_loops;
+        int m_loopsCounter;
+        #endif
 
         static QAudioOutput m_output;
 };
