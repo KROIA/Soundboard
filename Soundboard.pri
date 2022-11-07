@@ -23,12 +23,14 @@ INCLUDEPATH += $$inc \
                $$inc/ui/settings \
 
 HEADERS += \
+    $$inc/ui/LaunchpadButton.h \
     $$inc/core/sound.h \
     $$inc/ui/soundboard.h \
     $$inc/ui/soundboardRibbon.h \
     $$inc/core/debug.h \
     $$inc/core/soundsource.h \
-    $$inc/ui/ui_sound.h \
+    $$inc/ui/ui_soundSettings.h \
+    $$inc/ui/ui_launchpad.h \
     $$inc/core/settings/registryParameter.h \
     $$inc/core/settings/usersettings.h \
     $$inc/core/settings/registrySettings.h \
@@ -43,12 +45,14 @@ HEADERS += \
     $$inc/core/soundboardDatabase.h
 
 SOURCES += \
+    $$src/ui/LaunchpadButton.cpp \
     $$src/core/sound.cpp \
     $$src/ui/soundboard.cpp \
     $$src/ui/soundboardRibbon.cpp \
     $$src/core/debug.cpp \
     $$src/core/soundsource.cpp \
-    $$src/ui/ui_sound.cpp \
+    $$src/ui/ui_soundSettings.cpp \
+    $$src/ui/ui_launchpad.cpp \
     $$src/core/settings/registryParameter.cpp \
     $$src/core/settings/registrySettings.cpp \
     $$src/ui/settings/ui_settings.cpp \
@@ -69,7 +73,9 @@ FORMS += \
     $$ui/settings/ui_setting.ui \
     $$ui/settings/ui_settings.ui \
     $$ui/settings/ui_settingspage.ui \
-    $$ui/ui_sound.ui
+    $$ui/ui_soundSettings.ui \
+    $$ui/ui_launchpad.ui
+
 
 
 RESOURCES += \

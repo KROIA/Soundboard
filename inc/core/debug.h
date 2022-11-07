@@ -29,6 +29,8 @@ namespace Debug
     }
 }
 #ifdef QT_DEBUG
+//#define USE_COLORED_FUNC
+
 #define CONSOLE_STREAM qDebug()
 #define DEBUGLN(message) \
   CONSOLE_STREAM << message << "\n";
@@ -36,14 +38,19 @@ namespace Debug
 #define DEBUG(message) \
     CONSOLE_STREAM << message;
 
+#ifdef USE_COLORED_FUNC
+#define COLORED_FUNC << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str()
+#else
+#define COLORED_FUNC
+#endif
 #define WARNING(message) \
-    CONSOLE_STREAM << Debug::Color::bYellow.c_str() << "Warning "<<Debug::Color::white.c_str() << ":"  << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
+    CONSOLE_STREAM << Debug::Color::bYellow.c_str() << "Warning  "<<Debug::Color::white.c_str() << ":" COLORED_FUNC <<" "<< message;
 
 #define CRITICAL(message) \
-    CONSOLE_STREAM << Debug::Color::bRed.c_str() << "Critical"<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
+    CONSOLE_STREAM << Debug::Color::bRed.c_str() << "Critical "<<Debug::Color::white.c_str() << ":" COLORED_FUNC <<" "<< message;
 
 #define FATAL(message) \
-    CONSOLE_STREAM << Debug::Color::bRed.c_str() << "Fatal   "<<Debug::Color::white.c_str() << ":" << Debug::colorizeFunc(Q_FUNC_INFO).toStdString().c_str() <<" "<< message;
+    CONSOLE_STREAM << Debug::Color::bRed.c_str() << "Fatal    "<<Debug::Color::white.c_str() << ":" COLORED_FUNC <<" "<< message;
 #else
 #define DEBUGLN(message)
 #define DEBUG(message)

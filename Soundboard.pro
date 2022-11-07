@@ -14,6 +14,7 @@ INCLUDEPATH += $$inc/core \
 SOURCES += \
     $$src/core/main.cpp \
 
+
 RC_FILE = $$PWD/icon.qrc
 
 

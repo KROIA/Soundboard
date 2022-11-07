@@ -8,9 +8,10 @@
 #include "usersettings.h"
 #include "projectInfo.h"
 
-#include "ui_sound.h"
+#include "ui_soundSettings.h"
 #include "ui_settings.h"
-
+#include "soundboardDatabase.h"
+#include "ui_launchpad.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Soundboard; }
@@ -30,6 +31,7 @@ class Soundboard : public QMainWindow
         void on_actionInfo_triggered();
         void on_actionEinstellungen_triggered();
 
+        void onRibbonEditSoundsPressed();
 
     private:
         Ui::Soundboard *ui;
@@ -38,5 +40,6 @@ class Soundboard : public QMainWindow
         UI_Settings *m_settingsWindow;
         UserSettings m_userSettings;
 
-        UI_Sound *m_sound;
+        UI_Launchpad *m_launchpad;
+        SoundboardDatabase *m_soundDatabase;
 };
