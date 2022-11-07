@@ -18,13 +18,16 @@ Soundboard::Soundboard(QWidget *parent)
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
     SoundsButtons sb = m_ribbon->getSoundsButtons();
     connect(sb.edit, &QPushButton::clicked, this, &Soundboard::onRibbonEditSoundsPressed);
+    SoundsButtons buttons = m_ribbon->getSoundsButtons();
+    connect(buttons.addNew,&QToolButton::pressed,this,&Soundboard::on_buttonPress);
 
     m_settingsWindow = new UI_Settings(this);
     m_settingsWindow->hide();
     m_userSettings.read();
     m_settingsWindow->addSettings(&m_userSettings);
-
-
+    m_launchpad = new UI_Launchpad(this);
+    ui->scrollAreaWidgetContents->layout()->addWidget(m_launchpad);
+/*
 
     // create a database which will load the saved sound profiles
     m_soundDatabase = new SoundboardDatabase();
@@ -126,4 +129,3 @@ void Soundboard::onRibbonEditSoundsPressed()
     sb.edit->setOverlayEnable(!sb.edit->overlayEnabled());
     LaunchpadButton::setEditMode(sb.edit->overlayEnabled());
 }
-
