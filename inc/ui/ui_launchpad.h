@@ -2,7 +2,7 @@
 #define UI_LAUNCHPAD_H
 
 #include <QWidget>
-#include <QPushButton>
+#include "LaunchpadButton.h"
 #include <vector>
 
 namespace Ui {

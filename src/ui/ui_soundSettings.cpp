@@ -33,12 +33,15 @@ void UI_SoundSettings::setSound(Sound *sound)
     if(m_sound)
         disconnect(m_sound, &QObject::destroyed, this, &UI_SoundSettings::onSoundDeleted);
     m_sound = sound;
-    ui->name_label->setText(m_sound->getName().c_str());
-    if(m_sound)
+    if(!m_sound)
     {
-        connect(m_sound, &QObject::destroyed, this, &UI_SoundSettings::onSoundDeleted);
-        ui->repeat_pushButton->setDown(m_sound->getLoops() == Sound::Loops::Infinite);
+        ui->name_label->setText("");
+        return;
     }
+    ui->name_label->setText(m_sound->getName().c_str());
+    connect(m_sound, &QObject::destroyed, this, &UI_SoundSettings::onSoundDeleted);
+    ui->repeat_pushButton->setDown(m_sound->getLoops() == Sound::Loops::Infinite);
+
 }
 Sound *UI_SoundSettings::getSound() const
 {
@@ -83,7 +86,8 @@ const std::string &UI_SoundSettings::getName() const
 }
 void UI_SoundSettings::closeEvent(QCloseEvent *)
 {
-    m_sound->stop();
+    if(m_sound)
+        m_sound->stop();
 }
 
 void UI_SoundSettings::play()
