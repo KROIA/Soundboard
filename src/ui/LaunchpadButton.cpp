@@ -33,6 +33,8 @@ LaunchpadButton::LaunchpadButton(QWidget *parent)
     layout()->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
     setSize_internal(m_width, m_height);
+    setEtitMode_internal();
+    setSound(nullptr);
 }
 LaunchpadButton::~LaunchpadButton()
 {
@@ -63,12 +65,23 @@ void LaunchpadButton::setSound(Sound *sound)
         m_sound->setButtonCoord(m_buttonPos);
         connect(m_sound, &QObject::destroyed, this, &LaunchpadButton::onSoundDeleted);
         connect(m_sound, &Sound::onNameChanged, this, &LaunchpadButton::onSoundNameChanged);
-        onSoundNameChanged(m_sound->getName());
-        setEnabled(m_sound->getSource().isValid());
 
+        if(!m_sound->getSource().isValid())
+        {
+            setEnabled(false);
+            onSoundNameChanged("Sound\nFile\nnot\nfound");
+        }
+        else
+        {
+            setEnabled(true);
+            onSoundNameChanged(m_sound->getName());
+        }
     }
     else
+    {
         setEnabled(false);
+        onSoundNameChanged("Sound\nnot\ndefined");
+    }
 }
 Sound *LaunchpadButton::getSound() const
 {
@@ -89,39 +102,12 @@ const Coord &LaunchpadButton::getArrayPos()
 void LaunchpadButton::setEditMode(bool editEnable)
 {
     m_editMode = editEnable;
-    if(m_editMode)
+    for(size_t i=0; i<m_buttons.size(); ++i)
     {
-        for(size_t i=0; i<m_buttons.size(); ++i)
-        {
-            m_buttons[i]->setEnabled(true);
-            if(m_buttons[i]->m_sound)
-                m_buttons[i]->m_sound->stop();
-            //m_buttons[i]->setText("");
-            //m_buttons[i]->setIcon(QIcon(":/icons/audio.png"));
-            m_buttons[i]->m_label->setPixmap(QPixmap(":/icons/settings.png").scaledToWidth(0.5f*m_width));
-
-        }
-    }
-    else
-    {
-        for(size_t i=0; i<m_buttons.size(); ++i)
-        {
-            if(m_buttons[i]->m_sound)
-            {
-                m_buttons[i]->setEnabled(m_buttons[i]->m_sound->getSource().isValid());
-                m_buttons[i]->onSoundNameChanged(m_buttons[i]->m_sound->getName());
-            }
-            else
-            {
-                m_buttons[i]->setEnabled(false);
-                m_buttons[i]->onSoundNameChanged("");
-            }
-            //m_buttons[i]->setIcon(QIcon());
-            m_buttons[i]->m_label->setPixmap(QPixmap());
-
-        }
+        m_buttons[i]->setEtitMode_internal();
     }
 }
+
 bool LaunchpadButton::getEditMode()
 {
     return m_editMode;
@@ -133,6 +119,30 @@ void LaunchpadButton::setSize(unsigned int width, unsigned int height)
     for(size_t i=0; i<m_buttons.size(); ++i)
     {
         m_buttons[i]->setSize_internal(width, height);
+    }
+}
+void LaunchpadButton::setEtitMode_internal()
+{
+    if(m_editMode)
+    {
+        setEnabled(true);
+        if(m_sound)
+            m_sound->stop();
+        m_label->setPixmap(QPixmap(":/icons/settings.png").scaledToWidth(0.5f*m_width));
+    }
+    else
+    {
+        if(m_sound)
+        {
+            setEnabled(m_sound->getSource().isValid());
+            onSoundNameChanged(m_sound->getName());
+        }
+        else
+        {
+            setEnabled(false);
+            onSoundNameChanged("");
+        }
+        m_label->setPixmap(QPixmap());
     }
 }
 void LaunchpadButton::setSize_internal(unsigned int width, unsigned int height)

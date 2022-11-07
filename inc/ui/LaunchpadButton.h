@@ -30,6 +30,7 @@ class LaunchpadButton: public QPushButton
         void onSoundNameChanged(const std::string &name);
 
     private:
+        void setEtitMode_internal();
         void setSize_internal(unsigned int width, unsigned int height);
 
         Sound *m_sound;
