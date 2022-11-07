@@ -16,6 +16,7 @@ SOURCES += \
 
 
 RC_FILE = $$PWD/icon.qrc
+CONFIG += object_parallel_to_source
 
 
 

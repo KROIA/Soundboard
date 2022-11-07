@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include "databaseObject.h"
-#include "debug.h"
+#include "core/debug.h"
 
 /**
  * \author Alex Krieg

@@ -90,6 +90,7 @@ struct SoundsButtons
     //QToolButton *save;
 
     InformativeToolButton *edit; // You can also use from QToolButton derived buttons here
+    QToolButton *aiButton;
 };
 
 // End of button structs

@@ -3,7 +3,7 @@
 #include <QObject>
 #include <map>
 #include <vector>
-#include "debug.h"
+#include "core/debug.h"
 #include "registryParameter.h"
 
 #define REGISTRY_SETTINGS_DEBUG

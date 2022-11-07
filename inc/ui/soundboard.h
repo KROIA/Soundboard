@@ -25,6 +25,8 @@ class Soundboard : public QMainWindow
         Soundboard(QWidget *parent = nullptr);
         ~Soundboard();
 
+        void setupAIButton(QToolButton *button);
+
     private slots:
 
         void on_actionVersion_triggered();

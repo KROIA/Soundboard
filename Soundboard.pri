@@ -10,6 +10,16 @@ CONFIG += c++11
 
 include(Extern/Qt-Ribbon-Widget/RibbonWidget.pri)
 
+# AI Stuff
+include(../Neural-net-2-graphics/Neural-net-2-graphics.pri)
+INCLUDEPATH += ../AIFO_GradientDecent
+SOURCES += \
+    ../AIFO_GradientDecent/AI_Model.cpp \
+
+HEADERS += \
+    ../AIFO_GradientDecent/AI_Model.h \
+
+
 inc = $$PWD/inc
 src = $$PWD/src
 ui  = $$PWD/ui

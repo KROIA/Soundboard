@@ -5,6 +5,13 @@
 #include "LaunchpadButton.h"
 
 
+#include "Canvas.h"
+#include "AI_Model.h"
+#include "VisibleCamera.h"
+#include "BackgroundGrid.h"
+#include "CanvasSettings.h"
+
+
 //DATABASE_USE_OBJECT(Sound)
 
 using std::string;
@@ -18,6 +25,7 @@ Soundboard::Soundboard(QWidget *parent)
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
     SoundsButtons sb = m_ribbon->getSoundsButtons();
     connect(sb.edit, &QPushButton::clicked, this, &Soundboard::onRibbonEditSoundsPressed);
+    setupAIButton(sb.aiButton);
 
     m_settingsWindow = new UI_Settings(this);
     m_settingsWindow->hide();
@@ -86,7 +94,41 @@ Soundboard::~Soundboard()
     delete ui;
 }
 
+void Soundboard::setupAIButton(QToolButton *button)
+{
+    using namespace QSFML;
+    using namespace QSFML::Objects;
+    using namespace NeuronalNet;
 
+    CanvasSettings settings;
+    //settings.timing.frameTime = 100;
+    //settings.layout.autoAjustSize = false;
+    settings.layout.fixedSize = sf::Vector2u(300,100);
+    settings.contextSettings.antialiasingLevel = 8;
+    Canvas *canvas = new Canvas(button,settings);
+
+    VisibleCamera *cam      = new VisibleCamera("Camera");
+    BackgroundGrid *grid    = new BackgroundGrid("Grid");
+    CanvasObject *obj       = new CanvasObject("Test");
+
+    grid->setSize(sf::IntRect(0,0,1800,1600));
+    grid->setLineColor({sf::Color(130,130,130),
+                        sf::Color(100,100,100),
+                        sf::Color(100,100,100),
+                        sf::Color(100,100,100),
+                        sf::Color(100,100,100)});
+    cam->setMaxMovingBounds(sf::FloatRect(grid->getSize()));
+
+    obj->addChild(grid);
+    obj->addChild(cam);
+
+    canvas->addObject(obj);
+
+    AI_Model *model = new AI_Model();
+    connect(button, &QPushButton::pressed,
+            model, &AI_Model::onUpdatePressed);
+    canvas->addObject(model);
+}
 
 void Soundboard::on_actionVersion_triggered()
 {

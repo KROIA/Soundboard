@@ -1,4 +1,4 @@
-#include "debug.h"
+#include "core/debug.h"
 
 namespace Debug
 {
@@ -22,6 +22,7 @@ namespace Color
     const std::string bCyan   = "\033[1;36m";
     const std::string bWhite  = "\033[1;37m";
 }
+
 QString colorizeFunc(QString name)
 {
     QString output;
