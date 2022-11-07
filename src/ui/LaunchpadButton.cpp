@@ -94,7 +94,8 @@ void LaunchpadButton::setEditMode(bool editEnable)
         for(size_t i=0; i<m_buttons.size(); ++i)
         {
             m_buttons[i]->setEnabled(true);
-            m_buttons[i]->m_sound->stop();
+            if(m_buttons[i]->m_sound)
+                m_buttons[i]->m_sound->stop();
             //m_buttons[i]->setText("");
             //m_buttons[i]->setIcon(QIcon(":/icons/audio.png"));
             m_buttons[i]->m_label->setPixmap(QPixmap(":/icons/settings.png").scaledToWidth(0.5f*m_width));
@@ -142,8 +143,6 @@ void LaunchpadButton::setSize_internal(unsigned int width, unsigned int height)
 
 void LaunchpadButton::onButtonPress()
 {
-    if(!m_sound)
-        return;
     if(m_editMode && !m_settingsWindow->isVisible())
     {
         m_settingsWindow->setSound(m_sound);
@@ -151,7 +150,8 @@ void LaunchpadButton::onButtonPress()
     }
     else if(!m_editMode)
     {
-        m_sound->play();
+        if(m_sound)
+            m_sound->play();
     }
 }
 void LaunchpadButton::onSoundDeleted()

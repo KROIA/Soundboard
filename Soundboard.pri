@@ -73,8 +73,9 @@ FORMS += \
     $$ui/settings/ui_setting.ui \
     $$ui/settings/ui_settings.ui \
     $$ui/settings/ui_settingspage.ui \
-    $$ui/ui_soundSettings.ui
+    $$ui/ui_soundSettings.ui \
     $$ui/ui_launchpad.ui
+
 
 
 RESOURCES += \

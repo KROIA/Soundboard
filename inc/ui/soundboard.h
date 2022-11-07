@@ -30,7 +30,6 @@ class Soundboard : public QMainWindow
         void on_actionVersion_triggered();
         void on_actionInfo_triggered();
         void on_actionEinstellungen_triggered();
-        void on_buttonPress();
 
         void onRibbonEditSoundsPressed();
 

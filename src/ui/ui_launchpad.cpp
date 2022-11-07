@@ -57,7 +57,7 @@ void UI_Launchpad::on_bottomAddButton_clicked()
     {
         for (unsigned int x=0;x<buttonCount;x++)
         {
-            QPushButton *tempButton = new QPushButton(this);
+            QPushButton *tempButton = new LaunchpadButton(this);
             tempButton->setMinimumSize(buttonSize,buttonSize);
 
                 layout->addWidget(tempButton ,buttonArray[x].size(),x);
@@ -90,7 +90,7 @@ void UI_Launchpad::on_topAddButton_clicked()
         unsigned int x = buttonArray.size()-1;
         for (unsigned int y=0;y<buttonCount;y++)
         {
-            QPushButton *tempButton = new QPushButton(this);
+            QPushButton *tempButton = new LaunchpadButton(this);
             tempButton->setMinimumSize(buttonSize,buttonSize);
             layout->addWidget(tempButton ,y,x);
             buttonArray[x].push_back(tempButton);
