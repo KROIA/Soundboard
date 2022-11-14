@@ -38,12 +38,12 @@ jobs:
       # start UnitTests
       - run:            
             cd Test_Database/
-            ./Test_Database >> testResults
+            ./Test_Database >> /home/user/project/testResults
 
       
       - store_artifacts: 
          path: testResults
-         destination: unitTestResults
+         destination: testResults
 
 
 # Invoke jobs via workflows
