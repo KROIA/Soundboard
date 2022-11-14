@@ -36,12 +36,17 @@ jobs:
             make all -j     
 
       # start UnitTests
-      - run: |        
+      - run: 
+          name: "Testing"
+          command: |        
             cd /home/user/UnitTestBuild/Test_Database
             ./Test_Database >> /home/user/UnitTestBuild/Test_Database/testResults
 
       
       - store_test_results: 
+         path: /home/user/UnitTestBuild/Test_Database/testResults
+         
+      - store_artifacts: 
          path: /home/user/UnitTestBuild/Test_Database/testResults
          
 
