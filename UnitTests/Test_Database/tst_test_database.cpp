@@ -97,7 +97,6 @@ Test_Database::~Test_Database()
 
 void Test_Database::test_init()
 {
-     QVERIFY(0);
     m_database = new Database();
     m_database->defineSaveableObject<FruitBasket>();
     m_database->defineSaveableObject<Apple>();
