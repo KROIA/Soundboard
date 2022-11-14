@@ -33,13 +33,16 @@ jobs:
             cd ../UnitTestBuild 
             make clean 
             make qmake_all 
-            make all -j                 
+            make all -j     
+
+      # start UnitTests
+      - run:            
             cd Test_Database/
-            ./Test_Database
+            ./Test_Database >> testResults
 
       
       - store_artifacts: 
-         path: test-results
+         path: testResults
          destination: unitTestResults
 
 
