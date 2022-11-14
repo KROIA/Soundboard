@@ -37,12 +37,12 @@ jobs:
 
       # start UnitTests
       - run: |        
-            cd Test_Database
-            ./Test_Database >> /home/user/project/testResults
+            cd /home/user/UnitTestBuild/Test_Database
+            ./Test_Database >> /home/user/UnitTestBuild/Test_Database/testResults
 
       
       - store_artifacts: 
-         path: testResults
+         path: /home/user/UnitTestBuild/Test_Database/testResults
          destination: testResults
 
 
