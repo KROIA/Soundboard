@@ -41,9 +41,9 @@ jobs:
             ./Test_Database >> /home/user/UnitTestBuild/Test_Database/testResults
 
       
-      - store_artifacts: 
+      - store_test_results: 
          path: /home/user/UnitTestBuild/Test_Database/testResults
-         destination: testResults
+         
 
 
 # Invoke jobs via workflows
