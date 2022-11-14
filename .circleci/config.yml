@@ -36,8 +36,8 @@ jobs:
             make all -j     
 
       # start UnitTests
-      - run:            
-            cd Test_Database/
+      - run: |        
+            cd Test_Database
             ./Test_Database >> /home/user/project/testResults
 
       
