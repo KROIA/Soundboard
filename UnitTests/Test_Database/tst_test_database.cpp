@@ -87,6 +87,7 @@ Test_Database::Test_Database()
     pineApple->m_color = "blue";
     pineApple->m_name = "FlatPineApple";
     m_mariannesBasket->m_fruits.push_back(pineApple);
+
 }
 
 Test_Database::~Test_Database()
@@ -96,6 +97,7 @@ Test_Database::~Test_Database()
 
 void Test_Database::test_init()
 {
+     QVERIFY(0);
     m_database = new Database();
     m_database->defineSaveableObject<FruitBasket>();
     m_database->defineSaveableObject<Apple>();
