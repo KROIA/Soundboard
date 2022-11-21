@@ -15,6 +15,9 @@ Soundboard::Soundboard(QWidget *parent)
 {
 
     ui->setupUi(this);
+    // create a database which will load the saved sound profiles
+    m_soundDatabase = new SoundboardDatabase();
+
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
     SoundsButtons sb = m_ribbon->getSoundsButtons();
     connect(sb.edit, &QPushButton::clicked, this, &Soundboard::onRibbonEditSoundsPressed);
@@ -27,8 +30,7 @@ Soundboard::Soundboard(QWidget *parent)
     ui->scrollAreaWidgetContents->layout()->addWidget(m_launchpad);
 
 
-    // create a database which will load the saved sound profiles
-    m_soundDatabase = new SoundboardDatabase();
+
 
     // load from file
     m_soundDatabase->load("test.json");
@@ -75,7 +77,7 @@ Soundboard::Soundboard(QWidget *parent)
     }*/
 
     // Save the database
-    m_soundDatabase->save();
+    //m_soundDatabase->save();
 }
 
 Soundboard::~Soundboard()

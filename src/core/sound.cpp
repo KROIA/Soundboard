@@ -137,7 +137,7 @@ void Sound::play()
 {
     if(!m_source.isValid())
     {
-        WARNING(m_source.getAbsolutePath().c_str()<<" is not valid");
+        WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid");
         return;
     }
 #ifdef DBG_SOUND
@@ -167,7 +167,7 @@ void Sound::setSource(const SoundSource &source)
     m_source = source;
     if(!m_source.isValid())
     {
-        WARNING(m_source.getAbsolutePath().c_str()<<" is not valid\n");
+        WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid\n");
         return;
     }
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)

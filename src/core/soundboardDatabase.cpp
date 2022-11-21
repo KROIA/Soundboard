@@ -3,55 +3,70 @@
 
 DATABASE_USE_OBJECT(Sound)
 
+SoundboardDatabase *SoundboardDatabase::m_instance = nullptr;
 SoundboardDatabase::SoundboardDatabase()
 {
+    m_instance = this;
     m_database.defineSaveableObject<Sound>();
 
 
 }
 SoundboardDatabase::~SoundboardDatabase()
 {
+    m_instance = nullptr;
     //if(m_databaseFile.size())
     //    save();
 }
 
 bool SoundboardDatabase::load(const std::string &filePath)
 {
-    m_databaseFile = filePath;
-    return m_database.load(filePath);
+    SD_INSTANCE_RET(false);
+    m_instance->m_databaseFile = filePath;
+    return m_instance->m_database.load(filePath);
 }
-bool SoundboardDatabase::save(const std::string &filePath) const
+bool SoundboardDatabase::save(const std::string &filePath)
 {
-    return m_database.save(filePath);
+    SD_INSTANCE_RET(false);
+    return m_instance->m_database.save(filePath);
 }
-bool SoundboardDatabase::save() const
+bool SoundboardDatabase::save()
 {
-    if(m_databaseFile.size() == 0)
+    SD_INSTANCE_RET(false);
+    if(m_instance->m_databaseFile.size() == 0)
     {
         CRITICAL("Database kann nicht gespeichert werden, da die Ausgabedatei nicht definiert ist.");
         return false;
     }
-    return m_database.save(m_databaseFile);
+    return m_instance->m_database.save(m_instance->m_databaseFile);
 }
-Sound* SoundboardDatabase::getSound(const std::string &id) const
+Sound* SoundboardDatabase::getSound(const std::string &id)
 {
-    return m_database.getObject<Sound>(id);
+    SD_INSTANCE_RET(nullptr);
+    return m_instance->m_database.getObject<Sound>(id);
 }
-std::vector<Sound*> SoundboardDatabase::getSounds() const
+std::vector<Sound*> SoundboardDatabase::getSounds()
 {
-    return m_database.getObjects<Sound>();
+    SD_INSTANCE_RET({});
+    return m_instance->m_database.getObjects<Sound>();
 }
-size_t SoundboardDatabase::getSoundsCount() const
+size_t SoundboardDatabase::getSoundsCount()
 {
-    return m_database.getObjectCount<Sound>();
+    SD_INSTANCE_RET(0);
+    return m_instance->m_database.getObjectCount<Sound>();
 }
 Sound* SoundboardDatabase::addSound(const Sound &sound)
 {
+    SD_INSTANCE_RET(nullptr);
     Sound* copy = sound.clone();
-    if(!m_database.addObject(copy))
+    if(!m_instance->m_database.addObject(copy))
     {
         delete copy;
         return nullptr;
     }
     return copy;
+}
+bool SoundboardDatabase::removeSound(Sound *sound)
+{
+    SD_INSTANCE_RET(false);
+    return m_instance->m_database.removeObject(sound);
 }
