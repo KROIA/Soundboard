@@ -103,8 +103,8 @@ class RIBBON_CLASS_NAME : public QWidget
          * \brief SoundboardRibbon
          * \param ribbonWidget, the widget which will display the ribbon
          */
-        SoundboardRibbon(Ribbon* ribbonWidget);
-        ~SoundboardRibbon();
+        RIBBON_CLASS_NAME(Ribbon* ribbonWidget);
+        ~RIBBON_CLASS_NAME();
 
         // NEW_BUTTONS [2]:
         /**
@@ -175,7 +175,7 @@ class RIBBON_CLASS_NAME : public QWidget
          */
         void buildButtons();
 
-        static SoundboardRibbon *RIBBON_INSTANCE_NAME;
+        static RIBBON_CLASS_NAME *RIBBON_INSTANCE_NAME;
 
         Ribbon *RIBBON_OBJ_NAME;
         static const std::string m_externIconsPath;
