@@ -23,7 +23,8 @@ Soundboard::Soundboard(QWidget *parent)
     m_settingsWindow->hide();
     m_userSettings.read();
     m_settingsWindow->addSettings(&m_userSettings);
-
+    m_launchpad = new UI_Launchpad(this);
+    ui->scrollAreaWidgetContents->layout()->addWidget(m_launchpad);
 
 
     // create a database which will load the saved sound profiles
@@ -32,7 +33,7 @@ Soundboard::Soundboard(QWidget *parent)
     // load from file
     m_soundDatabase->load("test.json");
 
-
+/*
     // if no sound is in the database (file not available or empty),
     // then one sound will be added
     if(m_soundDatabase->getSoundsCount() == 0)
@@ -126,4 +127,3 @@ void Soundboard::onRibbonEditSoundsPressed()
     sb.edit->setOverlayEnable(!sb.edit->overlayEnabled());
     LaunchpadButton::setEditMode(sb.edit->overlayEnabled());
 }
-

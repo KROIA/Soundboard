@@ -87,6 +87,7 @@ Test_Database::Test_Database()
     pineApple->m_color = "blue";
     pineApple->m_name = "FlatPineApple";
     m_mariannesBasket->m_fruits.push_back(pineApple);
+
 }
 
 Test_Database::~Test_Database()
