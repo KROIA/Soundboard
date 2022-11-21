@@ -1,6 +1,7 @@
 #include "LaunchpadButton.h"
 #include <QVBoxLayout>
 #include <QSpacerItem>
+#include "soundboardDatabase.h"
 
 
 bool LaunchpadButton::m_editMode = false;
@@ -13,6 +14,7 @@ LaunchpadButton::LaunchpadButton(QWidget *parent)
     :   QPushButton(parent)
 {
     m_sound = nullptr;
+    m_thisOwnedSound = nullptr;
 
     // Add this button to the global button list
     m_buttons.push_back(this);
@@ -33,12 +35,15 @@ LaunchpadButton::LaunchpadButton(QWidget *parent)
     layout()->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
     setSize_internal(m_width, m_height);
-    setEtitMode_internal();
     setSound(nullptr);
+    setEtitMode_internal();
 }
 LaunchpadButton::~LaunchpadButton()
 {
-    m_sound = nullptr;
+    if(m_thisOwnedSound)
+    {
+        deleteThisOwnedSound();
+    }
 
     // Remove this button from the global button list
     for(size_t i=0; i<m_buttons.size(); ++i)
@@ -58,6 +63,10 @@ void LaunchpadButton::setSound(Sound *sound)
     {
         disconnect(m_sound, &QObject::destroyed, this, &LaunchpadButton::onSoundDeleted);
         disconnect(m_sound, &Sound::onNameChanged, this, &LaunchpadButton::onSoundNameChanged);
+        if(m_thisOwnedSound)
+        {
+            deleteThisOwnedSound();
+        }
     }
     m_sound = sound;
     if(m_sound)
@@ -121,6 +130,24 @@ void LaunchpadButton::setSize(unsigned int width, unsigned int height)
         m_buttons[i]->setSize_internal(width, height);
     }
 }
+void LaunchpadButton::createNewSound()
+{
+    if(m_thisOwnedSound)
+    {
+        deleteThisOwnedSound();
+    }
+    Sound s;
+    s.setName("Neuer Sound");
+    m_thisOwnedSound = SoundboardDatabase::addSound(s);
+    m_sound = m_thisOwnedSound;
+}
+void LaunchpadButton::deleteThisOwnedSound()
+{
+    SoundboardDatabase::removeSound(m_thisOwnedSound);
+    delete m_thisOwnedSound;
+    m_thisOwnedSound = nullptr;
+    m_sound = nullptr;
+}
 void LaunchpadButton::setEtitMode_internal()
 {
     if(m_editMode)
@@ -140,7 +167,7 @@ void LaunchpadButton::setEtitMode_internal()
         else
         {
             setEnabled(false);
-            onSoundNameChanged("");
+            onSoundNameChanged("Sound\nnot\ndefined");
         }
         m_label->setPixmap(QPixmap());
     }
@@ -155,6 +182,8 @@ void LaunchpadButton::onButtonPress()
 {
     if(m_editMode && !m_settingsWindow->isVisible())
     {
+        if(!m_sound)
+            createNewSound();
         m_settingsWindow->setSound(m_sound);
         m_settingsWindow->show();
     }

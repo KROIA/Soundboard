@@ -30,10 +30,13 @@ class LaunchpadButton: public QPushButton
         void onSoundNameChanged(const std::string &name);
 
     private:
+        void createNewSound();
+        void deleteThisOwnedSound();
         void setEtitMode_internal();
         void setSize_internal(unsigned int width, unsigned int height);
 
         Sound *m_sound;
+        Sound *m_thisOwnedSound;
         Coord m_buttonPos;
         QLabel *m_label;
 
