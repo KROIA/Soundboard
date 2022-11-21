@@ -5,7 +5,7 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  buildProject:
+  build-and-test:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
@@ -23,16 +23,37 @@ jobs:
             sudo apt-get install qt5-default qtmultimedia5-dev build-essential -y
             git submodule update --init --recursive
             qmake -spec linux-g++ CONFIG+=debug -o ../build/Makefile
-            cd ../build 
+            cd UnitTests
+            qmake -spec linux-g++ CONFIG+=debug -o ../../UnitTestBuild/Makefile
+            cd ../../build 
             make clean 
             make qmake_all 
             make all -j
-          
-          #command: "apk add qt5-qtbase-dev make g++ gtest-dev doxygen"
+
+            cd ../UnitTestBuild 
+            make clean 
+            make qmake_all 
+            make all -j     
+
+      # start UnitTests
+      - run: 
+          name: "Testing"
+          command: |        
+            cd /home/user/UnitTestBuild/Test_Database
+            ./Test_Database >> /home/user/UnitTestBuild/Test_Database/testResults
+
+      
+      - store_test_results: 
+         path: /home/user/UnitTestBuild/Test_Database/testResults
+         
+      - store_artifacts: 
+         path: /home/user/UnitTestBuild/Test_Database/testResults
+         
+
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   buildProject-workflow:
     jobs:
-      - buildProject
+      - build-and-test

@@ -141,7 +141,13 @@ class UI_SoundSettings : public QWidget
 
     private slots:
         void onSoundDeleted();
-    private:
+        void on_volumeSlider_valueChanged(int value);
+
+        void on_buttonName_lineEdit_textChanged(const QString &arg1);
+
+        void on_loadSound_pushButton_clicked();
+
+private:
         Ui::UI_SoundSettings *ui;
         Sound *m_sound;
 

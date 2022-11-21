@@ -1,5 +1,7 @@
 #include "ui_soundSettings.h"
 #include "ui_ui_soundSettings.h"
+#include <QFileDialog>
+#include <QFile>
 
 UI_SoundSettings::UI_SoundSettings(QWidget *parent) :
     QWidget(parent),
@@ -12,7 +14,7 @@ UI_SoundSettings::UI_SoundSettings(QWidget *parent) :
     ui->pause_pushButton->setIcon(QIcon(":/icons/pause.png"));    ui->pause_pushButton->setText("");
     ui->stop_pushButton->setIcon(QIcon(":/icons/stop.png"));      ui->stop_pushButton->setText("");
     ui->repeat_pushButton->setIcon(QIcon(":/icons/repeat.png"));  ui->repeat_pushButton->setText("");
-    ui->settings_pushButton->setIcon(QIcon(":/icons/settings.png"));  ui->settings_pushButton->setText("");
+    //ui->settings_pushButton->setIcon(QIcon(":/icons/settings.png"));  ui->settings_pushButton->setText("");
     ui->delete_pushButton->setIcon(QIcon(":/icons/close.png"));   ui->delete_pushButton->setText("");
 
     connect(ui->play_pushButton,&QPushButton::clicked,this,&UI_SoundSettings::play);
@@ -35,12 +37,13 @@ void UI_SoundSettings::setSound(Sound *sound)
     m_sound = sound;
     if(!m_sound)
     {
-        ui->name_label->setText("");
+        ui->buttonName_lineEdit->setText("");
         return;
     }
-    ui->name_label->setText(m_sound->getName().c_str());
+    ui->buttonName_lineEdit->setText(m_sound->getName().c_str());
     connect(m_sound, &QObject::destroyed, this, &UI_SoundSettings::onSoundDeleted);
     ui->repeat_pushButton->setDown(m_sound->getLoops() == Sound::Loops::Infinite);
+    ui->volumeSlider->setValue(m_sound->getVolume()*100);
 
 }
 Sound *UI_SoundSettings::getSound() const
@@ -152,10 +155,43 @@ void UI_SoundSettings::setName(const std::string &name)
     if(!m_sound)
         return;
     m_sound->setName(name);
-    ui->name_label->setText(m_sound->getName().c_str());
+    ui->buttonName_lineEdit->setText(m_sound->getName().c_str());
 }
 
 void UI_SoundSettings::onSoundDeleted()
 {
     m_sound = nullptr;
 }
+
+void UI_SoundSettings::on_volumeSlider_valueChanged(int value)
+{
+    if(!m_sound)
+        return;
+    m_sound->setVolume((float) value/ 100);
+    ui->volumeLabel->setText(QString::number(value)+"%");
+}
+
+
+void UI_SoundSettings::on_buttonName_lineEdit_textChanged(const QString &arg1)
+{
+    if(!m_sound)
+        return;
+    m_sound->setName(arg1.toStdString());
+}
+
+
+void UI_SoundSettings::on_loadSound_pushButton_clicked()
+{
+    if(!m_sound)
+        return;
+    QString name = qgetenv("USER");
+        if (name.isEmpty())
+            name = qgetenv("USERNAME");
+    QString path = QFileDialog::getOpenFileName(this,
+        tr("Sound öffnen"), "C:\\Users\\"+name+"\\Musik", tr("Image Files (*.mp3)"));
+    QFile file(path);
+    if(!file.exists())
+        return;
+    m_sound->setSource(SoundSource(path.toStdString()));
+}
+
