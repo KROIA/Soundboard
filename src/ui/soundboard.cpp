@@ -16,7 +16,6 @@ Soundboard::Soundboard(QWidget *parent)
 
     ui->setupUi(this);
     // create a database which will load the saved sound profiles
-    m_soundDatabase = new SoundboardDatabase();
 
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
     SoundsButtons sb = m_ribbon->getSoundsButtons();
@@ -33,7 +32,7 @@ Soundboard::Soundboard(QWidget *parent)
 
 
     // load from file
-    m_soundDatabase->load("test.json");
+    SoundboardDatabase::load("test.json");
 
 /*
     // if no sound is in the database (file not available or empty),
@@ -83,8 +82,7 @@ Soundboard::Soundboard(QWidget *parent)
 Soundboard::~Soundboard()
 {
     m_userSettings.save();
-    m_soundDatabase->save();
-    delete m_soundDatabase;
+    SoundboardDatabase::save();
     delete ui;
 }
 

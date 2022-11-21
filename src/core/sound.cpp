@@ -63,7 +63,7 @@ const SoundSource &Sound::getSource() const
 }
 float Sound::getVolume() const
 {
-    return m_output.volume();
+    return (float)m_player.volume()/100;
 }
 float Sound::getPlaybackSpeed() const
 {
@@ -178,7 +178,10 @@ void Sound::setSource(const SoundSource &source)
 }
 void Sound::setVolume(float volume)
 {
-    m_output.setVolume(volume);
+    qreal linearVolume = QAudio::convertVolume(volume, QAudio::LogarithmicVolumeScale,
+                                                       QAudio::LinearVolumeScale);
+    m_player.setVolume(qRound(linearVolume*100));
+   // m_output.setVolume(volume);
 }
 void Sound::setPlaybackSpeed(float speed)
 {

@@ -21,12 +21,12 @@ public:
     static bool removeSound(Sound *sound);
 
 private:
-    static SoundboardDatabase *m_instance;
+    static SoundboardDatabase m_instance;
     Database m_database;
     std::string m_databaseFile;
 };
 
-#define SD_INSTANCE_RET(ret)\
+/*#define SD_INSTANCE_RET(ret)\
 if(!m_instance) \
 { \
     SD_NO_INSTANCE; \
@@ -40,3 +40,4 @@ if(!m_instance) \
 }
 
 #define SD_NO_INSTANCE qDebug() << __PRETTY_FUNCTION__ << " No instance of type SoundboardDatabase";
+*/

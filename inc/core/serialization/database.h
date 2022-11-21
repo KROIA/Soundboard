@@ -32,7 +32,7 @@ class Database
         bool addObject(ISerializable* obj);
         bool removeObject(ISerializable* obj);
         bool removeObject(DatabaseObject *dbObj);
-        bool removeObject(const std::string &id);
+        DatabaseObject* removeObject(const std::string &id);
         bool objectExists(ISerializable* obj) const;
         bool objectExists(const std::string &id) const;
         size_t getObjectCount() const;
