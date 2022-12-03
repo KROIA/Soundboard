@@ -193,13 +193,8 @@ void LaunchpadButton::onButtonPress()
     {
         if(m_sound)
         {
-            if(m_sound->getLoops() == Sound::Loops::Infinite)
-            {
-                if(m_sound->soundIsPlaying())
-                    m_sound->stop();
-                else
-                    m_sound->play();
-            }
+            if(m_sound->soundIsPlaying())
+                m_sound->stop();
             else
                 m_sound->play();
         }

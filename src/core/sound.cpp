@@ -173,6 +173,7 @@ void Sound::pause()
 }
 void Sound::stop()
 {
+    m_soundIsPlaying = false;
     m_player.stop();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_loopsCounter = 0;
