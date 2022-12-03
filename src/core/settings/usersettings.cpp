@@ -1,5 +1,5 @@
 #include "usersettings.h"
-#include "UI_SoundSettings.h"
+#include "ui_soundSettings.h"
 
 UserSettings::UserSettings()
     :   RegistrySettings("HKEY_CURRENT_USER\\Software\\Qt\\Qt Apps\\SoundBoard",
