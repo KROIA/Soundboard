@@ -41,5 +41,4 @@ class Soundboard : public QMainWindow
         UserSettings m_userSettings;
 
         UI_Launchpad *m_launchpad;
-        SoundboardDatabase *m_soundDatabase;
 };
