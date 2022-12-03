@@ -192,7 +192,17 @@ void LaunchpadButton::onButtonPress()
     else if(!m_editMode)
     {
         if(m_sound)
-            m_sound->play();
+        {
+            if(m_sound->getLoops() == Sound::Loops::Infinite)
+            {
+                if(m_sound->soundIsPlaying())
+                    m_sound->stop();
+                else
+                    m_sound->play();
+            }
+            else
+                m_sound->play();
+        }
     }
 }
 void LaunchpadButton::onSoundDeleted()

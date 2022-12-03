@@ -88,6 +88,8 @@ class Sound :   public QObject, public ISerializable
          */
         const std::string &getName() const;
 
+        bool soundIsPlaying() const;
+
 
 
         IMPLEMENT_ISERIALIZABLE_CONST_FUNC(Sound)
@@ -214,6 +216,7 @@ class Sound :   public QObject, public ISerializable
         #else
         QAudioOutput *m_output;
         #endif
+        bool m_soundIsPlaying;
 
 
 };

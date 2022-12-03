@@ -45,7 +45,7 @@ void UI_SoundSettings::setSound(Sound *sound)
     m_sound = sound;
     if(!m_sound)
     {
-        ui->buttonName_lineEdit->setText("");
+        ui->buttonName_lineEdit->setPlainText("");
         return;
     }
     m_lastVolume = m_sound->getVolume();
@@ -53,7 +53,7 @@ void UI_SoundSettings::setSound(Sound *sound)
     m_lastSource = m_sound->getSource().getAbsolutePath();
     m_lastRepeating = m_sound->getLoops() == Sound::Loops::Infinite;
 
-    ui->buttonName_lineEdit->setText(m_lastName.c_str());
+    ui->buttonName_lineEdit->setPlainText(m_lastName.c_str());
     connect(m_sound, &QObject::destroyed, this, &UI_SoundSettings::onSoundDeleted);
     ui->repeat_pushButton->setDown(m_lastRepeating);
     ui->volumeSlider->setValue(m_lastVolume*100);
@@ -172,7 +172,7 @@ void UI_SoundSettings::setName(const std::string &name)
     if(!m_sound)
         return;
     m_sound->setName(name);
-    ui->buttonName_lineEdit->setText(m_sound->getName().c_str());
+    ui->buttonName_lineEdit->setPlainText(m_sound->getName().c_str());
 }
 
 void UI_SoundSettings::onSoundDeleted()
@@ -189,11 +189,11 @@ void UI_SoundSettings::on_volumeSlider_valueChanged(int value)
 }
 
 
-void UI_SoundSettings::on_buttonName_lineEdit_textChanged(const QString &arg1)
+void UI_SoundSettings::on_buttonName_lineEdit_textChanged()
 {
     if(!m_sound)
         return;
-    m_sound->setName(arg1.toStdString());
+    m_sound->setName(ui->buttonName_lineEdit->toPlainText().toStdString());
 }
 
 
@@ -214,6 +214,17 @@ void UI_SoundSettings::on_loadSound_pushButton_clicked()
         return;
 
     m_sound->setSource(path.toStdString());
+
+    std::string name = m_sound->getSource().getAbsolutePath();
+    for(size_t i=0; i<name.size(); ++i)
+        if(name[i] == '/')
+            name[i] = '\\';
+
+    name = name.substr(name.rfind("\\")+1);
+    name = name.substr(0,name.rfind("."));
+    //m_sound->setName(name);
+    ui->buttonName_lineEdit->setPlainText(name.c_str());
+
 }
 
 
@@ -250,4 +261,7 @@ void UI_SoundSettings::on_delete_pushButton_clicked()
     m_sound = nullptr;
     hide();
 }
+
+
+
 

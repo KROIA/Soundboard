@@ -20,6 +20,7 @@ Sound::Sound()
     m_loopsCounter = 0;
     #endif
     setVolume(1);
+    m_soundIsPlaying = false;
 }
 Sound::Sound(const Sound &other)
     : QObject()
@@ -43,6 +44,7 @@ Sound::Sound(const SoundSource &source)
     m_loops = 0;
     m_loopsCounter = 0;
     #endif
+    m_soundIsPlaying = false;
 }
 Sound::~Sound()
 {
@@ -93,7 +95,10 @@ const std::string &Sound::getName() const
 {
     return m_name;
 }
-
+bool Sound::soundIsPlaying() const
+{
+    return m_soundIsPlaying;
+}
 QJsonObject Sound::save() const
 {
     return combine(ISerializable::save(),
@@ -158,6 +163,7 @@ void Sound::play()
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     ++m_loopsCounter;
 #endif
+    m_soundIsPlaying = true;
     m_player.play();
 }
 void Sound::pause()
@@ -262,6 +268,7 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
         }
         case QMediaPlayer::MediaStatus::EndOfMedia:
         {
+            m_soundIsPlaying = false;
 #ifdef DBG_SOUND
             DEBUGLN("Sound: \""<<m_source.getAbsolutePath().c_str()<<"\" finished playback");
 #endif

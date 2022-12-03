@@ -147,7 +147,7 @@ class UI_SoundSettings : public QWidget
         void onSoundDeleted();
         void on_volumeSlider_valueChanged(int value);
 
-        void on_buttonName_lineEdit_textChanged(const QString &arg1);
+        void on_buttonName_lineEdit_textChanged();
 
         void on_loadSound_pushButton_clicked();
 
@@ -156,6 +156,8 @@ class UI_SoundSettings : public QWidget
         void on_abbrechen_pushButton_clicked();
 
         void on_delete_pushButton_clicked();
+
+
 
     private:
         Ui::UI_SoundSettings *ui;
