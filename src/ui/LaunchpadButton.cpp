@@ -77,20 +77,21 @@ void LaunchpadButton::setSound(Sound *sound)
 
         if(!m_sound->getSource().isValid())
         {
-            setEnabled(false);
+            //setEnabled(false);
             onSoundNameChanged("Sound\nFile\nnot\nfound");
         }
         else
         {
-            setEnabled(true);
+            //setEnabled(true);
             onSoundNameChanged(m_sound->getName());
         }
     }
     else
     {
-        setEnabled(false);
+        //setEnabled(false);
         onSoundNameChanged("Sound\nnot\ndefined");
     }
+    setEtitMode_internal();
 }
 Sound *LaunchpadButton::getSound() const
 {
@@ -140,6 +141,7 @@ void LaunchpadButton::createNewSound()
     s.setName("Neuer Sound");
     m_thisOwnedSound = SoundboardDatabase::addSound(s);
     m_sound = m_thisOwnedSound;
+    m_sound->setButtonCoord(m_buttonPos);
 }
 void LaunchpadButton::deleteThisOwnedSound()
 {
@@ -196,6 +198,7 @@ void LaunchpadButton::onButtonPress()
 void LaunchpadButton::onSoundDeleted()
 {
     m_sound = nullptr;
+    setSound(nullptr);
 }
 void LaunchpadButton::onSoundNameChanged(const std::string &name)
 {

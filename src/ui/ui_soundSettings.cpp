@@ -3,6 +3,9 @@
 #include <QFileDialog>
 #include <QFile>
 
+
+std::string UI_SoundSettings::m_defaultFilebrowserPath = "C:\\";
+
 UI_SoundSettings::UI_SoundSettings(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::UI_SoundSettings)
@@ -21,6 +24,11 @@ UI_SoundSettings::UI_SoundSettings(QWidget *parent) :
     connect(ui->pause_pushButton,&QPushButton::clicked,this,&UI_SoundSettings::pause);
     connect(ui->stop_pushButton,&QPushButton::clicked,this,&UI_SoundSettings::stop);
     connect(ui->repeat_pushButton,&QPushButton::toggled,this,&UI_SoundSettings::toggleRepeat);
+
+    // Disable close button
+    setWindowFlags(Qt::Window
+        | Qt::WindowMinimizeButtonHint
+        | Qt::WindowMaximizeButtonHint);
 }
 
 UI_SoundSettings::~UI_SoundSettings()
@@ -40,10 +48,15 @@ void UI_SoundSettings::setSound(Sound *sound)
         ui->buttonName_lineEdit->setText("");
         return;
     }
-    ui->buttonName_lineEdit->setText(m_sound->getName().c_str());
+    m_lastVolume = m_sound->getVolume();
+    m_lastName = m_sound->getName();
+    m_lastSource = m_sound->getSource().getAbsolutePath();
+    m_lastRepeating = m_sound->getLoops() == Sound::Loops::Infinite;
+
+    ui->buttonName_lineEdit->setText(m_lastName.c_str());
     connect(m_sound, &QObject::destroyed, this, &UI_SoundSettings::onSoundDeleted);
-    ui->repeat_pushButton->setDown(m_sound->getLoops() == Sound::Loops::Infinite);
-    ui->volumeSlider->setValue(m_sound->getVolume()*100);
+    ui->repeat_pushButton->setDown(m_lastRepeating);
+    ui->volumeSlider->setValue(m_lastVolume*100);
 
 }
 Sound *UI_SoundSettings::getSound() const
@@ -86,6 +99,10 @@ const std::string &UI_SoundSettings::getName() const
         return dummy;
     }
     return m_sound->getName();
+}
+void UI_SoundSettings::setDefaultFilebrowserPath(const std::string &path)
+{
+    m_defaultFilebrowserPath = path;
 }
 void UI_SoundSettings::closeEvent(QCloseEvent *)
 {
@@ -141,7 +158,7 @@ void UI_SoundSettings::toggleRepeat(bool toggleOn)
     }
     else
     {
-        m_sound->setLoops(1);
+        m_sound->setLoops(Sound::Loops::Once);
     }
 }
 bool UI_SoundSettings::isRepeating() const
@@ -184,14 +201,53 @@ void UI_SoundSettings::on_loadSound_pushButton_clicked()
 {
     if(!m_sound)
         return;
-    QString name = qgetenv("USER");
-        if (name.isEmpty())
-            name = qgetenv("USERNAME");
+    std::string defaultPath = m_defaultFilebrowserPath;
+    if(m_sound->getSource().isValid())
+        defaultPath = m_sound->getSource().getAbsolutePath();
+
     QString path = QFileDialog::getOpenFileName(this,
-        tr("Sound öffnen"), "C:\\Users\\"+name+"\\Musik", tr("Image Files (*.mp3)"));
+        tr("Sound öffnen"), defaultPath.c_str(), tr("Image Files (*.mp3)"));
+    if(path == "")
+        return;
     QFile file(path);
     if(!file.exists())
         return;
-    m_sound->setSource(SoundSource(path.toStdString()));
+
+    m_sound->setSource(path.toStdString());
+}
+
+
+void UI_SoundSettings::on_uebernehmen_pushButton_clicked()
+{
+     if(m_sound)
+        m_sound->stop();
+     hide();
+}
+
+
+void UI_SoundSettings::on_abbrechen_pushButton_clicked()
+{
+    if(m_sound)
+    {
+        m_sound->setSource(SoundSource(m_lastSource));
+        m_sound->setVolume(m_lastVolume);
+        m_sound->setName(m_lastName);
+        m_sound->stop();
+        if(m_lastRepeating)
+           m_sound->setLoops(Sound::Loops::Infinite);
+        else
+           m_sound->setLoops(Sound::Loops::Once);
+    }
+    hide();
+}
+
+
+void UI_SoundSettings::on_delete_pushButton_clicked()
+{
+    if(m_sound)
+        m_sound->stop();
+    delete m_sound;
+    m_sound = nullptr;
+    hide();
 }
 

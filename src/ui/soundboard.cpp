@@ -4,9 +4,6 @@
 
 #include "LaunchpadButton.h"
 
-
-//DATABASE_USE_OBJECT(Sound)
-
 using std::string;
 
 Soundboard::Soundboard(QWidget *parent)
@@ -15,7 +12,6 @@ Soundboard::Soundboard(QWidget *parent)
 {
 
     ui->setupUi(this);
-    // create a database which will load the saved sound profiles
 
     m_ribbon = new SoundboardRibbon(ui->ribbonTabWidget);
     SoundsButtons sb = m_ribbon->getSoundsButtons();
@@ -33,50 +29,8 @@ Soundboard::Soundboard(QWidget *parent)
 
     // load from file
     SoundboardDatabase::load("test.json");
+    m_launchpad->addSound(SoundboardDatabase::getSounds());
 
-/*
-    // if no sound is in the database (file not available or empty),
-    // then one sound will be added
-    if(m_soundDatabase->getSoundsCount() == 0)
-    {
-        SoundSource source;
-        source.setRootPath(m_userSettings.getAudioRootPath());
-        source.setRelativePath("lang.mp3");
-
-        Sound sound;
-        sound.setLoops(0);
-        sound.setSource(source);
-        sound.setVolume(1);
-        sound.setPlaybackSpeed(1);
-        sound.setName("Keine grosse Sache");
-        m_soundDatabase->addSound(sound);
-    }
-
-    // Get all saved sounds
-    std::vector<Sound*> sounds = m_soundDatabase->getSounds();
-
-    LaunchpadButton *button = new LaunchpadButton();
-
-    ui->scrollAreaWidgetContents->layout()->addWidget(button);
-    if(sounds.size() > 0)
-    {
-        button->setSound(sounds[0]);
-        button->setArrayPos(Coord{0,0});
-    }
-    /*for(size_t i=0; i<sounds.size(); ++i)
-    {
-        // Create a ui view for each sound
-        UI_Sound *sound = new UI_Sound(this);
-
-        // Set the sound to the UI-Element
-        sound->setSound(*sounds[i]);
-
-        // Add the UI-Element to the layout
-        ui->scrollAreaWidgetContents->layout()->addWidget(sound);
-    }*/
-
-    // Save the database
-    //m_soundDatabase->save();
 }
 
 Soundboard::~Soundboard()

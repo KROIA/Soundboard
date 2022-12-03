@@ -45,6 +45,7 @@ HEADERS += \
     $$inc/core/soundboardDatabase.h
 
 SOURCES += \
+    $$PWD/src/core/settings/usersettings.cpp \
     $$src/ui/LaunchpadButton.cpp \
     $$src/core/sound.cpp \
     $$src/ui/soundboard.cpp \

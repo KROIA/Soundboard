@@ -52,6 +52,15 @@ class UI_SoundSettings : public QWidget
          */
         const std::string &getName() const;
 
+        /**
+         * isRepeating()
+         * @return true  If the sound is in loop mode
+         *         false If the sound is not in loop mode
+         */
+        bool isRepeating() const;
+
+        static void setDefaultFilebrowserPath(const std::string &path);
+
         void closeEvent(QCloseEvent *event);
 
     signals:
@@ -126,12 +135,7 @@ class UI_SoundSettings : public QWidget
          */
         void toggleRepeat(bool toggleOn);
 
-        /**
-         * isRepeating()
-         * @return true  If the sound is in loop mode
-         *         false If the sound is not in loop mode
-         */
-        bool isRepeating() const;
+
 
         /**
          * setName(...)
@@ -147,9 +151,23 @@ class UI_SoundSettings : public QWidget
 
         void on_loadSound_pushButton_clicked();
 
-private:
+        void on_uebernehmen_pushButton_clicked();
+
+        void on_abbrechen_pushButton_clicked();
+
+        void on_delete_pushButton_clicked();
+
+    private:
         Ui::UI_SoundSettings *ui;
         Sound *m_sound;
+
+        float m_lastVolume;
+        std::string m_lastName;
+        std::string m_lastSource;
+        bool m_lastRepeating;
+
+
+        static std::string m_defaultFilebrowserPath;
 
 
 };

@@ -1,19 +1,25 @@
 #include "sound.h"
 
-QAudioOutput Sound::m_output;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+QAudioOutput *Sound::m_output = nullptr;
+#endif
+
 Sound::Sound()
     : QObject()
     , ISerializable()
 {
+    if(!m_output)
+        m_output = new QAudioOutput;
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
     m_buttonPos.y = 0;
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    m_player.setAudioOutput(&m_output);
+    m_player.setAudioOutput(m_output);
     #else
     m_loops = 0;
     m_loopsCounter = 0;
     #endif
+    setVolume(1);
 }
 Sound::Sound(const Sound &other)
     : QObject()
@@ -25,12 +31,14 @@ Sound::Sound(const SoundSource &source)
     : QObject()
     , ISerializable()
 {
+    if(!m_output)
+        m_output = new QAudioOutput;
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
     m_buttonPos.y = 0;
     m_source = source;
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    m_player.setAudioOutput(&m_output);
+    m_player.setAudioOutput(m_output);
     #else
     m_loops = 0;
     m_loopsCounter = 0;
@@ -52,18 +60,22 @@ const Sound &Sound::operator=(const Sound &other)
     return *this;
 }
 
-const QAudioOutput &Sound::getAudioOutput()
+/*const QAudioOutput &Sound::getAudioOutput()
 {
-    return m_output;
+    return *m_output;
 }
-
+*/
 const SoundSource &Sound::getSource() const
 {
     return m_source;
 }
 float Sound::getVolume() const
 {
-    return (float)m_player.volume()/100;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    return m_volume;
+#else
+    return m_output->volume();
+#endif
 }
 float Sound::getPlaybackSpeed() const
 {
@@ -178,10 +190,14 @@ void Sound::setSource(const SoundSource &source)
 }
 void Sound::setVolume(float volume)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    m_volume = volume;
     qreal linearVolume = QAudio::convertVolume(volume, QAudio::LogarithmicVolumeScale,
                                                        QAudio::LinearVolumeScale);
     m_player.setVolume(qRound(linearVolume*100));
-   // m_output.setVolume(volume);
+#else
+    m_output->setVolume(volume);
+#endif
 }
 void Sound::setPlaybackSpeed(float speed)
 {
