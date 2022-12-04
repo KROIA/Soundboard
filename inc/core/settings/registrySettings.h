@@ -13,14 +13,14 @@ class RegistrySettings  : public QObject
         Q_OBJECT
     public:
         RegistrySettings(const std::string &registryRootPath, const std::string &groupName);
-        ~RegistrySettings();
+        virtual ~RegistrySettings();
 
         const std::string &getRegistryRootPath() const;
         const std::string &getGroupName() const;
 
         //void undoValueChange();
-        void save();
-        void read();
+        virtual void save();
+        virtual void read();
 
         RegistryParameter *getParameter(const std::string &name);
         std::vector<RegistryParameter*> getParameters();

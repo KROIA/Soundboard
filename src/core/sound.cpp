@@ -1,19 +1,26 @@
 #include "sound.h"
 
-QAudioOutput Sound::m_output;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+QAudioOutput *Sound::m_output = nullptr;
+#endif
+
 Sound::Sound()
     : QObject()
     , ISerializable()
 {
+    if(!m_output)
+        m_output = new QAudioOutput;
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
     m_buttonPos.y = 0;
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    m_player.setAudioOutput(&m_output);
+    m_player.setAudioOutput(m_output);
     #else
     m_loops = 0;
     m_loopsCounter = 0;
     #endif
+    setVolume(1);
+    m_soundIsPlaying = false;
 }
 Sound::Sound(const Sound &other)
     : QObject()
@@ -25,16 +32,19 @@ Sound::Sound(const SoundSource &source)
     : QObject()
     , ISerializable()
 {
+    if(!m_output)
+        m_output = new QAudioOutput;
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
     m_buttonPos.y = 0;
     m_source = source;
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    m_player.setAudioOutput(&m_output);
+    m_player.setAudioOutput(m_output);
     #else
     m_loops = 0;
     m_loopsCounter = 0;
     #endif
+    m_soundIsPlaying = false;
 }
 Sound::~Sound()
 {
@@ -52,18 +62,22 @@ const Sound &Sound::operator=(const Sound &other)
     return *this;
 }
 
-const QAudioOutput &Sound::getAudioOutput()
+/*const QAudioOutput &Sound::getAudioOutput()
 {
-    return m_output;
+    return *m_output;
 }
-
+*/
 const SoundSource &Sound::getSource() const
 {
     return m_source;
 }
 float Sound::getVolume() const
 {
-    return m_output.volume();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    return m_volume;
+#else
+    return m_output->volume();
+#endif
 }
 float Sound::getPlaybackSpeed() const
 {
@@ -81,7 +95,10 @@ const std::string &Sound::getName() const
 {
     return m_name;
 }
-
+bool Sound::soundIsPlaying() const
+{
+    return m_soundIsPlaying;
+}
 QJsonObject Sound::save() const
 {
     return combine(ISerializable::save(),
@@ -137,7 +154,7 @@ void Sound::play()
 {
     if(!m_source.isValid())
     {
-        WARNING(m_source.getAbsolutePath().c_str()<<" is not valid");
+        WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid");
         return;
     }
 #ifdef DBG_SOUND
@@ -146,6 +163,7 @@ void Sound::play()
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     ++m_loopsCounter;
 #endif
+    m_soundIsPlaying = true;
     m_player.play();
 }
 void Sound::pause()
@@ -155,6 +173,7 @@ void Sound::pause()
 }
 void Sound::stop()
 {
+    m_soundIsPlaying = false;
     m_player.stop();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_loopsCounter = 0;
@@ -167,7 +186,7 @@ void Sound::setSource(const SoundSource &source)
     m_source = source;
     if(!m_source.isValid())
     {
-        WARNING(m_source.getAbsolutePath().c_str()<<" is not valid\n");
+        WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid\n");
         return;
     }
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
@@ -178,7 +197,14 @@ void Sound::setSource(const SoundSource &source)
 }
 void Sound::setVolume(float volume)
 {
-    m_output.setVolume(volume);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    m_volume = volume;
+    qreal linearVolume = QAudio::convertVolume(volume, QAudio::LogarithmicVolumeScale,
+                                                       QAudio::LinearVolumeScale);
+    m_player.setVolume(qRound(linearVolume*100));
+#else
+    m_output->setVolume(volume);
+#endif
 }
 void Sound::setPlaybackSpeed(float speed)
 {
@@ -243,6 +269,7 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
         }
         case QMediaPlayer::MediaStatus::EndOfMedia:
         {
+            m_soundIsPlaying = false;
 #ifdef DBG_SOUND
             DEBUGLN("Sound: \""<<m_source.getAbsolutePath().c_str()<<"\" finished playback");
 #endif

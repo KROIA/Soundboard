@@ -56,7 +56,7 @@ class Sound :   public QObject, public ISerializable
          * \brief getAudioOutput
          * \return the audio output on which every sound is attached to
          */
-        static const QAudioOutput &getAudioOutput();
+        //static const QAudioOutput &getAudioOutput();
 
         /**
          * \brief getSource()
@@ -87,6 +87,8 @@ class Sound :   public QObject, public ISerializable
          * \return Returns the name of the sound
          */
         const std::string &getName() const;
+
+        bool soundIsPlaying() const;
 
 
 
@@ -209,7 +211,12 @@ class Sound :   public QObject, public ISerializable
         #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int m_loops;
         int m_loopsCounter;
+        float m_volume;
+        static QAudioOutput *m_output;
+        #else
+        QAudioOutput *m_output;
         #endif
+        bool m_soundIsPlaying;
 
-        static QAudioOutput m_output;
+
 };

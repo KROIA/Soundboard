@@ -18,7 +18,7 @@ SoundboardRibbon::SoundboardRibbon(Ribbon* ribbonWidget)
 
     // builds the buttons
     buildButtons();
-    connect(m_ribbon,&QTabWidget::currentChanged,this,&SoundboardRibbon::onRibbonTabChanged);
+    connect(RIBBON_OBJ_NAME,&QTabWidget::currentChanged,this,&SoundboardRibbon::onRibbonTabChanged);
 }
 SoundboardRibbon::~SoundboardRibbon()
 {}
@@ -80,8 +80,8 @@ RIBBON_SETUP_FUNC_IMPL(NEW_BUTTON_STRUCT_NAME)
 void SoundboardRibbon::selectTab(int tab)
 {
     if(m_instance == nullptr) return;
-    if(m_instance->m_ribbon->count() > tab)
-        m_instance->m_ribbon->setCurrentIndex(tab);
+    if(m_instance->RIBBON_OBJ_NAME->count() > tab)
+        m_instance->RIBBON_OBJ_NAME->setCurrentIndex(tab);
 }
 
 template<typename T>
@@ -96,13 +96,13 @@ T *SoundboardRibbon::buttonFactory(const string &text,
     button->setText(tr(text.c_str()));
     button->setToolTip(tr(toolTip.c_str()));
     button->setIcon(QIcon(iconPath.c_str()));
-    m_ribbon->addButton(tab.c_str(), group.c_str(), button);
+    RIBBON_OBJ_NAME->addButton(tab.c_str(), group.c_str(), button);
     button->setEnabled(enabled);
     return button;
 }
 void SoundboardRibbon::addTab(const string &iconPath, const string tabName)
 {
-    m_ribbon->addTab(QIcon(iconPath.c_str()), tabName.c_str());
+    RIBBON_OBJ_NAME->addTab(QIcon(iconPath.c_str()), tabName.c_str());
 }
 string SoundboardRibbon::resourcePath(const string &iconName)
 {

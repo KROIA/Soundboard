@@ -120,7 +120,7 @@ bool Database::removeObject(ISerializable* obj)
     if(dbObj)
     {
         m_objects.erase(dbObj->getID().getID());
-        delete dbObj;
+        //delete dbObj;
         return true;
     }
     return false;
@@ -139,20 +139,20 @@ bool Database::removeObject(DatabaseObject *dbObj)
   if(found)
   {
     m_objects.erase(dbObj->getID().getID());
-    delete dbObj;
+   //delete dbObj;
     return true;
   }
   return false;
 }
-bool Database::removeObject(const std::string &id)
+DatabaseObject* Database::removeObject(const std::string &id)
 {
     auto findit = m_objects.find(id);
     if(findit == m_objects.end())
-        return false;
+        return nullptr;
     DatabaseObject *dbObj = findit->second;
     m_objects.erase(dbObj->getID().getID());
-    delete dbObj;
-    return true;
+    //delete dbObj;
+    return dbObj;
 }
 bool Database::objectExists(ISerializable* obj) const
 {
