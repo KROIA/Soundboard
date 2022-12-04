@@ -29,6 +29,9 @@
         <file>icons/pause.png</file>
         <file>icons/stop.png</file>
         <file>icons/repeat.png</file>
-        <file>icons/settings.png</file>
+        <file>icons/accept.png</file>
+		<file>icons/close 2.png</file>
+		<file>icons/music.png</file>
+		<file>icons/settings.png</file>
     </qresource>
 </RCC>

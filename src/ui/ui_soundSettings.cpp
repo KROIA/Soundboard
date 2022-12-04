@@ -18,7 +18,11 @@ UI_SoundSettings::UI_SoundSettings(QWidget *parent) :
     ui->stop_pushButton->setIcon(QIcon(":/icons/stop.png"));      ui->stop_pushButton->setText("");
     ui->repeat_pushButton->setIcon(QIcon(":/icons/repeat.png"));  ui->repeat_pushButton->setText("");
     //ui->settings_pushButton->setIcon(QIcon(":/icons/settings.png"));  ui->settings_pushButton->setText("");
-    ui->delete_pushButton->setIcon(QIcon(":/icons/close.png"));   ui->delete_pushButton->setText("");
+    ui->delete_pushButton->setIcon(QIcon(":/icons/delete.png"));   ui->delete_pushButton->setText("");
+    ui->loadSound_pushButton->setIcon(QIcon(":/icons/music.png"));   ui->loadSound_pushButton->setText("");
+    ui->abbrechen_pushButton->setIcon(QIcon(":/icons/close 2.png"));   ui->abbrechen_pushButton->setText("");
+    ui->uebernehmen_pushButton->setIcon(QIcon(":/icons/accept.png"));   ui->uebernehmen_pushButton->setText("");
+
 
     connect(ui->play_pushButton,&QPushButton::clicked,this,&UI_SoundSettings::play);
     connect(ui->pause_pushButton,&QPushButton::clicked,this,&UI_SoundSettings::pause);
