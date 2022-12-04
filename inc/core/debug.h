@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QtGlobal>
 #include <string>
+//#include <iostream>
 
 namespace Debug
 {
@@ -32,6 +33,7 @@ namespace Debug
 //#define USE_COLORED_FUNC
 
 #define CONSOLE_STREAM qDebug()
+//#define CONSOLE_STREAM std::cout
 #define DEBUGLN(message) \
   CONSOLE_STREAM << message << "\n";
 

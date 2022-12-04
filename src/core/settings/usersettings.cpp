@@ -1,5 +1,6 @@
 #include "usersettings.h"
 #include "ui_soundSettings.h"
+#include <QCoreApplication>
 
 UserSettings::UserSettings()
     :   RegistrySettings("HKEY_CURRENT_USER\\Software\\Qt\\Qt Apps\\SoundBoard",
@@ -9,7 +10,7 @@ UserSettings::UserSettings()
                  "audioRootPath",
                  "Audio Quellen Ordner",
                  "Pfad zum Ordner, wo der Filebrowser geöffnet wird um Sounds zu suchen.",
-                 "C:\\");
+                  QCoreApplication::applicationDirPath().toStdString()+"/sounds");
 }
 
 void UserSettings::save()
