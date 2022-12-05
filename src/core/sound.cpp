@@ -1,5 +1,5 @@
 #include "sound.h"
-
+#include <QCoreApplication>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QAudioOutput *Sound::m_output = nullptr;
 #endif
@@ -8,8 +8,12 @@ Sound::Sound()
     : QObject()
     , ISerializable()
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if(!m_output)
         m_output = new QAudioOutput;
+#else
+    m_output = new QAudioOutput;
+#endif
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
     m_buttonPos.y = 0;
@@ -186,8 +190,14 @@ void Sound::setSource(const SoundSource &source)
     m_source = source;
     if(!m_source.isValid())
     {
-        WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid\n");
-        return;
+        WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid, trying relative path...\n");
+        SoundSource testSrc(QCoreApplication::applicationDirPath().toStdString()+ "\\"+source.getAbsolutePath());
+        if(!testSrc.isValid())
+        {
+            WARNING("Path: \""<<testSrc.getAbsolutePath().c_str()<<"\" is not valid\n");
+            return;
+        }
+        m_source = testSrc;
     }
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     m_player.setSource(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));

@@ -22,6 +22,7 @@ bool Database::load(const std::string &jsonFile)
     }
     if( file.open(QIODevice::ReadOnly ) )
     {
+        DEBUGLN("Lese Datei: \""<<jsonFile.c_str()<<"\"");
         QByteArray bytes = file.readAll();
         file.close();
 
