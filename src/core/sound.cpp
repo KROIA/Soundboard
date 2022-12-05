@@ -186,21 +186,15 @@ void Sound::play()
 #ifdef DBG_SOUND
     DEBUGLN("Starting sound: \""<<m_source.getAbsolutePath().c_str()<<"\"");
 #endif
-    if(soundIsPlaying())
-    {
-        stop();
-        return;
-    }
-
-
-
-
     switch(m_playMode)
     {
         case Playmode::Music:
         {
             if(m_soundIsPlaying)
-                return; // Sound is already playing
+            {
+                stop();
+                return;
+            }
             m_soundIsPlaying++;
             m_player[0]->play();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -210,6 +204,8 @@ void Sound::play()
         }
         case Playmode::Stackable:
         {
+            if(m_soundIsPlaying >= (signed)m_player.size())
+                return; // All player slots currently used.
             size_t index = (m_soundIsPlaying++)%m_player.size();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             ++m_loopsCounter[index];

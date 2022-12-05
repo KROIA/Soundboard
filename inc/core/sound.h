@@ -218,6 +218,15 @@ class Sound :   public QObject, public ISerializable
         Playmode m_playMode;
 
         SoundSource  m_source;
+        struct Player
+        {
+            QMediaPlayer* player;
+            bool currentlyPlaying;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            int loopCounter;
+#endif
+        };
+
         std::vector<QMediaPlayer*> m_player;
         #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int m_loops;
