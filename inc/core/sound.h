@@ -111,6 +111,9 @@ class Sound :   public QObject, public ISerializable
          */
         const Coord &getButtonCoord() const;
 
+        static void setDefaultStackSize(size_t size);
+        static size_t getDefaultStackSize();
+
     signals:
         /**
          * onPlaybackFinished()
@@ -213,6 +216,9 @@ class Sound :   public QObject, public ISerializable
     protected:
 
     private:
+        void playMusic();
+        void playStacked();
+
         std::string  m_name;
         Coord m_buttonPos;
         Playmode m_playMode;
@@ -224,19 +230,19 @@ class Sound :   public QObject, public ISerializable
             bool currentlyPlaying;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             int loopCounter;
+#else
+            QAudioOutput *output;
 #endif
         };
 
-        std::vector<QMediaPlayer*> m_player;
+        std::vector<Player> m_player;
         #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int m_loops;
-        std::vector<int> m_loopsCounter;
+        //std::vector<int> m_loopsCounter;
         float m_volume;
         static QAudioOutput *m_output;
-        #else
-        QAudioOutput *m_output;
         #endif
-        int m_soundIsPlaying;
+       // int m_soundIsPlaying;
 
         static size_t m_stackSize;
 

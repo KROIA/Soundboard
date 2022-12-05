@@ -13,7 +13,7 @@ Sound::Sound()
     if(!m_output)
         m_output = new QAudioOutput;
 #else
-    m_output = new QAudioOutput;
+   // m_output = new QAudioOutput;
 #endif
     //for(size_t i=0; i<m_player.size(); ++i)
     //    connect(m_player[i],&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
@@ -29,7 +29,7 @@ Sound::Sound()
 
     #endif
     setVolume(1);
-    m_soundIsPlaying = false;
+    //m_soundIsPlaying = false;
 }
 Sound::Sound(const Sound &other)
     : QObject()
@@ -39,7 +39,7 @@ Sound::Sound(const Sound &other)
     if(!m_output)
         m_output = new QAudioOutput;
 #else
-    m_output = new QAudioOutput;
+    //m_output = new QAudioOutput;
 #endif
     setPlaymode(Playmode::Music);
     //m_player.setAudioOutput(m_output);
@@ -54,7 +54,7 @@ Sound::Sound(const SoundSource &source)
     if(!m_output)
         m_output = new QAudioOutput;
 #else
-    m_output = new QAudioOutput;
+   // m_output = new QAudioOutput;
 #endif
     //connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
@@ -68,7 +68,7 @@ Sound::Sound(const SoundSource &source)
     m_loops = 0;
 
     #endif
-    m_soundIsPlaying = false;
+    //m_soundIsPlaying = false;
 }
 Sound::~Sound()
 {
@@ -101,17 +101,17 @@ float Sound::getVolume() const
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     return m_volume;
 #else
-    return m_output->volume();
+    return m_player[0].output->volume();
 #endif
 }
 float Sound::getPlaybackSpeed() const
 {
-    return (float)m_player[0]->playbackRate();
+    return (float)m_player[0].player->playbackRate();
 }
 int Sound::getLoops() const
 {
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-        return m_player[0]->loops();
+        return m_player[0].player->loops();
     #else
         return m_loops;
     #endif
@@ -122,7 +122,10 @@ const std::string &Sound::getName() const
 }
 bool Sound::soundIsPlaying() const
 {
-    return m_soundIsPlaying;
+    bool isPlaying = false;
+    for(size_t i=0; i<m_player.size(); ++i)
+        isPlaying |= m_player[i].currentlyPlaying;
+    return isPlaying;
 }
 QJsonObject Sound::save() const
 {
@@ -135,7 +138,8 @@ QJsonObject Sound::save() const
         {"speed", getPlaybackSpeed()},
         {"source", m_source.getAbsolutePath().c_str()},
         {"x",m_buttonPos.x},
-        {"y",m_buttonPos.y}
+        {"y",m_buttonPos.y},
+        {"playmode",m_playMode}
     });
 }
 bool Sound::read(const QJsonObject &reader)
@@ -146,6 +150,7 @@ bool Sound::read(const QJsonObject &reader)
     int loops = 0;
     float volume = 0.5;
     float speed = 1;
+    int mode = Playmode::Music;
     std::string source;
     success &= extract(reader,m_name,"name");
     success &= extract(reader,loops,"loops");
@@ -154,6 +159,8 @@ bool Sound::read(const QJsonObject &reader)
     success &= extract(reader,source,"source");
     success &= extract(reader,m_buttonPos.x,"x");
     success &= extract(reader,m_buttonPos.y,"y");
+    extract(reader, mode, "playmode");
+
 
 
     if(!success)
@@ -162,6 +169,7 @@ bool Sound::read(const QJsonObject &reader)
         return false;
     }
 
+    setPlaymode((Playmode)mode);
     setLoops(loops);
     setVolume(volume);
     setPlaybackSpeed(speed);
@@ -183,34 +191,58 @@ void Sound::play()
         WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid");
         return;
     }
-#ifdef DBG_SOUND
-    DEBUGLN("Starting sound: \""<<m_source.getAbsolutePath().c_str()<<"\"");
-#endif
+
     switch(m_playMode)
     {
         case Playmode::Music:
         {
-            if(m_soundIsPlaying)
-            {
-                stop();
-                return;
-            }
-            m_soundIsPlaying++;
-            m_player[0]->play();
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            ++m_loopsCounter[0];
-#endif
+            playMusic();
             break;
         }
         case Playmode::Stackable:
         {
-            if(m_soundIsPlaying >= (signed)m_player.size())
-                return; // All player slots currently used.
-            size_t index = (m_soundIsPlaying++)%m_player.size();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            ++m_loopsCounter[index];
+            if(m_loops == Loops::Infinite)
+#else
+            if(m_player[0].player->loops() == Loops::Infinite)
 #endif
-            m_player[index]->play();
+                playMusic();
+            else
+                playStacked();
+            break;
+        }
+    }
+}
+void Sound::playMusic()
+{
+    if(m_player[0].currentlyPlaying)
+    {
+        stop();
+        return;
+    }
+    m_player[0].currentlyPlaying = true;
+#ifdef DBG_SOUND
+DEBUGLN("Starting mono sound: \""<<m_source.getAbsolutePath().c_str()<<"\"");
+#endif
+    m_player[0].player->play();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    ++m_player[0].loopCounter;
+#endif
+}
+void Sound::playStacked()
+{
+    for(size_t i=0; i<m_player.size(); ++i)
+    {
+        if(!m_player[i].currentlyPlaying)
+        {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            ++m_player[i].loopCounter;
+#endif
+            m_player[i].currentlyPlaying = true;
+#ifdef DBG_SOUND
+DEBUGLN("Starting stacked sound["<<i<<"]: \""<<m_source.getAbsolutePath().c_str()<<"\"");
+#endif
+            m_player[i].player->play();
             break;
         }
     }
@@ -218,17 +250,17 @@ void Sound::play()
 void Sound::pause()
 {
     for(size_t i=0; i<m_player.size(); ++i)
-        m_player[i]->pause();
+        m_player[i].player->pause();
     emit onPlaybackPaused();
 }
 void Sound::stop()
 {
-    m_soundIsPlaying = 0;
     for(size_t i=0; i<m_player.size(); ++i)
     {
-        m_player[i]->stop();
+        m_player[i].player->stop();
+        m_player[i].currentlyPlaying = false;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        m_loopsCounter[i] = 0;
+        m_player[i].loopCounter = 0;
 #endif
     }
     emit onPlaybackStopped();
@@ -237,6 +269,8 @@ void Sound::stop()
 void Sound::setSource(const SoundSource &source)
 {
     m_source = source;
+    if(m_source.getAbsolutePath() == "")
+        return;
     if(!m_source.isValid())
     {
         WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid, trying relative path...\n");
@@ -251,10 +285,10 @@ void Sound::setSource(const SoundSource &source)
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     QUrl url = QUrl::fromLocalFile(m_source.getAbsolutePath().c_str());
     for(size_t i=0; i<m_player.size(); ++i)
-        m_player[i]->setSource(url);
+        m_player[i].player->setSource(url);
 #else
     for(size_t i=0; i<m_player.size(); ++i)
-        m_player[i]->setMedia(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));
+        m_player[i].player->setMedia(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));
 #endif
 }
 void Sound::setVolume(float volume)
@@ -264,21 +298,22 @@ void Sound::setVolume(float volume)
     qreal linearVolume = QAudio::convertVolume(volume, QAudio::LogarithmicVolumeScale,
                                                        QAudio::LinearVolumeScale);
     for(size_t i=0; i<m_player.size(); ++i)
-        m_player[i]->setVolume(qRound(linearVolume*100));
+        m_player[i].player->setVolume(qRound(linearVolume*100));
 #else
-    m_output->setVolume(volume);
+    for(size_t i=0; i<m_player.size(); ++i)
+        m_player[i].output->setVolume(volume);
 #endif
 }
 void Sound::setPlaybackSpeed(float speed)
 {
     for(size_t i=0; i<m_player.size(); ++i)
-        m_player[i]->setPlaybackRate((qreal)speed);
+        m_player[i].player->setPlaybackRate((qreal)speed);
 }
 void Sound::setLoops(int count)
 {
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     for(size_t i=0; i<m_player.size(); ++i)
-        m_player[i]->setLoops(count);
+        m_player[i].player->setLoops(count);
     #else
     m_loops = count;
     #endif
@@ -309,40 +344,50 @@ void Sound::setStackSize(size_t size)
 
     if(m_player.size() > size)
     {
-        std::vector<QMediaPlayer*> players = m_player;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        std::vector<Player> players = m_player;
+/*#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         std::vector<int> loopsCount = m_loopsCounter;
         m_loopsCounter.clear();
-#endif
+#endif*/
         m_player.clear();
-        while(players.size() > size)
+        size_t removed = 0;
+        while(players.size()-removed > size)
         {
-            delete players[players.size()-1];
-            players[players.size()-1] = nullptr;
+            delete players[players.size()-1].player;
+            players[players.size()-1].player = nullptr;
+            ++removed;
         }
         for(size_t i=0; i<players.size(); ++i)
-            if(players[i])
+            if(players[i].player)
             {
                 m_player.push_back(players[i]);
-                std::vector<QMediaPlayer*> players = m_player;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+/*#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                 m_loopsCounter.push_back(loopsCount[i]);
-#endif
+#endif*/
             }
         return;
     }
+    m_player.reserve(size);
     while(m_player.size() < size)
     {
-        QMediaPlayer *player = new QMediaPlayer;
+        Player player;
+        player.player = new QMediaPlayer;
+
+        player.currentlyPlaying = false;
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-        player->setAudioOutput(m_output);
+        player.output = new QAudioOutput;
+        player.player->setAudioOutput(player.output);
 #endif
-        connect(player, &QMediaPlayer::mediaStatusChanged, this, &Sound::onMediaStatusChanged);
-        m_player.push_back(player);
+        connect(player.player, &QMediaPlayer::mediaStatusChanged, this, &Sound::onMediaStatusChanged);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        m_loopsCounter.push_back(0);
+        //m_loopsCounter.push_back(0);
+        player.loopCounter = 0;
 #endif
+        m_player.push_back(player);
+
     }
+    stop();
+    setSource(m_source);
 }
 Sound::Playmode Sound::getPlaymode() const
 {
@@ -363,6 +408,10 @@ void Sound::setPlaymode(Playmode mode)
             setStackSize(m_stackSize);
             break;
         }
+        default:
+#ifdef DBG_SOUND
+            DEBUGLN("No such playmode: "<<mode);
+#endif
     }
 }
 
@@ -370,13 +419,36 @@ const Coord &Sound::getButtonCoord() const
 {
     return m_buttonPos;
 }
+void Sound::setDefaultStackSize(size_t size)
+{
+    if(size < 2)
+        size = 2;
+    m_stackSize = size;
+}
+size_t Sound::getDefaultStackSize()
+{
+    return m_stackSize;
+}
 
 void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
+    size_t currentPlayerIndex = 0;
+    QMediaPlayer *currentPlayer = dynamic_cast<QMediaPlayer*>(QObject::sender());
+    if(currentPlayer)
+    {
+        for(size_t i=0; i<m_player.size(); ++i)
+            if(m_player[i].player == currentPlayer)
+            {
+                currentPlayerIndex = i;
+            }
+    }
     switch(status)
     {
         case QMediaPlayer::MediaStatus::NoMedia:
         {
+#ifdef DBG_SOUND
+            DEBUGLN("Sound["<<currentPlayerIndex<<"]: NoMedia");
+#endif
             break;
         }
         case QMediaPlayer::MediaStatus::LoadingMedia:
@@ -393,6 +465,7 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
         }
         case QMediaPlayer::MediaStatus::BufferingMedia:
         {
+
             break;
         }
         case QMediaPlayer::MediaStatus::BufferedMedia:
@@ -401,22 +474,13 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
         }
         case QMediaPlayer::MediaStatus::EndOfMedia:
         {
-            m_soundIsPlaying--;
+
+            m_player[currentPlayerIndex].currentlyPlaying = false;
 #ifdef DBG_SOUND
-            DEBUGLN("Sound: \""<<m_source.getAbsolutePath().c_str()<<"\" finished playback");
+            DEBUGLN("Sound["<<currentPlayerIndex<<"]: \""<<m_source.getAbsolutePath().c_str()<<"\" finished playback");
 #endif
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            size_t currentPlayerIndex = 0;
-            QMediaPlayer *currentPlayer = dynamic_cast<QMediaPlayer*>(QObject::sender());
-            if(currentPlayer)
-            {
-                for(size_t i=0; i<m_player.size(); ++i)
-                    if(m_player[i] == currentPlayer)
-                    {
-                        currentPlayerIndex = i;
-                        break;
-                    }
-            }
+
             if(m_loops == Loops::Infinite)
             {
                 play();
@@ -424,9 +488,9 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
             }
             if(currentPlayer)
             {
-                if(m_loopsCounter[currentPlayerIndex] >= m_loops)
+                if(m_player[currentPlayerIndex].loopCounter >= m_loops)
                 {
-                    m_loopsCounter[currentPlayerIndex] = 0;
+                    m_player[currentPlayerIndex].loopCounter = 0;
                     emit onPlaybackFinished();
                 }
                 else
@@ -435,7 +499,7 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
                 }
             }
 #else
-            if(m_soundIsPlaying == 0)
+            if(!soundIsPlaying())
                 emit onPlaybackFinished();
 
 #endif
@@ -443,6 +507,9 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
         }
         case QMediaPlayer::MediaStatus::InvalidMedia:
         {
+#ifdef DBG_SOUND
+            DEBUGLN("Sound["<<currentPlayerIndex<<"]: InvalidMedia");
+#endif
             break;
         }
     }

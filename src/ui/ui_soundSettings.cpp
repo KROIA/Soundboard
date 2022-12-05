@@ -59,6 +59,20 @@ void UI_SoundSettings::setSound(Sound *sound)
     m_lastPlayMode = m_sound->getPlaymode();
 
     ui->buttonName_lineEdit->setPlainText(m_lastName.c_str());
+    switch(m_lastPlayMode)
+    {
+        case Sound::Playmode::Music:
+        {
+            ui->stackableCheckBox->setChecked(false);
+            break;
+        }
+        case Sound::Playmode::Stackable:
+        {
+            ui->stackableCheckBox->setChecked(true);
+            break;
+        }
+    }
+
     connect(m_sound, &QObject::destroyed, this, &UI_SoundSettings::onSoundDeleted);
     ui->repeat_pushButton->setDown(m_lastRepeating);
     ui->volumeSlider->setValue(m_lastVolume*100);

@@ -9,6 +9,7 @@ std::vector<LaunchpadButton*> LaunchpadButton::m_buttons;
 UI_SoundSettings *LaunchpadButton::m_settingsWindow = nullptr;
 unsigned int LaunchpadButton::m_width = 50;
 unsigned int LaunchpadButton::m_height = 50;
+int LaunchpadButton::m_fontSize = 7;
 
 LaunchpadButton::LaunchpadButton(QWidget *parent)
     :   QPushButton(parent)
@@ -37,9 +38,7 @@ LaunchpadButton::LaunchpadButton(QWidget *parent)
     setSize_internal(m_width, m_height);
     setSound(nullptr);
     setEtitMode_internal();
-    QFont f = QPushButton::font();
-    f.setPointSize(6);
-    QPushButton::setFont(f);
+    setFontSize_internal(m_fontSize);
 }
 LaunchpadButton::~LaunchpadButton()
 {
@@ -135,6 +134,26 @@ void LaunchpadButton::setSize(unsigned int width, unsigned int height)
         m_buttons[i]->setSize_internal(width, height);
     }
 }
+unsigned int LaunchpadButton::getWidth()
+{
+    return m_width;
+}
+unsigned int LaunchpadButton::getHeight()
+{
+    return m_height;
+}
+void LaunchpadButton::setFontSize(int size)
+{
+    m_fontSize = size;
+    for(size_t i=0; i<m_buttons.size(); ++i)
+    {
+        m_buttons[i]->setFontSize_internal(m_fontSize);
+    }
+}
+int LaunchpadButton::getFontSize()
+{
+    return m_fontSize;
+}
 void LaunchpadButton::createNewSound()
 {
     if(m_thisOwnedSound)
@@ -169,8 +188,13 @@ void LaunchpadButton::setEtitMode_internal()
         {
             if(m_sound->getSource().getAbsolutePath() == "")
             {
-                delete m_sound;
-                m_sound = nullptr;
+                if(m_thisOwnedSound == m_sound)
+                    deleteThisOwnedSound();
+                else
+                {
+                    delete m_sound;
+                    m_sound = nullptr;
+                }
             }
         }
 
@@ -191,6 +215,12 @@ void LaunchpadButton::setSize_internal(unsigned int width, unsigned int height)
 {
     setMinimumSize(width, height);
     setMaximumSize(width, height);
+}
+void LaunchpadButton::setFontSize_internal(int size)
+{
+    QFont f = QPushButton::font();
+    f.setPointSize(size);
+    QPushButton::setFont(f);
 }
 
 void LaunchpadButton::onButtonPress()

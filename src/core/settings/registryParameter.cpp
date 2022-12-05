@@ -6,6 +6,10 @@ RegistryParameter::RegistryParameter()
     : QObject()
 {
     m_type = Type::stringType;
+
+    setFloatRange(0,10);
+    setIntRange(0,10);
+    setMaxCharCount(100);
 }
 RegistryParameter::RegistryParameter(const RegistryParameter &other)
     : QObject()
@@ -16,6 +20,12 @@ RegistryParameter::RegistryParameter(const RegistryParameter &other)
     m_description = other.m_description;
     m_name = other.m_name;
     m_path = other.m_path;
+
+    m_fMin = other.m_fMin;
+    m_fMax = other.m_fMax;
+    m_iMin = other.m_iMin;
+    m_iMax = other.m_iMax;
+    m_maxCharCount = other.m_maxCharCount;
 }
 RegistryParameter::~RegistryParameter()
 {
@@ -77,17 +87,27 @@ void RegistryParameter::setValueStr(const std::string &value)
 {
  //   m_lastValueStr = m_valueStr;
     m_valueStr = value;
+    if(m_valueStr.size() > m_maxCharCount)
+        m_valueStr = m_valueStr.substr(0, m_maxCharCount);
     emit valueChanged(m_valueStr);
 }
 void RegistryParameter::setValueInt(int value)
 {
     //  m_lastValueStr = m_valueStr;
+    if(value < m_iMin)
+        value = m_iMin;
+    else if(value > m_iMax)
+        value = m_iMax;
     m_valueStr = std::to_string(value);
     emit valueChanged(m_valueStr);
 }
 void RegistryParameter::setValueFloat(float value)
 {
     //  m_lastValueStr = m_valueStr;
+    if(value < m_fMin)
+        value = m_fMin;
+    else if(value > m_fMax)
+        value = m_fMax;
     m_valueStr = std::to_string(value);
     emit valueChanged(m_valueStr);
 }
@@ -166,4 +186,50 @@ std::string RegistryParameter::getValue(std::string path, std::string name)
     QSettings _setting(path.c_str(),QSettings::NativeFormat);
     value =_setting.value(name.c_str()).toString().toStdString();
     return value;
+}
+
+void RegistryParameter::setFloatRange(float min, float max)
+{
+    m_fMin = min;
+    m_fMax = max;
+    if(m_fMin > m_fMax)
+    {
+        m_fMin = max;
+        m_fMax = min;
+    }
+}
+void RegistryParameter::setIntRange(int min, int max)
+{
+    m_iMin = min;
+    m_iMax = max;
+    if(m_iMin > m_iMax)
+    {
+        m_iMin = max;
+        m_iMax = min;
+    }
+}
+void RegistryParameter::setMaxCharCount(unsigned int count)
+{
+    m_maxCharCount = count;
+}
+
+float RegistryParameter::getFloatRangeMin() const
+{
+    return m_fMin;
+}
+float RegistryParameter::getFloatRangeMax() const
+{
+    return m_fMax;
+}
+int RegistryParameter::getIntRangeMin() const
+{
+    return m_iMin;
+}
+int RegistryParameter::getIntRangeMax() const
+{
+    return m_iMax;
+}
+unsigned int RegistryParameter::getMaxCharCount() const
+{
+    return m_maxCharCount;
 }

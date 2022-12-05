@@ -36,18 +36,23 @@ void UI_Setting::onShow()
         case RegistryParameter::Type::stringType:
         {
             ui->stackedWidget->setCurrentIndex(0);
+            ui->lineEdit->setMaxLength(m_parameter->getMaxCharCount());
             ui->lineEdit->setText(m_parameter->getValueStr().c_str());
+
             break;
         }
         case RegistryParameter::Type::intType:
         {
             ui->stackedWidget->setCurrentIndex(1);
+            ui->spinBox->setRange(m_parameter->getIntRangeMin(), m_parameter->getIntRangeMax());
             ui->spinBox->setValue(m_parameter->getValueInt());
+
             break;
         }
         case RegistryParameter::Type::floatType:
         {
             ui->stackedWidget->setCurrentIndex(2);
+            ui->doubleSpinBox->setRange(m_parameter->getFloatRangeMin(), m_parameter->getFloatRangeMax());
             ui->doubleSpinBox->setValue(m_parameter->getValueFloat());
             break;
         }
