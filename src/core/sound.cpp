@@ -4,6 +4,7 @@
 QAudioOutput *Sound::m_output = nullptr;
 #endif
 
+size_t Sound::m_stackSize = 10;
 Sound::Sound()
     : QObject()
     , ISerializable()
@@ -14,14 +15,18 @@ Sound::Sound()
 #else
     m_output = new QAudioOutput;
 #endif
-    connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
+    //for(size_t i=0; i<m_player.size(); ++i)
+    //    connect(m_player[i],&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
     m_buttonPos.y = 0;
+    //setStackSize(1);
+    setPlaymode(Playmode::Music);
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    m_player.setAudioOutput(m_output);
+    //m_player.setAudioOutput(m_output);
+
     #else
     m_loops = 0;
-    m_loopsCounter = 0;
+
     #endif
     setVolume(1);
     m_soundIsPlaying = false;
@@ -36,8 +41,9 @@ Sound::Sound(const Sound &other)
 #else
     m_output = new QAudioOutput;
 #endif
-    m_player.setAudioOutput(m_output);
-    connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
+    setPlaymode(Playmode::Music);
+    //m_player.setAudioOutput(m_output);
+    //connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     this->operator=(other);
 }
 Sound::Sound(const SoundSource &source)
@@ -50,15 +56,17 @@ Sound::Sound(const SoundSource &source)
 #else
     m_output = new QAudioOutput;
 #endif
-    connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
+    //connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
     m_buttonPos.y = 0;
     m_source = source;
+    setPlaymode(Playmode::Music);
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    m_player.setAudioOutput(m_output);
+
+    //m_player.setAudioOutput(m_output);
     #else
     m_loops = 0;
-    m_loopsCounter = 0;
+
     #endif
     m_soundIsPlaying = false;
 }
@@ -98,12 +106,12 @@ float Sound::getVolume() const
 }
 float Sound::getPlaybackSpeed() const
 {
-    return (float)m_player.playbackRate();
+    return (float)m_player[0]->playbackRate();
 }
 int Sound::getLoops() const
 {
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-        return m_player.loops();
+        return m_player[0]->loops();
     #else
         return m_loops;
     #endif
@@ -169,6 +177,7 @@ void Sound::postLoad()
 
 void Sound::play()
 {
+
     if(!m_source.isValid())
     {
         WARNING("Path: \""<<m_source.getAbsolutePath().c_str()<<"\" is not valid");
@@ -177,24 +186,55 @@ void Sound::play()
 #ifdef DBG_SOUND
     DEBUGLN("Starting sound: \""<<m_source.getAbsolutePath().c_str()<<"\"");
 #endif
+    if(soundIsPlaying())
+    {
+        stop();
+        return;
+    }
+
+
+
+
+    switch(m_playMode)
+    {
+        case Playmode::Music:
+        {
+            if(m_soundIsPlaying)
+                return; // Sound is already playing
+            m_soundIsPlaying++;
+            m_player[0]->play();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    ++m_loopsCounter;
+            ++m_loopsCounter[0];
 #endif
-    m_soundIsPlaying = true;
-    m_player.play();
+            break;
+        }
+        case Playmode::Stackable:
+        {
+            size_t index = (m_soundIsPlaying++)%m_player.size();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            ++m_loopsCounter[index];
+#endif
+            m_player[index]->play();
+            break;
+        }
+    }
 }
 void Sound::pause()
 {
-    m_player.pause();
+    for(size_t i=0; i<m_player.size(); ++i)
+        m_player[i]->pause();
     emit onPlaybackPaused();
 }
 void Sound::stop()
 {
-    m_soundIsPlaying = false;
-    m_player.stop();
+    m_soundIsPlaying = 0;
+    for(size_t i=0; i<m_player.size(); ++i)
+    {
+        m_player[i]->stop();
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_loopsCounter = 0;
+        m_loopsCounter[i] = 0;
 #endif
+    }
     emit onPlaybackStopped();
 }
 
@@ -214,9 +254,11 @@ void Sound::setSource(const SoundSource &source)
     }
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     QUrl url = QUrl::fromLocalFile(m_source.getAbsolutePath().c_str());
-    m_player.setSource(url);
+    for(size_t i=0; i<m_player.size(); ++i)
+        m_player[i]->setSource(url);
 #else
-    m_player.setMedia(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));
+    for(size_t i=0; i<m_player.size(); ++i)
+        m_player[i]->setMedia(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));
 #endif
 }
 void Sound::setVolume(float volume)
@@ -225,19 +267,22 @@ void Sound::setVolume(float volume)
     m_volume = volume;
     qreal linearVolume = QAudio::convertVolume(volume, QAudio::LogarithmicVolumeScale,
                                                        QAudio::LinearVolumeScale);
-    m_player.setVolume(qRound(linearVolume*100));
+    for(size_t i=0; i<m_player.size(); ++i)
+        m_player[i]->setVolume(qRound(linearVolume*100));
 #else
     m_output->setVolume(volume);
 #endif
 }
 void Sound::setPlaybackSpeed(float speed)
 {
-    m_player.setPlaybackRate((qreal)speed);
+    for(size_t i=0; i<m_player.size(); ++i)
+        m_player[i]->setPlaybackRate((qreal)speed);
 }
 void Sound::setLoops(int count)
 {
     #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    m_player.setLoops(count);
+    for(size_t i=0; i<m_player.size(); ++i)
+        m_player[i]->setLoops(count);
     #else
     m_loops = count;
     #endif
@@ -256,6 +301,73 @@ void Sound::setButtonCoord(int x, int y)
 void Sound::setButtonCoord(const Coord &pos)
 {
     m_buttonPos = pos;
+}
+
+void Sound::setStackSize(size_t size)
+{
+    if(size == 0)
+        size = 1;
+    if(m_player.size() == size)
+        return;
+
+
+    if(m_player.size() > size)
+    {
+        std::vector<QMediaPlayer*> players = m_player;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        std::vector<int> loopsCount = m_loopsCounter;
+        m_loopsCounter.clear();
+#endif
+        m_player.clear();
+        while(players.size() > size)
+        {
+            delete players[players.size()-1];
+            players[players.size()-1] = nullptr;
+        }
+        for(size_t i=0; i<players.size(); ++i)
+            if(players[i])
+            {
+                m_player.push_back(players[i]);
+                std::vector<QMediaPlayer*> players = m_player;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                m_loopsCounter.push_back(loopsCount[i]);
+#endif
+            }
+        return;
+    }
+    while(m_player.size() < size)
+    {
+        QMediaPlayer *player = new QMediaPlayer;
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+        player->setAudioOutput(m_output);
+#endif
+        connect(player, &QMediaPlayer::mediaStatusChanged, this, &Sound::onMediaStatusChanged);
+        m_player.push_back(player);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        m_loopsCounter.push_back(0);
+#endif
+    }
+}
+Sound::Playmode Sound::getPlaymode() const
+{
+    return m_playMode;
+}
+void Sound::setPlaymode(Playmode mode)
+{
+    m_playMode = mode;
+    switch(m_playMode)
+    {
+        case Playmode::Music:
+        {
+            setStackSize(1);
+            break;
+        }
+        case Playmode::Stackable:
+        {
+            setStackSize(m_stackSize);
+            break;
+        }
+    }
 }
 
 const Coord &Sound::getButtonCoord() const
@@ -293,27 +405,42 @@ void Sound::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
         }
         case QMediaPlayer::MediaStatus::EndOfMedia:
         {
-            m_soundIsPlaying = false;
+            m_soundIsPlaying--;
 #ifdef DBG_SOUND
             DEBUGLN("Sound: \""<<m_source.getAbsolutePath().c_str()<<"\" finished playback");
 #endif
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            size_t currentPlayerIndex = 0;
+            QMediaPlayer *currentPlayer = dynamic_cast<QMediaPlayer*>(QObject::sender());
+            if(currentPlayer)
+            {
+                for(size_t i=0; i<m_player.size(); ++i)
+                    if(m_player[i] == currentPlayer)
+                    {
+                        currentPlayerIndex = i;
+                        break;
+                    }
+            }
             if(m_loops == Loops::Infinite)
             {
                 play();
                 return;
             }
-            if(m_loopsCounter >= m_loops)
+            if(currentPlayer)
             {
-                m_loopsCounter = 0;
-                emit onPlaybackFinished();
-            }
-            else
-            {
-                play();
+                if(m_loopsCounter[currentPlayerIndex] >= m_loops)
+                {
+                    m_loopsCounter[currentPlayerIndex] = 0;
+                    emit onPlaybackFinished();
+                }
+                else
+                {
+                    play();
+                }
             }
 #else
-            emit onPlaybackFinished();
+            if(m_soundIsPlaying == 0)
+                emit onPlaybackFinished();
 
 #endif
             break;

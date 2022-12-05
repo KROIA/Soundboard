@@ -206,10 +206,11 @@ void LaunchpadButton::onButtonPress()
     {
         if(m_sound)
         {
-            if(m_sound->soundIsPlaying())
+            /*if(m_sound->soundIsPlaying())
                 m_sound->stop();
-            else
-                m_sound->play();
+            else*/
+
+            m_sound->play();
         }
     }
 }
