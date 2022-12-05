@@ -215,6 +215,13 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="2">
+    <widget class="QCheckBox" name="stackableCheckBox">
+     <property name="text">
+      <string>Stackable</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
