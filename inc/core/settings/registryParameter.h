@@ -48,6 +48,15 @@ class RegistryParameter : public QObject
         static void removeValue(std::string path, std::string name);
         static std::string getValue(std::string path, std::string name);
 
+        void setFloatRange(float min, float max);
+        void setIntRange(int min, int max);
+        void setMaxCharCount(unsigned int count);
+
+        float getFloatRangeMin() const;
+        float getFloatRangeMax() const;
+        int getIntRangeMin() const;
+        int getIntRangeMax() const;
+        unsigned int getMaxCharCount() const;
         // static const std::string m_relativeRegistryPath_settings;
     signals:
         void typeChanged(Type type);
@@ -66,5 +75,9 @@ class RegistryParameter : public QObject
         std::string m_description;
         std::string m_valueStr;
         //std::string m_lastValueStr;
+
+        float m_fMin, m_fMax;
+        int m_iMin, m_iMax;
+        unsigned int m_maxCharCount;
 };
 

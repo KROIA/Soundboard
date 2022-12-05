@@ -16,7 +16,8 @@ class UI_Launchpad : public QWidget
 public:
     explicit UI_Launchpad(QWidget *parent = nullptr);
     ~UI_Launchpad();
-    void setButtonSize(unsigned int bs);
+    //void setButtonSize(unsigned int bs);
+    //unsigned int getButtonSize() const;
     bool addSound(Sound *sound, bool overwrite = true);
     bool addSound(const std::vector<Sound *> &sounds, bool overwrite = true);
 
@@ -30,11 +31,11 @@ private:
     LaunchpadButton *createNewButton(Coord pos);
 
     Ui::UI_Launchpad *ui;
-   // QPushButton *chliiZumUsprobiere;
     std::vector<std::vector<QPushButton*>> buttonArray;
     size_t m_gridSizeX;
     size_t m_gridSizeY;
-    unsigned int buttonSize;
+
+    //unsigned int m_buttonSize;
 };
 
 #endif // UI_LAUNCHPAD_H

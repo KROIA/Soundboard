@@ -116,7 +116,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="sizeConstraint">
-       <enum>QLayout::SetFixedSize</enum>
+       <enum>QLayout::SetMinimumSize</enum>
       </property>
      </layout>
     </widget>

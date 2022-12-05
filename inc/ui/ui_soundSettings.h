@@ -159,6 +159,8 @@ class UI_SoundSettings : public QWidget
 
 
 
+        void on_stackableCheckBox_stateChanged(int arg1);
+
     private:
         Ui::UI_SoundSettings *ui;
         Sound *m_sound;
@@ -167,6 +169,7 @@ class UI_SoundSettings : public QWidget
         std::string m_lastName;
         std::string m_lastSource;
         bool m_lastRepeating;
+        Sound::Playmode m_lastPlayMode;
 
 
         static std::string m_defaultFilebrowserPath;

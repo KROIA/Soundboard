@@ -32,6 +32,11 @@ class Sound :   public QObject, public ISerializable
         Q_OBJECT
 
     public:
+        enum Playmode
+        {
+            Music,
+            Stackable
+        };
         enum Loops
         {
             Infinite = -1,
@@ -90,6 +95,8 @@ class Sound :   public QObject, public ISerializable
 
         bool soundIsPlaying() const;
 
+        Playmode getPlaymode() const;
+
 
 
         IMPLEMENT_ISERIALIZABLE_CONST_FUNC(Sound)
@@ -103,6 +110,9 @@ class Sound :   public QObject, public ISerializable
          * @return position in the launchpad button array
          */
         const Coord &getButtonCoord() const;
+
+        static void setDefaultStackSize(size_t size);
+        static size_t getDefaultStackSize();
 
     signals:
         /**
@@ -197,26 +207,43 @@ class Sound :   public QObject, public ISerializable
          */
         void setButtonCoord(const Coord &pos);
 
+        void setStackSize(size_t size);
+        void setPlaymode(Playmode mode);
+
 
     private slots:
         void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     protected:
 
     private:
+        void playMusic();
+        void playStacked();
+
         std::string  m_name;
         Coord m_buttonPos;
+        Playmode m_playMode;
 
         SoundSource  m_source;
-        QMediaPlayer m_player;
+        struct Player
+        {
+            QMediaPlayer* player;
+            bool currentlyPlaying;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            int loopCounter;
+#else
+            QAudioOutput *output;
+#endif
+        };
+
+        std::vector<Player> m_player;
         #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         int m_loops;
-        int m_loopsCounter;
+        //std::vector<int> m_loopsCounter;
         float m_volume;
         static QAudioOutput *m_output;
-        #else
-        QAudioOutput *m_output;
         #endif
-        bool m_soundIsPlaying;
+       // int m_soundIsPlaying;
 
+        static size_t m_stackSize;
 
 };

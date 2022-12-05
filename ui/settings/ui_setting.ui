@@ -36,7 +36,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_1">
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -85,6 +85,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="maximum">
+          <number>99999</number>
+         </property>
         </widget>
        </item>
        <item>
@@ -129,6 +132,9 @@
            <width>100</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="maximum">
+          <double>99999.990000000005239</double>
          </property>
         </widget>
        </item>

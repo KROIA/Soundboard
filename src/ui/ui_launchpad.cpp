@@ -6,7 +6,7 @@ UI_Launchpad::UI_Launchpad(QWidget *parent) :
     ui(new Ui::UI_Launchpad)
 {
     ui->setupUi(this);
-    setButtonSize(50);
+    //setButtonSize(50);
     ui->bottomAddButton->setIcon(QIcon(":/icons/document-add.png"));
     ui->topAddButton->setIcon(QIcon(":/icons/document-add.png"));
     m_gridSizeX = 0;
@@ -18,18 +18,22 @@ UI_Launchpad::~UI_Launchpad()
     delete ui;
 }
 
-
+/*
 void UI_Launchpad::setButtonSize(unsigned int bs)
 {
-    buttonSize=bs;
+    m_buttonSize=bs;
     for(size_t x=0;x<buttonArray.size(); x++)
     {
         for(size_t y=0;y<buttonArray[x].size(); y++)
         {
-            buttonArray[x][y]->setMinimumSize(buttonSize,buttonSize);
+            buttonArray[x][y]->setMinimumSize(bs, bs);
         }
     }
 }
+unsigned int UI_Launchpad::getButtonSize() const
+{
+    return m_buttonSize;
+}*/
 bool UI_Launchpad::addSound(Sound *sound, bool overwrite)
 {
     if(!sound)
@@ -60,7 +64,7 @@ bool UI_Launchpad::addSound(Sound *sound, bool overwrite)
         {
             if((x != (size_t)buttonPos.x || y != (size_t)buttonPos.y) && !buttonArray[x][y])
             {
-                LaunchpadButton *tempButton = createNewButton(Coord{.x=(int)x,.y=(int)y});
+                LaunchpadButton *tempButton = createNewButton(Coord{(int)x,(int)y});
                 layout->addWidget(tempButton , y, x);
                 buttonArray[x][y] = tempButton;
             }
@@ -140,11 +144,9 @@ void UI_Launchpad::on_topAddButton_clicked()
 }
 LaunchpadButton *UI_Launchpad::createNewButton(Coord pos)
 {
-    //QGridLayout *layout = dynamic_cast<QGridLayout*>  (ui->launchpadGridFrame->layout());
     LaunchpadButton *tempButton = new LaunchpadButton(this);
     tempButton->setArrayPos(pos);
-    tempButton->setMinimumSize(buttonSize,buttonSize);
-    //layout->addWidget(tempButton ,(unsigned int)pos.y, (unsigned int)pos.x);
+    //tempButton->setMinimumSize(m_buttonSize,m_buttonSize);
     return tempButton;
 }
 

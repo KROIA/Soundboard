@@ -24,6 +24,10 @@ void SoundSource::setAbsolutePath(const std::string absolutePath)
     std::string::size_type lastSlash = absolutePath.find_last_of("\\");
     if(lastSlash == std::string::npos)
     {
+        lastSlash = absolutePath.find_last_of("/");
+    }
+    if(lastSlash == std::string::npos)
+    {
         m_relativePath = absolutePath;
     }
     else

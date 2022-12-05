@@ -56,8 +56,23 @@ void UI_SoundSettings::setSound(Sound *sound)
     m_lastName = m_sound->getName();
     m_lastSource = m_sound->getSource().getAbsolutePath();
     m_lastRepeating = m_sound->getLoops() == Sound::Loops::Infinite;
+    m_lastPlayMode = m_sound->getPlaymode();
 
     ui->buttonName_lineEdit->setPlainText(m_lastName.c_str());
+    switch(m_lastPlayMode)
+    {
+        case Sound::Playmode::Music:
+        {
+            ui->stackableCheckBox->setChecked(false);
+            break;
+        }
+        case Sound::Playmode::Stackable:
+        {
+            ui->stackableCheckBox->setChecked(true);
+            break;
+        }
+    }
+
     connect(m_sound, &QObject::destroyed, this, &UI_SoundSettings::onSoundDeleted);
     ui->repeat_pushButton->setDown(m_lastRepeating);
     ui->volumeSlider->setValue(m_lastVolume*100);
@@ -266,6 +281,12 @@ void UI_SoundSettings::on_delete_pushButton_clicked()
     hide();
 }
 
-
-
+void UI_SoundSettings::on_stackableCheckBox_stateChanged(int arg1)
+{
+    Sound::Playmode mode = Sound::Playmode::Music;
+    if(ui->stackableCheckBox->isChecked())
+        mode = Sound::Playmode::Stackable;
+    if(m_sound)
+        m_sound->setPlaymode(mode);
+}
 

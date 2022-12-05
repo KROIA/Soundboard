@@ -22,6 +22,10 @@ class LaunchpadButton: public QPushButton
         static void setEditMode(bool editEnable);
         static bool getEditMode();
         static void setSize(unsigned int width, unsigned int height);
+        static unsigned int getWidth();
+        static unsigned int getHeight();
+        static void setFontSize(int size);
+        static int getFontSize();
 
 
     private slots:
@@ -34,6 +38,7 @@ class LaunchpadButton: public QPushButton
         void deleteThisOwnedSound();
         void setEtitMode_internal();
         void setSize_internal(unsigned int width, unsigned int height);
+        void setFontSize_internal(int size);
 
         Sound *m_sound;
         Sound *m_thisOwnedSound;
@@ -46,4 +51,5 @@ class LaunchpadButton: public QPushButton
         static UI_SoundSettings *m_settingsWindow;
         static unsigned int m_width;
         static unsigned int m_height;
+        static int m_fontSize;
 };
