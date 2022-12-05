@@ -37,6 +37,9 @@ LaunchpadButton::LaunchpadButton(QWidget *parent)
     setSize_internal(m_width, m_height);
     setSound(nullptr);
     setEtitMode_internal();
+    QFont f = QPushButton::font();
+    f.setPointSize(6);
+    QPushButton::setFont(f);
 }
 LaunchpadButton::~LaunchpadButton()
 {
@@ -101,6 +104,7 @@ Sound *LaunchpadButton::getSound() const
 void LaunchpadButton::setArrayPos(const Coord &pos)
 {
     m_buttonPos = pos;
+    //setToolTip("Pos: x="+QString::number(m_buttonPos.x)+" y="+QString::number(m_buttonPos.y));
     if(m_sound)
         m_sound->setButtonCoord(m_buttonPos);
 }
@@ -139,9 +143,9 @@ void LaunchpadButton::createNewSound()
     }
     Sound s;
     s.setName("Neuer Sound");
-    m_thisOwnedSound = SoundboardDatabase::addSound(s);
-    m_sound = m_thisOwnedSound;
-    m_sound->setButtonCoord(m_buttonPos);
+    Sound *tmp = SoundboardDatabase::addSound(s);
+    setSound(tmp);
+    m_thisOwnedSound = tmp;
 }
 void LaunchpadButton::deleteThisOwnedSound()
 {
@@ -161,6 +165,15 @@ void LaunchpadButton::setEtitMode_internal()
     }
     else
     {
+        if(m_sound)
+        {
+            if(m_sound->getSource().getAbsolutePath() == "")
+            {
+                delete m_sound;
+                m_sound = nullptr;
+            }
+        }
+
         if(m_sound)
         {
             setEnabled(m_sound->getSource().isValid());

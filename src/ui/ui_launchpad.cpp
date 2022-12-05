@@ -60,7 +60,7 @@ bool UI_Launchpad::addSound(Sound *sound, bool overwrite)
         {
             if((x != (size_t)buttonPos.x || y != (size_t)buttonPos.y) && !buttonArray[x][y])
             {
-                LaunchpadButton *tempButton = createNewButton(buttonPos);
+                LaunchpadButton *tempButton = createNewButton(Coord{.x=(int)x,.y=(int)y});
                 layout->addWidget(tempButton , y, x);
                 buttonArray[x][y] = tempButton;
             }
@@ -142,7 +142,7 @@ LaunchpadButton *UI_Launchpad::createNewButton(Coord pos)
 {
     //QGridLayout *layout = dynamic_cast<QGridLayout*>  (ui->launchpadGridFrame->layout());
     LaunchpadButton *tempButton = new LaunchpadButton(this);
-    tempButton->setArrayPos(Coord{pos.x,pos.y});
+    tempButton->setArrayPos(pos);
     tempButton->setMinimumSize(buttonSize,buttonSize);
     //layout->addWidget(tempButton ,(unsigned int)pos.y, (unsigned int)pos.x);
     return tempButton;
