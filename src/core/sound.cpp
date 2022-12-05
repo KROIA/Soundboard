@@ -30,14 +30,26 @@ Sound::Sound(const Sound &other)
     : QObject()
     , ISerializable(other)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    if(!m_output)
+        m_output = new QAudioOutput;
+#else
+    m_output = new QAudioOutput;
+#endif
+    m_player.setAudioOutput(m_output);
+    connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     this->operator=(other);
 }
 Sound::Sound(const SoundSource &source)
     : QObject()
     , ISerializable()
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if(!m_output)
         m_output = new QAudioOutput;
+#else
+    m_output = new QAudioOutput;
+#endif
     connect(&m_player,&QMediaPlayer::mediaStatusChanged,this,&Sound::onMediaStatusChanged);
     m_buttonPos.x = 0;
     m_buttonPos.y = 0;
@@ -60,6 +72,7 @@ const Sound &Sound::operator=(const Sound &other)
     m_name = other.m_name;
     if(other.m_source.isValid())
         setSource(other.m_source);
+    m_buttonPos = other.m_buttonPos;
     setPlaybackSpeed(other.getPlaybackSpeed());
     setLoops(other.getLoops());
     setVolume(other.getVolume());
@@ -200,7 +213,8 @@ void Sound::setSource(const SoundSource &source)
         m_source = testSrc;
     }
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    m_player.setSource(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));
+    QUrl url = QUrl::fromLocalFile(m_source.getAbsolutePath().c_str());
+    m_player.setSource(url);
 #else
     m_player.setMedia(QUrl::fromLocalFile(m_source.getAbsolutePath().c_str()));
 #endif

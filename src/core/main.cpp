@@ -5,7 +5,7 @@
 const ProjectInfo projectInfo{"SoundBoard",
                               "2022",
                               {
-                                  "00.01.00",
+                                  "00.01.01",
                                   __DATE__,
                                   __TIME__,
                               },
