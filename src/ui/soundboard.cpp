@@ -28,7 +28,7 @@ Soundboard::Soundboard(QWidget *parent)
 
 
     // load from file
-    SoundboardDatabase::load("test.json");
+    SoundboardDatabase::load("soundboard.json");
     m_launchpad->addSound(SoundboardDatabase::getSounds());
 
 }

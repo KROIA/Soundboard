@@ -10,6 +10,10 @@ CONFIG += c++11
 
 include(Extern/Qt-Ribbon-Widget/RibbonWidget.pri)
 
+# DEFINES += QT_DEBUG
+# Enable the usage of math defines for PI in the cmath header
+DEFINES += _USE_MATH_DEFINES
+
 inc = $$PWD/inc
 src = $$PWD/src
 ui  = $$PWD/ui

@@ -7,7 +7,6 @@ SoundboardDatabase SoundboardDatabase::m_instance;
 SoundboardDatabase::SoundboardDatabase()
 {
     //m_instance = this;
-    m_database.defineSaveableObject<Sound>();
 
 
 }
@@ -21,6 +20,8 @@ SoundboardDatabase::~SoundboardDatabase()
 bool SoundboardDatabase::load(const std::string &filePath)
 {
     //SD_INSTANCE_RET(false);
+    m_instance.m_database.defineSaveableObject<Sound>();
+
     m_instance.m_databaseFile = filePath;
     return m_instance.m_database.load(filePath);
 }
