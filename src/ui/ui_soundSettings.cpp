@@ -225,7 +225,7 @@ void UI_SoundSettings::on_loadSound_pushButton_clicked()
         defaultPath = m_sound->getSource().getAbsolutePath();
 
     QString path = QFileDialog::getOpenFileName(this,
-        tr("Sound öffnen"), defaultPath.c_str(), tr("Image Files (*.mp3)"));
+        tr("Sound öffnen"), defaultPath.c_str(), tr("Sound Files (*.mp3)"));
     if(path == "")
         return;
     QFile file(path);
