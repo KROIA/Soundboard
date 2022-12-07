@@ -10,7 +10,7 @@ CONFIG += c++11
 
 include(Extern/Qt-Ribbon-Widget/RibbonWidget.pri)
 
-DEFINES += QT_DEBUG
+# DEFINES += QT_DEBUG
 # Enable the usage of math defines for PI in the cmath header
 DEFINES += _USE_MATH_DEFINES
 
@@ -27,6 +27,7 @@ INCLUDEPATH += $$inc \
                $$inc/ui/settings \
 
 HEADERS += \
+    $$inc/core/performanceTimer.h \
     $$inc/ui/LaunchpadButton.h \
     $$inc/core/sound.h \
     $$inc/ui/soundboard.h \
@@ -49,7 +50,8 @@ HEADERS += \
     $$inc/core/soundboardDatabase.h
 
 SOURCES += \
-    $$PWD/src/core/settings/usersettings.cpp \
+    $$src/core/performanceTimer.cpp \
+    $$src/core/settings/usersettings.cpp \
     $$src/ui/LaunchpadButton.cpp \
     $$src/core/sound.cpp \
     $$src/ui/soundboard.cpp \

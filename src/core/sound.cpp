@@ -1,8 +1,19 @@
 #include "sound.h"
 #include <QCoreApplication>
+
+#ifdef QT_DEBUG
+#define PERFORMANCE_TEST
+#endif
+
+#ifdef PERFORMANCE_TEST
+#include "performanceTimer.h"
+#endif
+
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QAudioOutput *Sound::m_output = nullptr;
 #endif
+
 
 size_t Sound::m_stackSize = 10;
 Sound::Sound()
@@ -144,9 +155,14 @@ QJsonObject Sound::save() const
 }
 bool Sound::read(const QJsonObject &reader)
 {
-    ISerializable::read(reader);
 
+#ifdef PERFORMANCE_TEST
+    PerformanceTimer timer(true);
+    DEBUG("        Extract reader... ");
+#endif
+    ISerializable::read(reader);
     bool success = true;
+
     int loops = 0;
     float volume = 0.5;
     float speed = 1;
@@ -160,7 +176,10 @@ bool Sound::read(const QJsonObject &reader)
     success &= extract(reader,m_buttonPos.x,"x");
     success &= extract(reader,m_buttonPos.y,"y");
     extract(reader, mode, "playmode");
+#ifdef PERFORMANCE_TEST
+    DEBUGLN("      fertig "<<timer.getRuntimeMsStr().c_str());
 
+#endif
 
 
     if(!success)
@@ -168,13 +187,65 @@ bool Sound::read(const QJsonObject &reader)
         WARNING("Kann Sound "<<m_name.c_str()<<" nicht korrekt laden.");
         return false;
     }
-
+#ifdef PERFORMANCE_TEST
+    {
+    PerformanceTimer timer1(true);
+    DEBUG("        setPlaymode... ");
+#endif
     setPlaymode((Playmode)mode);
+#ifdef PERFORMANCE_TEST
+    DEBUGLN("      fertig "<<timer1.getRuntimeMsStr().c_str());
+    }
+#endif
+
+#ifdef PERFORMANCE_TEST
+    {
+    PerformanceTimer timer1(true);
+    DEBUG("        setLoops... ");
+#endif
     setLoops(loops);
+#ifdef PERFORMANCE_TEST
+    DEBUGLN("      fertig "<<timer1.getRuntimeMsStr().c_str());
+    }
+#endif
+
+#ifdef PERFORMANCE_TEST
+    {
+    PerformanceTimer timer1(true);
+    DEBUG("        setVolume... ");
+#endif
     setVolume(volume);
+#ifdef PERFORMANCE_TEST
+    DEBUGLN("      fertig "<<timer1.getRuntimeMsStr().c_str());
+    }
+#endif
+
+#ifdef PERFORMANCE_TEST
+    {
+    PerformanceTimer timer1(true);
+    DEBUG("        setPlaybackSpeed... ");
+#endif
     setPlaybackSpeed(speed);
+#ifdef PERFORMANCE_TEST
+    DEBUGLN("      fertig "<<timer1.getRuntimeMsStr().c_str());
+    }
+#endif
+
+#ifdef PERFORMANCE_TEST
+    {
+    PerformanceTimer timer1(true);
+    DEBUG("        setSource... ");
+#endif
     m_source.setAbsolutePath(source);
     setSource(m_source);
+#ifdef PERFORMANCE_TEST
+    DEBUGLN("      fertig "<<timer1.getRuntimeMsStr().c_str());
+    }
+#endif
+
+
+
+
 
     return true;
 }
@@ -371,7 +442,15 @@ void Sound::setStackSize(size_t size)
     while(m_player.size() < size)
     {
         Player player;
+#ifdef PERFORMANCE_TEST
+        PerformanceTimer timer(true);
+        DEBUG("      new QMediaPlayer... ");
+#endif
         player.player = new QMediaPlayer;
+#ifdef PERFORMANCE_TEST
+        DEBUGLN("      fertig "<<timer.getRuntimeMsStr().c_str());
+#endif
+
 
         player.currentlyPlaying = false;
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
@@ -386,6 +465,8 @@ void Sound::setStackSize(size_t size)
         m_player.push_back(player);
 
     }
+
+
     stop();
     setSource(m_source);
 }

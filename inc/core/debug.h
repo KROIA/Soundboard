@@ -31,8 +31,8 @@ namespace Debug
 }
 #ifdef QT_DEBUG
 //#define USE_COLORED_FUNC
-
-#define CONSOLE_STREAM qDebug()
+static QDebug  __dbg = qDebug().nospace().noquote();
+#define CONSOLE_STREAM __dbg
 //#define CONSOLE_STREAM std::cout
 #define DEBUGLN(message) \
   CONSOLE_STREAM << message << "\n";
