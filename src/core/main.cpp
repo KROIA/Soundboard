@@ -30,11 +30,13 @@ const ProjectInfo projectInfo{"SoundBoard",
                                }};
 
 int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Enable scaling for high resolution displays
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 #endif
+    QApplication a(argc, argv);
+
 
     Soundboard w;
     w.show();
