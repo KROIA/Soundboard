@@ -16,9 +16,19 @@ class UI_Launchpad : public QWidget
 public:
     explicit UI_Launchpad(QWidget *parent = nullptr);
     ~UI_Launchpad();
-    //void setButtonSize(unsigned int bs);
-    //unsigned int getButtonSize() const;
+	/**
+	 * addSound(...)
+	 * \param sound Soundobject of the .mp3 file
+	 * \param overwrite If set to true, overwrites existing button at same position
+	 * \return Returns true if operation successful
+	 */
     bool addSound(Sound *sound, bool overwrite = true);
+	/**
+	 * addSound(...)
+	 * \param std::vector<sound*> Vector filled with soundobjects of .mp3 files
+	 * \param overwrite If set to true, overwrites existing button at same position
+	 * \return Returns true if operation successful
+	 */
     bool addSound(const std::vector<Sound *> &sounds, bool overwrite = true);
 
 
