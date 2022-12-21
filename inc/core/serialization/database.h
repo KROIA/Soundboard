@@ -23,26 +23,122 @@ class Database
     public:
         Database();
         ~Database();
+
+        /**
+         * \brief Specifies the object type to be reloaded
+         * \return true if the type was added successfully
+         *         false if the type could not be added -> see console
+         */
         template<typename T>
         bool defineSaveableObject();
 
+        /**
+         * \brief Loading of a saved json file
+         * \param jsonFile path to the file
+         * \return true if the file was read successfully
+         *         false if the file could not be read or is corrupted -> see console
+         */
         bool load(const std::string &jsonFile);
+
+        /**
+         * \brief Saves the current added objects to a json file
+         * \param jsonFile path to the file which will be created
+         * \return true if the file was saved successfully
+         *         false if the file could not be saved -> see console
+         */
         bool save(const std::string &jsonFile) const;
 
+        /**
+         * \brief Adds a ISerializable object to this database
+         * \param obj which shuld be added
+         * \return true if the object was added successfully
+         *         false if the object could not be added -> see console
+         */
         bool addObject(ISerializable* obj);
+
+        /**
+         * \brief Removes a object from the Database.
+         * \details Removing does not delete the object
+         * \param obj which shuld be removed
+         * \return true if the object was successfully removed
+         *         false if the object was not found in the database
+         */
         bool removeObject(ISerializable* obj);
+
+        /**
+         * \brief Removes a object from the Database.
+         * \details Removing does not delete the object
+         * \param obj which shuld be removed
+         * \return true if the object was successfully removed
+         *         false if the object was not found in the database
+         */
         bool removeObject(DatabaseObject *dbObj);
+
+        /**
+         * \brief Removes a object from the Database.
+         * \details Removing does not delete the object
+         * \param id to the object which shuld be removed
+         * \return ptr io the removed object
+         *         nullptr if the object was not found in the database
+         */
         DatabaseObject* removeObject(const std::string &id);
+
+        /**
+         * \brief Checks if the given object exists in this database
+         * \param obj to search for
+         * \return true if the obj was found in this database
+         *         false if the obj was not found in this database
+         */
         bool objectExists(ISerializable* obj) const;
+
+        /**
+         * \brief Checks if a object with given id exists in this database
+         * \param id to the searched object
+         * \return true if the obj was found in this database
+         *         false if the obj was not found in this database
+         */
         bool objectExists(const std::string &id) const;
+
+        /**
+         * \brief Gets the object count in the database
+         * \return amount of objects contained in this database
+         */
         size_t getObjectCount() const;
+
+        /**
+         * \brief Gets the object count of a specific type in the database
+         * \return amount of objects, with type T, contained in this database
+         */
         template<typename T>
         size_t getObjectCount() const;
-        //const DatabaseID &getID(ISerializable *obj) const;
+
+        /**
+         * \brief Gets the object with the given id
+         * \param id to the searched object
+         * \return ptr to the object with the given id
+         *         nullptr if no object was found with that id
+         */
         ISerializable *getObject(const std::string &id) const;
+
+        /**
+         * \brief Gets all objects in this database
+         * \return vector of objects contained in this database
+         */
         std::vector<ISerializable*> getObjects() const;
+
+        /**
+         * \brief Gets the object, with type T, with the given id
+         * \param id to the searched object
+         * \return ptr to the object, of type T, with the given id
+         *         nullptr if no object was found with that id
+         */
         template<typename T>
         T* getObject(const std::string &id) const;
+
+        /**
+         * \brief Gets all objects, with type T, in this database
+         * \return vector of objects, of type T, contained in this database
+         */
         template<typename T>
         std::vector<T*> getObjects() const;
 

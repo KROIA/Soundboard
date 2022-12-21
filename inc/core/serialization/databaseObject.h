@@ -14,6 +14,7 @@
  */
 class DatabaseObject
 {
+        friend ISerializable;
 public:
     /**
      * \brief DatabaseObject constructor which creates a new database entry.
@@ -42,8 +43,10 @@ public:
      */
     const DatabaseID &getID() const;
 
-    void objectGotDeleted();
+
+
 private:
+    void objectGotDeleted();
 
     ISerializable *m_obj;
     DatabaseID m_id;

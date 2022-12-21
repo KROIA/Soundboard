@@ -24,7 +24,7 @@ const ProjectInfo projectInfo{"SoundBoard",
                                Author{
                                    "Alex",
                                    "Krieg",
-                                   "alex.krieg@ost.ch",
+                                   "alex.krieg\ost.ch",
                                    "",
                                }
                                }};
