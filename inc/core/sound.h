@@ -106,8 +106,8 @@ class Sound :   public QObject, public ISerializable
         void postLoad() override; //!< \see ISerializable::postLoad()
 
         /**
-         * @brief getButtonCoord
-         * @return position in the launchpad button array
+         * \brief getButtonCoord
+         * \return position in the launchpad button array
          */
         const Coord &getButtonCoord() const;
 
@@ -195,15 +195,15 @@ class Sound :   public QObject, public ISerializable
         void setName(const std::string &name);
 
         /**
-         * @brief Position in the launchpad button array
-         * @param x position in the array
-         * @param y position in the array
+         * \brief Position in the launchpad button array
+         * \param x position in the array
+         * \param y position in the array
          */
         void setButtonCoord(int x, int y);
 
         /**
-         * @brief Position in the launchpad button array
-         * @param pos position in the array
+         * \brief Position in the launchpad button array
+         * \param pos position in the array
          */
         void setButtonCoord(const Coord &pos);
 
