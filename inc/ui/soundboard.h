@@ -15,6 +15,15 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class Soundboard; }
 QT_END_NAMESPACE
 
+
+/**
+ * \author Alex Krieg
+ * \date   12.10.2022
+ *
+ * \brief The Soundboard class
+ * \details This is the main class.
+ *
+ */
 class Soundboard : public QMainWindow
 {
         Q_OBJECT
