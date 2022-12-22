@@ -10,7 +10,14 @@
 namespace Ui {
 class UI_SoundSettings;
 }
-
+/**
+ * \author Alex Krieg
+ * \date   12.10.2022
+ *
+ * \brief The UI_SoundSettings class
+ * \details This class contains the GUI to configure the sounds.
+ *
+ */
 class UI_SoundSettings : public QWidget
 {
         Q_OBJECT
