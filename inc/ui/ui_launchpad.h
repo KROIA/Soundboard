@@ -8,7 +8,14 @@
 namespace Ui {
 class UI_Launchpad;
 }
-
+/**
+ * \author David Feldmann
+ * \date   12.10.2022
+ *
+ * \brief The UI_Launchpad class
+ * \details This class is used to add new buttons.
+ *
+ */
 class UI_Launchpad : public QWidget
 {
     Q_OBJECT
