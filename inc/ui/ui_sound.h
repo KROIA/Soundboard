@@ -14,7 +14,14 @@
 namespace Ui {
 class UI_Sound;
 }
-
+/**
+ * \author Alex Krieg
+ * \date   12.10.2022
+ *
+ * \brief The UI_Sound class
+ * \details This class manages audio related things
+ *
+ */
 class UI_Sound : public QWidget//, public XmlSaveable
 {
         Q_OBJECT
