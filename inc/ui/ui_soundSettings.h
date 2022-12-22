@@ -15,7 +15,7 @@ class UI_SoundSettings;
  * \date   12.10.2022
  *
  * \brief The UI_SoundSettings class
- * \details This class contains the GUI to configure the sounds.
+ * \details This class is the settings window to configure a sound.
  *
  */
 class UI_SoundSettings : public QWidget
