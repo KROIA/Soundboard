@@ -1,11 +1,11 @@
 #include "soundboard.h"
 #include <QApplication>
-
+#include "projectInfo.h"
 
 const ProjectInfo projectInfo{"SoundBoard",
                               "2022",
                               {
-                                  "00.01.01",
+                                  "00.01.02",
                                   __DATE__,
                                   __TIME__,
                               },

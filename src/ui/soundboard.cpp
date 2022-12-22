@@ -1,8 +1,12 @@
 #include "soundboard.h"
 #include "ui_soundboard.h"
 #include <QFileDialog>
+#include "projectInfo.h"
 
+#include "soundboardDatabase.h"
 #include "LaunchpadButton.h"
+
+
 
 using std::string;
 

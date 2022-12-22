@@ -4,13 +4,11 @@
 #include <QMessageBox>
 #include "soundboardRibbon.h"
 
-#include "debug.h"
-#include "usersettings.h"
-#include "projectInfo.h"
 
-#include "ui_soundSettings.h"
+#include "usersettings.h"
+
 #include "ui_settings.h"
-#include "soundboardDatabase.h"
+
 #include "ui_launchpad.h"
 
 QT_BEGIN_NAMESPACE

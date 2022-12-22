@@ -1,6 +1,7 @@
 #include "ui_settingspage.h"
 #include "ui_ui_settingspage.h"
 #include <QVBoxLayout>
+#include "debug.h"
 
 UI_SettingsPage::UI_SettingsPage(QWidget *parent,
                                  RegistrySettings *settings) :

@@ -1,5 +1,7 @@
 #include "ui_setting.h"
 #include "ui_ui_setting.h"
+#include "debug.h"
+
 
 UI_Setting::UI_Setting(QWidget *parent,
                        RegistryParameter *parameter) :

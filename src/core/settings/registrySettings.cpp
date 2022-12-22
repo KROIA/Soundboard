@@ -1,4 +1,5 @@
 #include "registrySettings.h"
+#include "debug.h"
 
 RegistrySettings::RegistrySettings(const std::string &registryRootPath, const std::string &groupName)
     : QObject()

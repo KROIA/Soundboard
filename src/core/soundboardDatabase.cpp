@@ -28,6 +28,7 @@ bool SoundboardDatabase::load(const std::string &filePath)
 bool SoundboardDatabase::save(const std::string &filePath)
 {
     //SD_INSTANCE_RET(false);
+    m_instance.m_databaseFile = filePath;
     return m_instance.m_database.save(filePath);
 }
 bool SoundboardDatabase::save()

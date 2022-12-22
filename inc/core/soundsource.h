@@ -3,7 +3,7 @@
 #include <string>
 //#include <filesystem>
 #include <algorithm>
-#include "debug.h"
+
 
 /*! \class SoundSource
     \brief Class to handle audiofiles
@@ -80,19 +80,6 @@ class SoundSource
          */
         std::string getAbsolutePath() const;
 
-        /**
-         * save(...)
-         * \brief Implementation of XmlSaveable
-         * \param writer QXmlStreamWriter which will save the file
-         */
-     //   void save(QXmlStreamWriter *writer) override;
-
-        /**
-         * load(...)
-         * \brief Implementation of XmlSaveable
-         * \param reader QXmlStreamReader which will read from the file
-         */
-     //   void load(QXmlStreamReader *reader) override;
 
     protected:
 

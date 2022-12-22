@@ -57,44 +57,40 @@ class Sound :   public QObject, public ISerializable
 
         const Sound &operator=(const Sound &other);
 
-        /**
-         * \brief getAudioOutput
-         * \return the audio output on which every sound is attached to
-         */
-        //static const QAudioOutput &getAudioOutput();
 
         /**
-         * \brief getSource()
          * \return Returns the source object to the .mp3 file
          */
         const SoundSource &getSource() const;
 
         /**
-         * \brief getVolume()
          * \return Returns the volume of the sound
          */
         float getVolume() const;
 
         /**
-         * \brief getPlaybackSpeed()
          * \return Returns the playback speed of the sound
          */
         float getPlaybackSpeed() const;
 
         /**
-         * \brief getLoops()
          * \return Returns the amount of loops the sound will play
          */
         int getLoops() const;
 
         /**
-         * \brief getName()
          * \return Returns the name of the sound
          */
         const std::string &getName() const;
 
+        /**
+         * \return true if the sound is currently playing
+         */
         bool soundIsPlaying() const;
 
+        /**
+         * \return the current playMode
+         */
         Playmode getPlaymode() const;
 
 
@@ -111,7 +107,15 @@ class Sound :   public QObject, public ISerializable
          */
         const Coord &getButtonCoord() const;
 
+        /**
+         * \brief Sets the default stack size of all sounds
+         * \param size > 2
+         */
         static void setDefaultStackSize(size_t size);
+
+        /**
+         * \return the default stacksize of all sounds
+         */
         static size_t getDefaultStackSize();
 
     signals:
@@ -207,7 +211,16 @@ class Sound :   public QObject, public ISerializable
          */
         void setButtonCoord(const Coord &pos);
 
+        /**
+         * \brief Sets the stacksize of the sound
+         * \param size > 1
+         */
         void setStackSize(size_t size);
+
+        /**
+         * \brief Sets the playmode of the sound
+         * \param mode
+         */
         void setPlaymode(Playmode mode);
 
 

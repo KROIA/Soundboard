@@ -1,5 +1,6 @@
 #include "sound.h"
 #include <QCoreApplication>
+#include "debug.h"
 
 #ifdef QT_DEBUG
 #define PERFORMANCE_TEST

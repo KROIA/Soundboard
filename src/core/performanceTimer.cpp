@@ -1,5 +1,5 @@
 #include "performanceTimer.h"
-
+#ifdef QT_DEBUG
 PerformanceTimer::PerformanceTimer(bool autostart)
 {
     m_isRunning = false;
@@ -46,3 +46,4 @@ bool PerformanceTimer::isRunning() const
 {
     return m_isRunning;
 }
+#endif

@@ -1,5 +1,4 @@
-#ifndef UI_SETTINGSPAGE_H
-#define UI_SETTINGSPAGE_H
+#pragma once
 
 #include <QWidget>
 #include <vector>
@@ -12,18 +11,38 @@ namespace Ui {
 class UI_SettingsPage;
 }
 
+/**
+ * \author Alex Krieg
+ * \date   12.10.2022
+ *
+ * \brief The UI_SettingsPage class
+ * \details This class represent a single setting page with multiple setting values in it
+ *
+ */
 class UI_SettingsPage : public QWidget
 {
         Q_OBJECT
 
     public:
+        /**
+         * \brief UI_SettingsPage constructor
+         * \param parent widget
+         * \param settings for this widget
+         */
         explicit UI_SettingsPage(QWidget *parent,
                                  RegistrySettings *settings);
         ~UI_SettingsPage();
 
-        void onShow();
-        void onSave();
 
+        /**
+         * \brief Gets called when the setting is diplayed
+         */
+        void onShow();
+
+        /**
+         * \brief Will save the edited setting
+         */
+        void onSave();
 
 
     private:
@@ -31,5 +50,3 @@ class UI_SettingsPage : public QWidget
         RegistrySettings *m_settings;
         std::vector<UI_Setting *> m_ui_settings;
 };
-
-#endif // UI_SETTINGSPAGE_H

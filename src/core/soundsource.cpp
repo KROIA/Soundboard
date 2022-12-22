@@ -1,5 +1,6 @@
 #include "soundsource.h"
 #include <QFile>
+#include "debug.h"
 
 SoundSource::SoundSource()
 {
